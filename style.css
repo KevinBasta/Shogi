@@ -1,65 +1,53 @@
+/* overall game area styling */
 shogi { 
     display: flex;
     justify-content: center;
 
 }
 
-shogi-view { 
-    display: grid;
 
-}
-columns { 
-    display: grid; 
-    grid-template-columns: repeat(9, minmax(10px, 1fr));
-    grid-column-start: 1;
-    grid-column-end: 2;
-    grid-row-start: 1;
-    grid-row-end: 2;
-}
 
-shogi-ban
-{ 
-    display: grid;
-    grid-template-columns: repeat(9, minmax(10px, 1fr));
-    grid-row-start: 2;
-    grid-row-end: 3;
-    grid-column-start: 2;
-    grid-column-end: 3;
-/*     resize: both;
-    overflow: auto;
-    grid-area: 1/1; */
-
-    border: 2px solid;
-    border-color: black;
-    width: 50%;
+/* shogi board, rows and columns */
+shogi-board-wrapper {
     
 }
 
+shogi-board { 
+
+}
+
+shogi-board div { 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1;
+    
+    border: 2px solid;
+    border-color: white;
+    background-color: black;
+}
+
+
+columns {
+
+}
+
 rows { 
-    display: grid; 
-    grid-row-start: 2;
-    grid-row-end: 3;
-    grid-column-start: 2;
-    grid-column-end: 3;
-    grid-template-columns: repeat(1, minmax(10px, 1fr));
+
 } 
 
 
+
+/* opponent and play piece stands */
 opponent-piece-stand,
 player-piece-stand 
 { 
-    grid-area: 1/1;
-    border: 2px solid;
-    border-color: black;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(10px, 1fr));
+
 }
 
 opponent-piece-stand { 
-    grid-row-start: 1;
-    grid-row-end: 2;
-    grid-column-start: 1;
-    grid-column-end: 2;
+
 }
 
 player-piece-stand { 
@@ -69,31 +57,5 @@ player-piece-stand {
 opponent-piece-stand div,
 player-piece-stand div 
 { 
-    border: 2px solid;
-    border-color: white;
-    aspect-ratio: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: black;
-}
 
-shogi-ban div
-{ 
-    border: 2px solid;
-    border-color: white;
-    aspect-ratio: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: black;
 }
-
-/*         object p { 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-} */
