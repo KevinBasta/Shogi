@@ -1,0 +1,7 @@
+const boardSetup = {
+
+}
+
+const picesImages = { 
+    
+}

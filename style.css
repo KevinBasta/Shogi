@@ -1,0 +1,52 @@
+shogi { 
+    display: flex;
+    justify-content: center;
+
+}
+
+/*         columns { 
+    display: grid; 
+    grid-template-columns: repeat(9, minmax(10px, 1fr));
+}
+
+rows { 
+    display: grid; 
+    grid-row-start: 1;
+    grid-row-end: 2;
+    grid-template-columns: repeat(1, minmax(10px, 1fr));
+} */
+
+shogi-ban, 
+opponent-piece-stand,
+player-piece-stand 
+{ 
+    resize: both;
+    overflow: auto;
+    grid-area: 1/1;
+    border: 2px solid;
+    border-color: black;
+    width: 50%;
+    display: grid;
+    grid-template-columns: repeat(9, minmax(10px, 1fr));
+}
+
+shogi-ban div,
+opponent-piece-stand div,
+player-piece-stand div
+{ 
+    border: 2px solid;
+    border-color: white;
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+}
+
+/*         object p { 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+} */
