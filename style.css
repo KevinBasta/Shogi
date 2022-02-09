@@ -4,35 +4,82 @@ shogi {
 
 }
 
-/*         columns { 
+shogi-view { 
+    display: grid;
+
+}
+columns { 
     display: grid; 
     grid-template-columns: repeat(9, minmax(10px, 1fr));
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 1;
+    grid-row-end: 2;
+}
+
+shogi-ban
+{ 
+    display: grid;
+    grid-template-columns: repeat(9, minmax(10px, 1fr));
+    grid-row-start: 2;
+    grid-row-end: 3;
+    grid-column-start: 2;
+    grid-column-end: 3;
+/*     resize: both;
+    overflow: auto;
+    grid-area: 1/1; */
+
+    border: 2px solid;
+    border-color: black;
+    width: 50%;
+    
 }
 
 rows { 
     display: grid; 
-    grid-row-start: 1;
-    grid-row-end: 2;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    grid-column-start: 2;
+    grid-column-end: 3;
     grid-template-columns: repeat(1, minmax(10px, 1fr));
-} */
+} 
 
-shogi-ban, 
+
 opponent-piece-stand,
 player-piece-stand 
 { 
-    resize: both;
-    overflow: auto;
     grid-area: 1/1;
     border: 2px solid;
     border-color: black;
-    width: 50%;
     display: grid;
-    grid-template-columns: repeat(9, minmax(10px, 1fr));
+    grid-template-columns: repeat(3, minmax(10px, 1fr));
 }
 
-shogi-ban div,
+opponent-piece-stand { 
+    grid-row-start: 1;
+    grid-row-end: 2;
+    grid-column-start: 1;
+    grid-column-end: 2;
+}
+
+player-piece-stand { 
+
+}
+
 opponent-piece-stand div,
-player-piece-stand div
+player-piece-stand div 
+{ 
+    border: 2px solid;
+    border-color: white;
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+}
+
+shogi-ban div
 { 
     border: 2px solid;
     border-color: white;
