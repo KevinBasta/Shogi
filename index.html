@@ -4,13 +4,30 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="main.js"></script>
     <title>Document</title>
     <style> 
         object { 
             display: flex;
             justify-content: center;
         }
+
+/*         columns { 
+            display: grid; 
+            grid-template-columns: repeat(9, minmax(10px, 1fr));
+        }
+        
+        rows { 
+            display: grid; 
+            grid-row-start: 1;
+            grid-row-end: 2;
+            grid-template-columns: repeat(1, minmax(10px, 1fr));
+        } */
+        
         section { 
+            resize: both;
+            overflow: auto;
+            grid-area: 1/1;
             border: 2px solid;
             border-color: black;
             width: 50%;
@@ -28,10 +45,29 @@
             align-items: center;
             background-color: black;
         }
+
+/*         object p { 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        } */
     </style>
 </head>
 <body>
     <object>
+<!--         <columns>
+            <p>1</p>
+            <p>2</p>
+            <p>3</p>
+            <p>4</p>
+            <p>5</p>
+            <p>6</p>
+            <p>7</p>
+            <p>8</p>
+            <p>9</p>
+        </columns>
+ -->
         <section> 
             <div></div>
             <div></div>
@@ -124,6 +160,19 @@
             <div></div>
 
         </section>
+
+<!--         <rows> 
+            <p>1</p>
+            <p>2</p>
+            <p>3</p>
+            <p>4</p>
+            <p>5</p>
+            <p>6</p>
+            <p>7</p>
+            <p>8</p>
+            <p>9</p> 
+        </rows> -->
+
     </object>
 </body>
 </html>
