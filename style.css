@@ -1,15 +1,19 @@
 /* overall game area styling */
 shogi { 
-    /* display: flex;
-    justify-content: center; */
+    display: grid;    
+    grid-template-columns: 5fr 7fr 5fr;
 }
 
-
+span { 
+    font-size:  2vw;
+}
 
 /* shogi board, rows and columns */
 shogi-board-wrapper {
     display: grid;
     grid-template-columns: 20fr 1fr;
+    
+    aspect-ratio:initial;
 }
 
 columns {
@@ -33,12 +37,12 @@ columns span {
 shogi-board { 
     grid-column: 1/2; 
     grid-row: 2;
-    gap: 0.1rem;
-
+    
     background-color: rgb(102, 52, 6);
     
     display: grid;
     grid-template-columns: repeat(9, minmax(10px, 1fr));
+    gap: 0.1rem;
 }
 
 shogi-board div { 
@@ -51,9 +55,11 @@ shogi-board div {
 top-right-corner { 
     grid-column: 2;
     grid-row: 1;
+    
     background-color: purple;
+
     display: grid; 
-    grid-template-columns: repeat(1, minmax(10px, 1fr));
+    grid-template-columns: repeat(1, minmax(10px, 100%));
 }
 
 rows { 
@@ -63,7 +69,7 @@ rows {
     background-color: green;
     
     display: grid; 
-    grid-template-columns: repeat(1, minmax(10px, 1fr));
+    grid-template-columns: repeat(1, minmax(10px, 100%));
     justify-items: center;
 }
 
@@ -76,14 +82,15 @@ rows span {
 
 
 
-
-
-
 /* opponent and play piece stands */
 opponent-piece-stand,
 player-piece-stand 
 { 
-
+    background-color: rgb(102, 52, 6);
+    
+    display: grid;
+    grid-template-columns: repeat(7, minmax(10px, 1fr));
+    gap: 0.1rem;
 }
 
 opponent-piece-stand { 
@@ -97,5 +104,8 @@ player-piece-stand {
 opponent-piece-stand div,
 player-piece-stand div 
 { 
-
+    aspect-ratio: 1;
+    border: 2px solid;
+    border-color: black; 
+    background-color: rgb(47, 33, 6);
 }
