@@ -1,41 +1,81 @@
 /* overall game area styling */
 shogi { 
-    display: flex;
-    justify-content: center;
-
+    /* display: flex;
+    justify-content: center; */
 }
 
 
 
 /* shogi board, rows and columns */
 shogi-board-wrapper {
+    display: grid;
+    grid-template-columns: 20fr 1fr;
+}
+
+columns {
+    grid-column: 1/2;
+    grid-row: 1;
+    gap: 0.1rem;
     
+    background-color: red;
+    
+    display: grid; 
+    grid-template-columns: repeat(9, minmax(10px, 100%));
+    justify-items: center;
+    /*direction:ltr;*/
+}
+
+columns span { 
+    border: 2px solid;
+    border-color: black; 
 }
 
 shogi-board { 
+    grid-column: 1/2; 
+    grid-row: 2;
+    gap: 0.1rem;
 
+    background-color: rgb(102, 52, 6);
+    
+    display: grid;
+    grid-template-columns: repeat(9, minmax(10px, 1fr));
 }
 
 shogi-board div { 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
     aspect-ratio: 1;
-    
     border: 2px solid;
-    border-color: white;
-    background-color: black;
+    border-color: black; 
+    background-color: rgb(47, 33, 6);
 }
 
-
-columns {
-
+top-right-corner { 
+    grid-column: 2;
+    grid-row: 1;
+    background-color: purple;
+    display: grid; 
+    grid-template-columns: repeat(1, minmax(10px, 1fr));
 }
 
 rows { 
+    grid-column: 2;
+    grid-row: 2/3;
+    
+    background-color: green;
+    
+    display: grid; 
+    grid-template-columns: repeat(1, minmax(10px, 1fr));
+    justify-items: center;
+}
 
-} 
+rows span { 
+    place-self: center;
+    border: 2px solid;
+    border-color: black; 
+}
+
+
+
+
 
 
 
