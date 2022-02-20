@@ -25,7 +25,7 @@ export const defultBoardSetup = {
     "sentePawnEight": ["87", "Pawn"],
     "sentePawnNine":  ["97", "Pawn"],
 
-    
+
     //gote
     "goteLanceOne":         ["91", "Lance"], 
     "goteKnightOne":        ["81", "Knight"], 
@@ -49,7 +49,7 @@ export const defultBoardSetup = {
     "gotePawnSeven": ["33", "Pawn"], 
     "gotePawnEight": ["23", "Pawn"],
     "gotePawnNine":  ["13", "Pawn"]
-}
+};
 
 export const picesImages = { 
     "King": "/pieces/syougi01_ousyou.png", 
@@ -64,4 +64,4 @@ export const picesImages = {
 
     // promotions
     "": ""
-}
+};

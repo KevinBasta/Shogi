@@ -1,17 +1,12 @@
+import {player} from "/player.js";
 
-//let player1 = new player(gote, false);
-
-class board { 
-    constructor() { 
+export class board { 
+    constructor(player1, player2) { 
         this.gameBoard = new Array(81); 
         this.logTurnNumber = 1;
         this.lastBoardStates = [];
-
-
-    }
-
-    initBoard() { 
-        
+        player1.initpieces();
+        player2.initpieces();
     }
 
     getBoard() { 

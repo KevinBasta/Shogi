@@ -1,17 +1,28 @@
-import {defultBoardSetup, picesImages} from "config.js";
+import {defultBoardSetup, picesImages} from "/config.js";
 
 // super class
-class piece { 
-    constructor(player) { 
+export class piece { 
+    constructor(gote_sente, pieceType, position) { 
+        this.gote_sente = gote_sente; 
+        this.pieceType = pieceType;
+        this.position = position;
         this.isPromoted = false; 
         this.inCheck = false;
         
-        if (player.gote_sente == "sente") { 
+        /* if (this.player.gote_sente == "sente") { 
             // this.isfacingup = false? 
-        } else if (player.gote_sente == "gote") { 
-
-        }
+        } else if (this.player.gote_sente == "gote") { 
+            
+        } */
         
+    }
+
+    render() { 
+        let position = document.getElementById(this.position);
+        let elem = document.createElement("img");
+        elem.setAttribute("src", picesImages[this.pieceType]);
+        elem.setAttribute("class", "piece");
+        position.appendChild(elem);
     }
 
     movepiece(piece, newPosition) { 
@@ -26,13 +37,13 @@ class piece {
 
 /* each class below defines it's own legal movments and promotions */
 // king
-class king extends piece { 
+export class king extends piece { 
     
 }
 
 
 // generals
-class goldGeneral extends piece { 
+export class goldGeneral extends piece { 
     /* maybe should interact with an array representation of the board */
     getPossibleMovments() { 
         if (isPromoted) { 
@@ -47,32 +58,32 @@ class goldGeneral extends piece {
 
 }
 
-class silverGeneral extends piece { 
+export class silverGeneral extends piece { 
 
 }
 
 
 // rook and bishop 
-class rook extends piece { 
+export class rook extends piece { 
 
 }
 
-class bishop extends piece { 
+export class bishop extends piece { 
 
 }
 
 
 // knight and lance
-class knight extends piece { 
+export class knight extends piece { 
     
 }
 
-class lance extends piece { 
+export class lance extends piece { 
     
 }
 
 
 // pawn 
-class pawn extends piece { 
+export class pawn extends piece { 
 
 }
