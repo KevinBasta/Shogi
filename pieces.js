@@ -1,8 +1,16 @@
+import {defultBoardSetup, picesImages} from "config.js";
+
 // super class
 class piece { 
-    constructor() { 
-        let isPromoted = false; 
-        let inCheck = false;
+    constructor(player) { 
+        this.isPromoted = false; 
+        this.inCheck = false;
+        
+        if (player.gote_sente == "sente") { 
+            // this.isfacingup = false? 
+        } else if (player.gote_sente == "gote") { 
+
+        }
         
     }
 
