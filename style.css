@@ -127,5 +127,5 @@ player-piece-stand div
 }
 
 .piece-rotate { 
-    
+    transform: rotate(180deg);
 }

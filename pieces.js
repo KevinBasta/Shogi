@@ -9,11 +9,11 @@ export class piece {
         this.isPromoted = false; 
         this.inCheck = false;
         
-        /* if (this.player.gote_sente == "sente") { 
-            // this.isfacingup = false? 
-        } else if (this.player.gote_sente == "gote") { 
-            
-        } */
+        if (this.gote_sente == "sente") { 
+            this.isfacingup = true;
+        } else if (this.gote_sente == "gote") { 
+            this.isfacingup = false;
+        }
         
     }
 
@@ -22,6 +22,9 @@ export class piece {
         let elem = document.createElement("img");
         elem.setAttribute("src", picesImages[this.pieceType]);
         elem.setAttribute("class", "piece");
+        if (this.isfacingup == false) {
+            elem.setAttribute("class", "piece piece-rotate");
+        }
         position.appendChild(elem);
     }
 

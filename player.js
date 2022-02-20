@@ -18,7 +18,6 @@ export class player {
                 newPiece.render();
             }
         }
-        alert(this.pieces);
     }
 
 
