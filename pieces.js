@@ -2,11 +2,16 @@
 class piece { 
     constructor() { 
         let isPromoted = false; 
+        let inCheck = false;
         
     }
 
     movepiece(piece, newPosition) { 
 
+    }
+
+    switchOwner(newOwner) { 
+        // pop from old player obj array and add to other player's array
     }
 }
 
@@ -20,6 +25,17 @@ class king extends piece {
 
 // generals
 class goldGeneral extends piece { 
+    /* maybe should interact with an array representation of the board */
+    getPossibleMovments() { 
+        if (isPromoted) { 
+
+        } else if (inCheck) { 
+        
+        } else { 
+
+        }
+    }
+
 
 }
 

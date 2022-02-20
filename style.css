@@ -46,6 +46,7 @@ shogi-board {
 }
 
 shogi-board div { 
+    position: relative;
     aspect-ratio: 1;
     border: 2px solid;
     border-color: black; 
@@ -108,4 +109,13 @@ player-piece-stand div
     border: 2px solid;
     border-color: black; 
     background-color: rgb(47, 33, 6);
+}
+
+.cell-label {
+    position:absolute;
+    bottom: 0px;
+    right: 0px;
+    font-size: 1vw;
+    color: #444;
+    opacity: 0.9;
 }

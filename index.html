@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <script src="main.js"></script>
+    <script src="board.js"></script>
     <title>Shogi 愛</title>
 </head>
 <body>
@@ -33,7 +33,7 @@
                 <span>1</span>
             </columns>
 
-            <shogi-board>
+            <shogi-board id="shogiBoard">
                 <div style="background-color: grey;"></div>
                 <div></div>
                 <div></div>
@@ -153,6 +153,37 @@
 
     </shogi>
 
+    <script>
+
+        // labeling each shogi cell with ids and text
+        /* to move elsewhere later */
+        document.addEventListener("DOMContentLoaded", function(){
+            const rows = ["a", "b", "c", "d", "e", "f", "g", "h", "i"];
+            let columnCounter = 9;
+            let rowCounter = 0;
+
+            let element = document.getElementById('shogiBoard');
+            let children = element.children;
+
+            for(let child of children){
+                let label = columnCounter + rows[rowCounter];
+                let spanText = document.createElement("span");
+                
+                spanText.innerHTML = label;
+                spanText.setAttribute("class", "cell-label");
+                
+                child.setAttribute("id", label);
+                child.appendChild(spanText);
+                
+                columnCounter -= 1; 
+                if (columnCounter == 0) { 
+                    columnCounter = 9; 
+                    rowCounter += 1; 
+                }
+            }
+        });
+    
+    </script>
 
 </body>
 </html>

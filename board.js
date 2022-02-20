@@ -1,14 +1,26 @@
 
-let player1 = new player(gote, false);
+//let player1 = new player(gote, false);
+
+class board { 
+    constructor() { 
+        this.gameBoard = new Array(81); 
+        this.logTurnNumber = 1;
+        this.lastBoardStates = [];
 
 
+    }
 
-const defultBoard = [];
-let logNumber = 1;
-let lastBoardState;
+    initBoard() { 
+        
+    }
+
+    getBoard() { 
+        return this.gameBoard;
+    }
+}
 
 let boardLogs = {
-    log_1: defultBoard,
+    
 }
 
 function logBoard() {
