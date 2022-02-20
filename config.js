@@ -1,7 +1,10 @@
 const defultBoardSetup = {
     /* https://en.wikipedia.org/wiki/Shogi */
-    gote_Lance_1: "", 
-    gote_Silver
+    // position or in hand
+    "goteRook": "", 
+    "goteBishop": "", 
+    "goteGoldGeneralOne": "", 
+
 }
 
 const picesImages = { 

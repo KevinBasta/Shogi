@@ -1,3 +1,8 @@
+
+let player1 = new player(gote, false);
+
+
+
 const defultBoard = [];
 let logNumber = 1;
 let lastBoardState;
