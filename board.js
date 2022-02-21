@@ -1,18 +1,38 @@
 import {player} from "/player.js";
+import {defultBoardSetup, picesImages} from "/config.js"; 
+import {addEvent} from "/main.js";
 
 export class board { 
-    constructor(player1, player2, localStorage) { 
+    constructor(player1, player2) { 
         this.gameBoard = {};
         this.logTurnNumber = 1;
         this.lastBoardStates = [];
-        this.localStorage = localStorage;
         player1.initpieces();
         player2.initpieces();
 
         this.gameBoard = player1.getPieces(this.gameBoard);
         this.gameBoard = player2.getPieces(this.gameBoard);
-        localStorage.setItem('board', JSON.stringify(this.gameBoard));
+        console.log(this.gameBoard);
     }
+
+    // put render in board.js or player.js, no need for it to be here. Should be able to access all attributes from there anyways.
+    render() { 
+        for (let i in this.gameBoard) { 
+            let position = document.getElementById(this.gameBoard[i].position);
+            let elem = document.createElement("img");
+            
+            elem.setAttribute("src", picesImages[this.gameBoard[i].pieceType]);
+            elem.setAttribute("class", "piece");
+            if (this.gameBoard[i].isfacingup == false) {
+                elem.setAttribute("class", "piece piece-rotate");
+            }
+            elem.setAttribute("pieceName", this.gameBoard[i].pieceObjectName);
+
+            position.appendChild(elem);
+            addEvent(elem);
+        }
+    }   
+
 
     getBoard() { 
         return this.gameBoard;

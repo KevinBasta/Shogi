@@ -23,30 +23,8 @@ export class piece {
        console.log(`${this.pieceObjectName} is of type ${this.pieceType} and belongs to ${this.gote_sente}. Currently it's at position ${this.position}.`);
     }
 
-    render() { 
-        let position = document.getElementById(this.position);
-        let elem = document.createElement("img");
-        elem.setAttribute("src", picesImages[this.pieceType]);
-        elem.setAttribute("class", "piece");
-        if (this.isfacingup == false) {
-            elem.setAttribute("class", "piece piece-rotate");
-        }
-        elem.setAttribute("pieceName", this.pieceObjectName);
-        position.appendChild(elem);
-        this.addEventListerTest(elem);
-    }
-    
-    addEventListerTest(elem) { 
+    getPossibleMoves() { 
         
-        //gameBoard[elem._variable];
-
-        elem.onclick = function(e) {
-            let gameBoard = localStorage.getItem("board");
-            let gamePieceObjects = JSON.parse(gameBoard);
-            let pieceObject = gamePieceObjects[e.target.getAttribute("pieceName")];
-            console.log(pieceObject);
-            pieceObject.toString(); // local storage can't store prototypes :(
-        };
     }
 
     movepiece(piece, newPosition) { 
@@ -69,7 +47,7 @@ export class king extends piece {
 // generals
 export class goldGeneral extends piece { 
     /* maybe should interact with an array representation of the board */
-    getPossibleMovments() { 
+    getPossibleMoves() { 
         if (isPromoted) { 
 
         } else if (inCheck) { 
@@ -109,5 +87,10 @@ export class lance extends piece {
 
 // pawn 
 export class pawn extends piece { 
-
+    // problem <-- the movemnet would be differnet for the different players? 
+    getPossibleMoves() { 
+        let movesArray = [];
+        movesArray.push(this.position.substring(0,1) + (parseInt(this.position.substring(1, 2))-1).toString());
+        return movesArray;
+    }
 }

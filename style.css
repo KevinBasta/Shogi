@@ -133,3 +133,7 @@ player-piece-stand div
 .piece-rotate { 
     transform: rotate(180deg);
 }
+
+.piece-possible-move-position { 
+    background-color: #444;
+}
