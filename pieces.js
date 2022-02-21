@@ -1,11 +1,13 @@
 import {defultBoardSetup, picesImages} from "/config.js";
-
+import {board} from "/board.js";
+//import {game} from "/main.js"; 
 // super class
 export class piece { 
-    constructor(gote_sente, pieceType, position) { 
+    constructor(gote_sente, pieceType, position, pieceObjectName) { 
         this.gote_sente = gote_sente; 
         this.pieceType = pieceType;
         this.position = position;
+        this.pieceObjectName = pieceObjectName;
         this.isPromoted = false; 
         this.inCheck = false;
         
@@ -16,6 +18,10 @@ export class piece {
         }
         
     }
+    
+    toString() { 
+       console.log(`${this.pieceObjectName} is of type ${this.pieceType} and belongs to ${this.gote_sente}. Currently it's at position ${this.position}.`);
+    }
 
     render() { 
         let position = document.getElementById(this.position);
@@ -25,7 +31,22 @@ export class piece {
         if (this.isfacingup == false) {
             elem.setAttribute("class", "piece piece-rotate");
         }
+        elem.setAttribute("pieceName", this.pieceObjectName);
         position.appendChild(elem);
+        this.addEventListerTest(elem);
+    }
+    
+    addEventListerTest(elem) { 
+        
+        //gameBoard[elem._variable];
+
+        elem.onclick = function(e) {
+            let gameBoard = localStorage.getItem("board");
+            let gamePieceObjects = JSON.parse(gameBoard);
+            let pieceObject = gamePieceObjects[e.target.getAttribute("pieceName")];
+            console.log(pieceObject);
+            pieceObject.toString(); // local storage can't store prototypes :(
+        };
     }
 
     movepiece(piece, newPosition) { 

@@ -1,12 +1,17 @@
 import {player} from "/player.js";
 
 export class board { 
-    constructor(player1, player2) { 
-        this.gameBoard = new Array(81); 
+    constructor(player1, player2, localStorage) { 
+        this.gameBoard = {};
         this.logTurnNumber = 1;
         this.lastBoardStates = [];
+        this.localStorage = localStorage;
         player1.initpieces();
         player2.initpieces();
+
+        this.gameBoard = player1.getPieces(this.gameBoard);
+        this.gameBoard = player2.getPieces(this.gameBoard);
+        localStorage.setItem('board', JSON.stringify(this.gameBoard));
     }
 
     getBoard() { 
@@ -14,6 +19,9 @@ export class board {
     }
 }
 
+
+// add something to do with an array that gets the objects from both players 
+// put in it so that the event listeners can edit the objects through the  array? 
 let boardLogs = {
     
 }

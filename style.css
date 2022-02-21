@@ -1,7 +1,7 @@
 /* overall game area styling */
 shogi { 
     display: grid;    
-    grid-template-columns: 5fr 7fr 5fr;
+    grid-template-columns: 2fr 7fr 2fr;
 }
 
 span { 
@@ -51,6 +51,8 @@ shogi-board div {
     border: 2px solid;
     border-color: black; 
     background-color: rgb(47, 33, 6);
+    display: flex;
+    justify-content: center;
 }
 
 top-right-corner { 
@@ -122,8 +124,10 @@ player-piece-stand div
 }
 
 .piece { 
-    width: 3vw;
+    width: 5vw;
+    aspect-ratio: 1;
     z-index: 1;
+
 }
 
 .piece-rotate { 

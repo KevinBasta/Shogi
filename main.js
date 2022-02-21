@@ -40,15 +40,17 @@ document.addEventListener("DOMContentLoaded", function () {
     */
 
 
+    let myStorage = window.localStorage;
 
 
     // game initialization
     let player1 = new player("sente", false);
     let player2 = new player("gote", false);
 
-    let game = new board(player1, player2);
-
+    let game = new board(player1, player2, myStorage);
+    
     console.log(player1.pieces);
+    console.log(game.gameBoard)
 
 });
 
