@@ -42,7 +42,7 @@ shogi-board {
     
     display: grid;
     grid-template-columns: repeat(9, minmax(10px, 1fr));
-    gap: 0.1rem;
+    gap: 0.05rem;
 }
 
 shogi-board div { 

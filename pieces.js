@@ -1,5 +1,7 @@
 import {defultBoardSetup, picesImages} from "/config.js";
 import {board} from "/board.js";
+import { getMovementBorder } from "/main.js";
+
 //import {game} from "/main.js"; 
 // super class
 export class piece { 
@@ -40,7 +42,18 @@ export class piece {
 /* each class below defines it's own legal movments and promotions */
 // king
 export class king extends piece { 
-    
+    getPossibleMoves() { 
+        let movesArray = [];
+        let xPosition = parseInt(this.position.substring(0, 1));
+        let yPosition = parseInt(this.position.substring(1, 2));
+
+/*         movesArray.push((xPosition+1).toString() + (yPosition+1).toString());
+        movesArray.push((xPosition-1).toString() + (yPosition-1).toString());
+        movesArray.push((xPosition+1).toString() + (yPosition-1).toString());
+        movesArray.push((xPosition-1).toString() + (yPosition+1).toString()); */
+
+        return movesArray;
+    }
 }
 
 
@@ -72,7 +85,11 @@ export class rook extends piece {
         let xPosition = parseInt(this.position.substring(0, 1));
         let yPosition = parseInt(this.position.substring(1, 2));
         // left
-        for(let i = xPosition; i <= 9; i++) { 
+        for(let i = xPosition+1; i <= 9; i++) { 
+            console.log(i.toString() + yPosition.toString());
+            if (getMovementBorder(i.toString() + yPosition.toString())) {
+                break;
+            }
             movesArray.push(i.toString() + yPosition.toString());
         }
         // right 
@@ -86,6 +103,10 @@ export class rook extends piece {
         }
         // down
         for (let i = yPosition; i >= 1; i--) { 
+            
+/*             if (getMovementBorder(xPosition.toString() + i.toString())) {
+                break;
+            } */
             movesArray.push(xPosition.toString() + i.toString());
         }
         return movesArray;
@@ -138,7 +159,14 @@ export class bishop extends piece {
 
 // knight and lance
 export class knight extends piece { 
-    
+    getPossibleMoves() { 
+        let movesArray = [];
+        let xPosition = parseInt(this.position.substring(0, 1));
+        let yPosition = parseInt(this.position.substring(1, 2));
+        movesArray.push((xPosition+1).toString() + (yPosition-2).toString());
+        movesArray.push((xPosition-1).toString() + (yPosition-2).toString());
+        return movesArray;
+    }
 }
 
 export class lance extends piece { 
@@ -159,6 +187,10 @@ export class pawn extends piece {
     // problem <-- the movemnet would be differnet for the different players? 
     getPossibleMoves() { 
         let movesArray = [];
+        //if (playerTwoView) { 
+            //movesArray.push(this.position.substring(0,1) + (parseInt(this.position.substring(1, 2))+1).toString());
+        //} else { 
+            //}
         movesArray.push(this.position.substring(0,1) + (parseInt(this.position.substring(1, 2))-1).toString());
         return movesArray;
     }

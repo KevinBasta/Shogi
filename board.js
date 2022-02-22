@@ -3,10 +3,12 @@ import {defultBoardSetup, picesImages} from "/config.js";
 import {addEvent} from "/main.js";
 
 export class board { 
-    constructor(player1, player2) { 
+    constructor(player1, player2, playerTwoView, lastClicked) { 
         this.gameBoard = {};
         this.logTurnNumber = 1;
         this.lastBoardStates = [];
+        this.playerTwoView = playerTwoView;
+        this.lastClicked = lastClicked;
         player1.initpieces();
         player2.initpieces();
 
@@ -23,7 +25,7 @@ export class board {
             
             elem.setAttribute("src", picesImages[this.gameBoard[i].pieceType]);
             elem.setAttribute("class", "piece");
-            if (this.gameBoard[i].isfacingup == false) {
+            if ((this.gameBoard[i].isfacingup == false && !this.playerTwoView) || (this.playerTwoView && this.gameBoard[i].isfacingup == true)) {
                 elem.setAttribute("class", "piece piece-rotate");
             }
             elem.setAttribute("pieceName", this.gameBoard[i].pieceObjectName);
