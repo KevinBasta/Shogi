@@ -55,11 +55,17 @@ export function addEvent(elem) {
     elem.addEventListener("click", function (e) {
         
         let pieceObject = game.gameBoard[e.target.getAttribute("pieceName")];
-        for (let i of game.gameBoard[e.target.getAttribute("pieceName")].getPossibleMoves()) { 
-            
+        let possibleMoveCellsArray = game.gameBoard[e.target.getAttribute("pieceName")].getPossibleMoves();
+        for (let i of possibleMoveCellsArray) { 
             let position = document.getElementById(i);
-            position.setAttribute("class", "piece-possible-move-position")
-            position.setAttribute("click", "ture");
+            if (position.getAttribute("click") == "true") { 
+                position.setAttribute("class", "");
+                position.setAttribute("click", "false");
+            } else { 
+                position.setAttribute("class", "piece-possible-move-position");
+                position.setAttribute("click", "true");
+            }
+            
         }
         pieceObject.toString(); 
     });

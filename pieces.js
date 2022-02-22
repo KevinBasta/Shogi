@@ -67,11 +67,72 @@ export class silverGeneral extends piece {
 
 // rook and bishop 
 export class rook extends piece { 
+    getPossibleMoves() { 
+        let movesArray = [];
+        let xPosition = parseInt(this.position.substring(0, 1));
+        let yPosition = parseInt(this.position.substring(1, 2));
+        // left
+        for(let i = xPosition; i <= 9; i++) { 
+            movesArray.push(i.toString() + yPosition.toString());
+        }
+        // right 
+        for (let i = xPosition; i >= 1; i--) { 
+            movesArray.push(i.toString() + yPosition.toString());
+        }
 
+        // up
+        for (let i = yPosition; i <= 9; i++) { 
+            movesArray.push(xPosition.toString() + i.toString());
+        }
+        // down
+        for (let i = yPosition; i >= 1; i--) { 
+            movesArray.push(xPosition.toString() + i.toString());
+        }
+        return movesArray;
+    }
 }
 
 export class bishop extends piece { 
+    getPossibleMoves() { 
+        let movesArray = [];
+        let xPosition = parseInt(this.position.substring(0, 1));
+        let yPosition = parseInt(this.position.substring(1, 2));
+        // right up
+        let xPositionMove = xPosition; 
+        let yPositionMove = yPosition; 
+        while (xPositionMove > 1 && yPositionMove > 1) {
+            xPositionMove -= 1; 
+            yPositionMove -= 1;
+            movesArray.push(xPositionMove.toString() + yPositionMove.toString());
+        }
+        // right down 
+        xPositionMove = xPosition; 
+        yPositionMove = yPosition; 
+        while (xPositionMove > 1 && yPositionMove < 9) {
+            xPositionMove -= 1; 
+            yPositionMove += 1;
+            movesArray.push(xPositionMove.toString() + yPositionMove.toString());
+        }
 
+        // left up 
+        xPositionMove = xPosition; 
+        yPositionMove = yPosition; 
+        while (xPositionMove < 9 && yPositionMove > 1) {
+            xPositionMove += 1; 
+            yPositionMove -= 1;
+            movesArray.push(xPositionMove.toString() + yPositionMove.toString());
+        }
+        // left down
+        xPositionMove = xPosition; 
+        yPositionMove = yPosition; 
+        while (xPositionMove < 9 && yPositionMove < 9) {
+            xPositionMove += 1; 
+            yPositionMove += 1;
+            movesArray.push(xPositionMove.toString() + yPositionMove.toString());
+        }
+
+        return movesArray;
+    }
 }
 
 
@@ -81,7 +142,15 @@ export class knight extends piece {
 }
 
 export class lance extends piece { 
-    
+    getPossibleMoves() { 
+        let movesArray = [];
+        let xPosition = parseInt(this.position.substring(0, 1));
+        let yPosition = parseInt(this.position.substring(1, 2));
+        for (let i = yPosition; i >= 1; i--) {
+            movesArray.push(xPosition.toString() + i.toString());
+        }
+        return movesArray;
+    }
 }
 
 
