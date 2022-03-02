@@ -2,7 +2,7 @@ import { player } from "/player.js";
 import { board } from "/board.js";
 import { piece } from "/pieces.js";
 
-let playerTwoView = false; //for flipping the view <-- would need a variable based on socket api
+export let playerTwoView = false; //for flipping the view <-- would need a variable based on socket api
 
 // labeling each shogi cell with ids and text
 const rows = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
@@ -63,8 +63,19 @@ console.log(game.gameBoard);
 export function addEvent(elem) {
     elem.addEventListener("click", function (e) {
         let pieceObject = game.gameBoard[e.target.getAttribute("pieceName")];
-        let possibleMoveCellsArray = game.gameBoard[e.target.getAttribute("pieceName")].getPossibleMoves();
+        let possibleMoveCellsArray = pieceObject.getPossibleMoves();
         
+        // HERE
+        // use this to determine if you can capture that piece OR if it's your own piece that you
+        // can't bypass
+/*         if (pieceObject.player1orplayer2 == "player1") { 
+            let thisPlayerPieces = player1.getPieces(); 
+            let otherPlayerPieces = player2.getPieces();
+        } else if (pieceObject.player1orplayer2 == "player2") { 
+            let thisPlayerPieces = player2.getPieces();
+            let otherPlayerPieces = player1.getPieces(); 
+        } */
+
         if (game.lastClicked[0] != pieceObject) { 
             for (let i of game.lastClicked[1]) { 
                 let position = document.getElementById(i);
@@ -91,7 +102,7 @@ export function addEvent(elem) {
     });
 }
 
-export function getMovementBorder(cellCheck) {
+export function getMovementBorder(cellCheck, gote_sente) {
     // [up, down, left, right]
     // format pieceObj, piceposition, squaresbetween
 /*     let closestPieces = [[], [], [], []];
@@ -107,7 +118,9 @@ export function getMovementBorder(cellCheck) {
     // should include other player's pieces too but not own's pieces
     // have to figure out how multiplayer works first
     for (let piece in game.gameBoard) { 
-        if (game.gameBoard[piece].position == cellCheck) { 
+        if (game.gameBoard[piece].position == cellCheck && piece.gote_sente == gote_sente) { 
+            // but then how do you define only being able to hit this one if it's the opposite player's 
+            // piece but not the one after it? 
             return true;
         }
     }

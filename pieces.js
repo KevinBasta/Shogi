@@ -1,6 +1,6 @@
 import {defultBoardSetup, picesImages} from "/config.js";
 import {board} from "/board.js";
-import { getMovementBorder } from "/main.js";
+import { getMovementBorder, playerTwoView } from "/main.js";
 
 //import {game} from "/main.js"; 
 // super class
@@ -42,6 +42,10 @@ export class piece {
 /* each class below defines it's own legal movments and promotions */
 // king
 export class king extends piece { 
+/*  don't need a constructor since the piece one would be used instead
+    constructor(gote_sente, pieceType, position, pieceObjectName) { 
+        super(gote_sente, pieceType, position, pieceObjectName);
+    }  */
     getPossibleMoves() { 
         let movesArray = [];
         let xPosition = parseInt(this.position.substring(0, 1));
