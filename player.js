@@ -35,6 +35,7 @@ export class player {
     }
 
     getPieces(fullBoard) { 
+        // why not just return this.pieces? 
         for (let playerPiece in this.pieces) { 
             fullBoard[playerPiece] = this.pieces[playerPiece]; 
         }
@@ -47,13 +48,13 @@ export class player {
     }
 
     givePieceOwnership(pieceObj, otherPlayer) {
-        if (pieceObj.gote_sente == "gote") { 
+/*         if (pieceObj.gote_sente == "gote") { 
             pieceObj.gote_sente = "sente";
         } else if (pieceObj.gote_sente == "sente") { 
             pieceObj.gote_sente = "gote";
         }
         otherPlayer[pieceObj] = this.pieces[pieceObj];
-        delete this.pieces[pieceObj];
+        delete this.pieces[pieceObj]; */
     }
 
     addPiece(pieceObj) { 

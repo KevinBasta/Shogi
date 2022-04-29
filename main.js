@@ -60,6 +60,8 @@ game.render();
 console.log(player1.pieces);
 console.log(game.gameBoard);
 
+
+// adding event listener to each piece
 export function addEvent(elem) {
     elem.addEventListener("click", function (e) {
         let pieceObject = game.gameBoard[e.target.getAttribute("pieceName")];
@@ -76,6 +78,8 @@ export function addEvent(elem) {
             let otherPlayerPieces = player1.getPieces(); 
         } */
 
+        // if the last piece clicked is not the same as the current piece clicked
+        // then reset the cell possible move identifiers
         if (game.lastClicked[0] != pieceObject) { 
             for (let i of game.lastClicked[1]) { 
                 let position = document.getElementById(i);
