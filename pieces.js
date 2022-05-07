@@ -36,6 +36,10 @@ export class piece {
     switchOwner(newOwner) { 
         // pop from old player obj array and add to other player's array
     }
+
+    filterMoves(movesList, board) {
+        
+    }
 }
 
 
@@ -51,10 +55,8 @@ export class king extends piece {
         let xPosition = parseInt(this.position.substring(0, 1));
         let yPosition = parseInt(this.position.substring(1, 2));
 
-/*         movesArray.push((xPosition+1).toString() + (yPosition+1).toString());
-        movesArray.push((xPosition-1).toString() + (yPosition-1).toString());
-        movesArray.push((xPosition+1).toString() + (yPosition-1).toString());
-        movesArray.push((xPosition-1).toString() + (yPosition+1).toString()); */
+        movesArray.push((xPosition+1).toString() + (yPosition+1).toString());
+        
 
         return movesArray;
     }

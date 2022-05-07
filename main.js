@@ -7,6 +7,7 @@ export let playerTwoView = false; //for flipping the view <-- would need a varia
 // labeling each shogi cell with ids and text
 const rows = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
 const rowsKanji = ["一", "二", "三", "四", "五", "六", "七", "八", "九"];
+
 let boardArray = [[],[],[],[],[],[],[],[],[]];
 let columnCounter;
 let rowCounter;
