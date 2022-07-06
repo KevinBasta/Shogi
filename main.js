@@ -2,7 +2,7 @@ import { player } from "/player.js";
 import { board } from "/board.js";
 import { piece } from "/pieces.js";
 
-export let playerTwoView = true; //for flipping the view <-- would need a variable based on socket api
+export let playerTwoView = false; //for flipping the view <-- would need a variable based on socket api
 
 // labeling each shogi cell with ids and text
 const rows = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];

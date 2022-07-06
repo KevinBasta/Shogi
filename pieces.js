@@ -160,7 +160,37 @@ export class silverGeneral extends piece {
         let yPosition = parseInt(this.position.substring(1, 2));
 
         let topYPos;
+        let botYPos;
+        let leftXPos;
+        let rightXPos;
+
+        if (this.gote_sente === "gote") { 
+            topYPos = yPosition+1;
+            botYPos = yPosition-1;
+            leftXPos =  xPosition-1;
+            rightXPos = xPosition+1;
+        } else { 
+            topYPos = yPosition-1;
+            botYPos = yPosition+1;
+            leftXPos =  xPosition+1;
+            rightXPos = xPosition-1;
+        }
+
+        // Top Three
+        for (let nextX = xPosition-1; nextX <= xPosition+1; nextX++) {
+            let result = getMovementBorder(nextX, topYPos, this.gote_sente);
+            let processedResult = this.movesHelper(result, nextX, topYPos, movesArray);
+            movesArray = processedResult[0]; 
+        }
+
+        //Bottom Corners
+        let resultLeftCorner = getMovementBorder(leftXPos, botYPos, this.gote_sente);
+        let processedResultLeftCorner = this.movesHelper(resultLeftCorner, leftXPos, botYPos, movesArray);
+        movesArray = processedResultLeftCorner[0]; 
         
+        let resultRightCorner = getMovementBorder(rightXPos, botYPos, this.gote_sente);
+        let processedResultRightCorner = this.movesHelper(resultRightCorner, rightXPos, botYPos, movesArray);
+        movesArray = processedResultRightCorner[0]; 
 
         return movesArray;
     }

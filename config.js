@@ -1,5 +1,6 @@
 export const defultBoardSetup = {
     /* https://en.wikipedia.org/wiki/Shogi */
+    // I love this file
     // position or in hand
     //sente
     "senteLanceOne":         ["19", "Lance"], 
