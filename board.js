@@ -1,6 +1,6 @@
 import {player} from "/player.js";
 import {defultBoardSetup, picesImages} from "/config.js"; 
-import {addEvent} from "/main.js";
+import {addEvent, removeEmptyCellEvent} from "/main.js";
 
 export class board { 
     constructor(player1, player2, playerTwoView, lastClicked) { 
@@ -38,12 +38,35 @@ export class board {
     movePiece(oldPosition, newPosition) { 
         //needs to move in the ui and in the data
         console.log('in!')
+        
+        let oldCell = document.getElementById(this.gameBoard[oldPosition].position);
+        let oldPiece = document.querySelector(`[pieceName=${this.gameBoard[oldPosition].pieceObjectName}]`);
+        oldCell.removeChild(oldPiece);
+
         this.gameBoard[newPosition] = this.gameBoard[oldPosition];
-        this.gameBoard[oldPosition].position = newPosition;
+        this.gameBoard[newPosition].position = newPosition;
+
         delete this.gameBoard[oldPosition];
-        console.log(this.gameBoard)
 
+        let position = document.getElementById(newPosition);
+        let elem = document.createElement("img");
+        
+        elem.setAttribute("src", picesImages[this.gameBoard[newPosition].pieceType]);
+        elem.setAttribute("class", "piece");
+        if ((this.gameBoard[newPosition].isfacingup == false && !this.playerTwoView) || (this.playerTwoView && this.gameBoard[newPosition].isfacingup == true)) {
+            elem.setAttribute("class", "piece piece-rotate");
+        }
+        elem.setAttribute("pieceName", this.gameBoard[newPosition].pieceObjectName);
 
+        position.appendChild(elem);
+        addEvent(elem);
+
+        for (let i of this.lastClicked[1]) { 
+            let position = document.getElementById(i);
+            removeEmptyCellEvent(position);
+            position.setAttribute("class", "");
+            position.setAttribute("click", "false");
+        }
         //gameBoard[oldPosition]
     }
 

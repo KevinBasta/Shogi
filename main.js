@@ -65,6 +65,7 @@ game.render();
 // adding event listener to each piece
 export function addEvent(elem) {
     elem.addEventListener("click", function (e) {
+        console.log(game)
         //let pieceObject = game.gameBoard[e.target.getAttribute("pieceName")];
         let currentPieceCell = e.target.parentElement.getAttribute('id');
         let pieceObject = game.gameBoard[currentPieceCell];
@@ -122,7 +123,7 @@ function addEmptyCellEvent(cell) {
     cell.addEventListener("click", emptyCellEvent);
 }
 
-function removeEmptyCellEvent(cell) {
+export function removeEmptyCellEvent(cell) {
     cell.removeEventListener("click", emptyCellEvent);
 }
 
