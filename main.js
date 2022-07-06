@@ -66,7 +66,8 @@ game.render();
 export function addEvent(elem) {
     elem.addEventListener("click", function (e) {
         //let pieceObject = game.gameBoard[e.target.getAttribute("pieceName")];
-        let pieceObject = game.gameBoard[e.target.parentElement.getAttribute('id')];
+        let currentPieceCell = e.target.parentElement.getAttribute('id');
+        let pieceObject = game.gameBoard[currentPieceCell];
         //console.log(e.target.parentElement.getAttribute('id'));
         let possibleMoveCellsArray = pieceObject.getPossibleMoves();
         
@@ -86,6 +87,7 @@ export function addEvent(elem) {
         if (game.lastClicked[0] != pieceObject) { 
             for (let i of game.lastClicked[1]) { 
                 let position = document.getElementById(i);
+                removeEmptyCellEvent(position);
                 position.setAttribute("class", "");
                 position.setAttribute("click", "false");
             }
@@ -93,22 +95,42 @@ export function addEvent(elem) {
         
         game.lastClicked[0] = pieceObject;
         game.lastClicked[1] = possibleMoveCellsArray; 
+        game.lastClicked[2] = currentPieceCell;
         
         for (let i of possibleMoveCellsArray) { 
             let position = document.getElementById(i);
             if (position.getAttribute("click") == "true") { 
+                removeEmptyCellEvent(position);
                 position.setAttribute("class", "");
                 position.setAttribute("click", "false");
             } else { 
+                addEmptyCellEvent(position);
                 position.setAttribute("class", "piece-possible-move-position");
                 position.setAttribute("click", "true");
             }
             
         }
+
+        console.log(lastClicked);
         let messageString = pieceObject.toString() + " from server!"; 
         //sock.emit('turn', messageString);
     });
 }
+
+
+function addEmptyCellEvent(cell) {
+    cell.addEventListener("click", emptyCellEvent);
+}
+
+function removeEmptyCellEvent(cell) {
+    cell.removeEventListener("click", emptyCellEvent);
+}
+
+function emptyCellEvent(e) {
+    let currentEmptyCell = e.target.getAttribute('id');
+    game.movePiece(game.lastClicked[2], currentEmptyCell);
+}
+
 
 function moveStop(cellToCheck, gote_sente) {
     if (cellToCheck in tempboard) { 

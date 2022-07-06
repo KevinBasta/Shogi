@@ -33,7 +33,19 @@ export class board {
             position.appendChild(elem);
             addEvent(elem);
         }
-    }   
+    }
+
+    movePiece(oldPosition, newPosition) { 
+        //needs to move in the ui and in the data
+        console.log('in!')
+        this.gameBoard[newPosition] = this.gameBoard[oldPosition];
+        this.gameBoard[oldPosition].position = newPosition;
+        delete this.gameBoard[oldPosition];
+        console.log(this.gameBoard)
+
+
+        //gameBoard[oldPosition]
+    }
 
 
     getBoard() { 

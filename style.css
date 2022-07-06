@@ -122,6 +122,8 @@ player-piece-stand div
     color: #444;
     opacity: 0.9;
     z-index: 0;
+    /* important */
+    pointer-events: none;
 }
 
 .piece { 
