@@ -58,14 +58,16 @@ let lastClicked = ["", []];
 
 let game = new board(player1, player2, playerTwoView, lastClicked);
 game.render();
-console.log(player1.pieces);
-console.log(game.gameBoard);
+//console.log(player1.pieces);
+//console.log(game.gameBoard);
 
 
 // adding event listener to each piece
 export function addEvent(elem) {
     elem.addEventListener("click", function (e) {
-        let pieceObject = game.gameBoard[e.target.getAttribute("pieceName")];
+        //let pieceObject = game.gameBoard[e.target.getAttribute("pieceName")];
+        let pieceObject = game.gameBoard[e.target.parentElement.getAttribute('id')];
+        //console.log(e.target.parentElement.getAttribute('id'));
         let possibleMoveCellsArray = pieceObject.getPossibleMoves();
         
         // HERE
@@ -104,11 +106,30 @@ export function addEvent(elem) {
             
         }
         let messageString = pieceObject.toString() + " from server!"; 
-        sock.emit('message', messageString);
+        //sock.emit('turn', messageString);
     });
 }
 
-export function getMovementBorder(cellCheck, gote_sente) {
+function moveStop(cellToCheck, gote_sente) {
+    if (cellToCheck in tempboard) { 
+        if (cellToCheck in game.gameBoard) { 
+            let nextCellPieceObj = game.gameBoard[cellToCheck];
+            if (nextCellPieceObj.gote_sente === gote_sente) {
+                return "samePlayer";
+            }
+            return "oppositePlayer";
+        }
+        return "empty";
+    }
+
+    // Three return types samePlayer, oppositePlayer, edge, empty
+    return "edge";
+}
+
+
+export function getMovementBorder(xPosString, yPosString, gote_sente) {
+
+
     // [up, down, left, right]
     // format pieceObj, piceposition, squaresbetween
 /*     let closestPieces = [[], [], [], []];
@@ -123,27 +144,45 @@ export function getMovementBorder(cellCheck, gote_sente) {
     } */
     // should include other player's pieces too but not own's pieces
     // have to figure out how multiplayer works first
-    for (let piece in game.gameBoard) { 
+/*     for (let piece in game.gameBoard) { 
         if (game.gameBoard[piece].position == cellCheck && piece.gote_sente == gote_sente) { 
-            // but then how do you define only being able to hit this one if it's the opposite player's 
-            // piece but not the one after it? 
+            but then how do you define only being able to hit this one if it's the opposite player's 
+            piece but not the one after it? 
             return true;
         }
+    } */
+
+    if (xPosString > 9 || xPosString < 1 || yPosString > 9 || yPosString < 1) {
+        return "edge";
     }
+
+    let cellToCheck = xPosString + yPosString;
+        if (cellToCheck in game.gameBoard) { 
+            let nextCellPieceObj = game.gameBoard[cellToCheck];
+            if (nextCellPieceObj.gote_sente === gote_sente) {
+                return "samePlayer";
+            }
+            return "oppositePlayer";
+        }
+
+    // Three return types samePlayer, oppositePlayer, edge, empty
+    return "empty";
+
 }
 
 
-let tempboard = [[91, 81, 71, 61, 51, 41, 31, 21, 11],
-                [92, 82, 72, 62, 52, 42, 32, 22, 12],
-                [93, 83, 73, 63, 53, 43, 33, 23, 13],
-                [94, 84, 74, 64, 54, 44, 34, 24, 14],
-                [95, 85, 75, 65, 55, 45, 35, 25, 15],
-                [96, 86, 76, 66, 56, 46, 36, 26, 16], 
-                [97, 87, 77, 67, 57, 47, 37, 27, 17],
-                [98, 88, 78, 68, 58, 48, 38, 28, 18],
-                [99, 89, 79, 69, 59, 49, 39, 29, 19]];
+let tempboard = [["91", "81", "71", "61", "51", "41", "31", "21", "11"],
+                ["92", "82", "72", "62", "52", "42", "32", "22", "12"],
+                ["93", "83", "73", "63", "53", "43", "33", "23", "13"],
+                ["94", "84", "74", "64", "54", "44", "34", "24", "14"],
+                ["95", "85", "75", "65", "55", "45", "35", "25", "15"],
+                ["96", "86", "76", "66", "56", "46", "36", "26", "16"], 
+                ["97", "87", "77", "67", "57", "47", "37", "27", "17"],
+                ["98", "88", "78", "68", "58", "48", "38", "28", "18"],
+                ["99", "89", "79", "69", "59", "49", "39", "29", "19"]];
                 
-const sock = io();
-sock.on('message', (text) => {
+//const sock = io();
+/* sock.on('message', (text) => {
     console.log(text);
-})
+}) */
+//sock.on('turn', )

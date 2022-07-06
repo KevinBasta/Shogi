@@ -117,7 +117,8 @@ player-piece-stand div
     position:absolute;
     bottom: 0px;
     right: 0px;
-    font-size: 1vw;
+    /* font-size: 5vw; */
+    font-size: 2vw;
     color: #444;
     opacity: 0.9;
     z-index: 0;
@@ -126,6 +127,7 @@ player-piece-stand div
 .piece { 
     width: 5vw;
     aspect-ratio: 1;
+    /* opacity: 0.1; */
     z-index: 1;
 
 }
