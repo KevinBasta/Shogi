@@ -1,0 +1,25 @@
+{
+  "name": "shogiai",
+  "version": "1.0.0",
+  "description": "Shogi(愛) project<br /> A javascript shogi game engine",
+  "main": "main.js",
+  "scripts": {
+    "start": "nodemon ./server/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KevinBasta/Shogi.git"
+  },
+  "author": "Kevin Basta",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KevinBasta/Shogi/issues"
+  },
+  "homepage": "https://github.com/KevinBasta/Shogi#readme",
+  "dependencies": {
+    "express": "^4.18.1",
+    "nodemon": "^2.0.19",
+    "socket.io": "^4.5.1"
+  }
+}

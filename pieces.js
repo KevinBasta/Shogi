@@ -22,7 +22,7 @@ export class piece {
     }
     
     toString() { 
-       console.log(`${this.pieceObjectName} is of type ${this.pieceType} and belongs to ${this.gote_sente}. Currently it's at position ${this.position}.`);
+       return `${this.pieceObjectName} is of type ${this.pieceType} and belongs to ${this.gote_sente}. Currently it's at position ${this.position}.`;
     }
 
     getPossibleMoves() { 

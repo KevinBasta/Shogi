@@ -103,7 +103,8 @@ export function addEvent(elem) {
             }
             
         }
-        pieceObject.toString(); 
+        let messageString = pieceObject.toString() + " from server!"; 
+        sock.emit('message', messageString);
     });
 }
 
@@ -142,3 +143,7 @@ let tempboard = [[91, 81, 71, 61, 51, 41, 31, 21, 11],
                 [98, 88, 78, 68, 58, 48, 38, 28, 18],
                 [99, 89, 79, 69, 59, 49, 39, 29, 19]];
                 
+const sock = io();
+sock.on('message', (text) => {
+    console.log(text);
+})

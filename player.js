@@ -14,25 +14,27 @@ export class player {
             if (pieceName.substring(0, 4) == this.gote_sente || pieceName.substring(0, 5) == this.gote_sente) { 
                 let pieceIndexInObj = defultBoardSetup[pieceName];
                 if (pieceIndexInObj[1] == "King" || pieceIndexInObj[1] == "ChallengingKing") { 
-                    this.pieces[pieceIndexInObj[0]] = new king(this.gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
+                    this.pieces[pieceName] = new king(this.gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
                 } else if (pieceIndexInObj[1] == "GoldGeneral") { 
-                    this.pieces[pieceIndexInObj[0]] = new goldGeneral(this.gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
+                    this.pieces[pieceName] = new goldGeneral(this.gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
                 } else if (pieceIndexInObj[1] == "SilverGeneral") { 
-                    this.pieces[pieceIndexInObj[0]] = new silverGeneral(this.gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
+                    this.pieces[pieceName] = new silverGeneral(this.gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
                 } else if (pieceIndexInObj[1] == "Rook") { 
-                    this.pieces[pieceIndexInObj[0]] = new rook(this.gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
+                    this.pieces[pieceName] = new rook(this.gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
                 } else if (pieceIndexInObj[1] == "Bishop") { 
-                    this.pieces[pieceIndexInObj[0]] = new bishop(this.gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
+                    this.pieces[pieceName] = new bishop(this.gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
                 } else if (pieceIndexInObj[1] == "Knight") { 
-                    this.pieces[pieceIndexInObj[0]] = new knight(this.gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
+                    this.pieces[pieceName] = new knight(this.gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
                 } else if (pieceIndexInObj[1] == "Lance") { 
-                    this.pieces[pieceIndexInObj[0]] = new lance(this.gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
+                    this.pieces[pieceName] = new lance(this.gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
                 } else if (pieceIndexInObj[1] == "Pawn") {
-                    this.pieces[pieceIndexInObj[0]] = new pawn(this.gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
+                    this.pieces[pieceName] = new pawn(this.gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
                 }
             }
         }
     }
+
+    
 
     getPieces(fullBoard) { 
         // why not just return this.pieces? 
