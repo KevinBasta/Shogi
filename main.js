@@ -2,7 +2,7 @@ import { player } from "/player.js";
 import { board } from "/board.js";
 import { piece } from "/pieces.js";
 
-export let playerTwoView = false; //for flipping the view <-- would need a variable based on socket api
+export let playerTwoView = true; //for flipping the view <-- would need a variable based on socket api
 
 // labeling each shogi cell with ids and text
 const rows = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
@@ -127,7 +127,7 @@ function moveStop(cellToCheck, gote_sente) {
 }
 
 
-export function getMovementBorder(xPosString, yPosString, gote_sente) {
+export function getMovementBorder(xPositionInt, yPositionInt, gote_sente) {
 
 
     // [up, down, left, right]
@@ -151,8 +151,10 @@ export function getMovementBorder(xPosString, yPosString, gote_sente) {
             return true;
         }
     } */
+    let xPosString = xPositionInt.toString();
+    let yPosString = yPositionInt.toString();
 
-    if (xPosString > 9 || xPosString < 1 || yPosString > 9 || yPosString < 1) {
+    if (xPositionInt > 9 || xPositionInt < 1 || yPositionInt > 9 || yPositionInt < 1) {
         return "edge";
     }
 

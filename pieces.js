@@ -69,13 +69,14 @@ export class king extends piece {
         let movesArray = [];
         let xPosition = parseInt(this.position.substring(0, 1));
         let yPosition = parseInt(this.position.substring(1, 2));
-        for (let i = xPosition - 1; i < xPosition + 2; i++) {
-            for (let j = yPosition - 1; j < yPosition + 2; j++) {
-                let xPosString = i.toString();
-                let yPosString = j.toString();
+        
+        for (let nextX = xPosition - 1; nextX < xPosition + 2; nextX++) {
+            for (let nextY = yPosition - 1; nextY < yPosition + 2; nextY++) {
+                let xPosString = nextX.toString();
+                let yPosString = nextY.toString();
 
                 if (this.position != xPosString + yPosString){
-                    let result = getMovementBorder(xPosString, yPosString, this.gote_sente);
+                    let result = getMovementBorder(nextX, nextY, this.gote_sente);
                     if (result === "empty" || result === "oppositePlayer") {
                         movesArray.push(xPosString + yPosString);
                     } 
@@ -85,6 +86,8 @@ export class king extends piece {
         }        
         return movesArray;
     }
+
+    // Have an upper level function that gets the moves of all the pieces from the other player so that the king doesn't diliberatly die
 }
 
 
@@ -92,20 +95,75 @@ export class king extends piece {
 export class goldGeneral extends piece { 
     /* maybe should interact with an array representation of the board */
     getPossibleMoves() { 
-        if (isPromoted) { 
+        // different moves for promotion and in check?
+    /*  if (isPromoted) { 
 
         } else if (inCheck) { 
         
         } else { 
 
+        } */
+        let movesArray = [];
+
+        let xPosition = parseInt(this.position.substring(0, 1));
+        let yPosition = parseInt(this.position.substring(1, 2));
+
+        let topYPos;
+        let botYPos;
+        let leftXPos;
+        let rightXPos;
+
+        if (this.gote_sente === "gote") { 
+            topYPos = yPosition+1;
+            botYPos = yPosition-1;
+            leftXPos =  xPosition-1;
+            rightXPos = xPosition+1;
+        } else { 
+            topYPos = yPosition-1;
+            botYPos = yPosition+1;
+            leftXPos =  xPosition+1;
+            rightXPos = xPosition-1;
         }
+
+        // Top Three
+        for (let nextX = xPosition-1; nextX <= xPosition+1; nextX++) {
+            let result = getMovementBorder(nextX, topYPos, this.gote_sente);
+            let processedResult = this.movesHelper(result, nextX, topYPos, movesArray);
+            movesArray = processedResult[0]; 
+        }
+        
+        // Left and Right
+        let resultLeft = getMovementBorder(leftXPos, yPosition, this.gote_sente);
+        let processedResultLeft = this.movesHelper(resultLeft, leftXPos, yPosition, movesArray);
+        movesArray = processedResultLeft[0]; 
+        
+        let resultRight = getMovementBorder(rightXPos, yPosition, this.gote_sente);
+        let processedResultRight = this.movesHelper(resultRight, rightXPos, yPosition, movesArray);
+        movesArray = processedResultRight[0]; 
+
+        // Bottom One
+        let resultBottom = getMovementBorder(xPosition, botYPos, this.gote_sente);
+        let processedResultBottom = this.movesHelper(resultBottom, xPosition, botYPos, movesArray);
+        movesArray = processedResultBottom[0]; 
+
+        return movesArray;
+
     }
 
 
 }
 
 export class silverGeneral extends piece { 
+    getPossibleMoves() { 
+        let movesArray = [];
+        let xPosition = parseInt(this.position.substring(0, 1));
+        let yPosition = parseInt(this.position.substring(1, 2));
 
+        let topYPos;
+        
+
+        return movesArray;
+    }
 }
 
 
@@ -113,16 +171,12 @@ export class silverGeneral extends piece {
 export class rook extends piece { 
     getPossibleMoves() { 
         let movesArray = [];
-        let xPosString = this.position.substring(0, 1);
-        let yPosString = this.position.substring(1, 2);
-
-        let xPosition = parseInt(xPosString);
-        let yPosition = parseInt(yPosString);
-        
+        let xPosition = parseInt(this.position.substring(0, 1));
+        let yPosition = parseInt(this.position.substring(1, 2));
         
         // left
         for(let nextX = xPosition+1; nextX <= 9; nextX++) { 
-            let result = getMovementBorder(nextX.toString(), yPosString, this.gote_sente);
+            let result = getMovementBorder(nextX, yPosition, this.gote_sente);
             let processedResult = this.movesHelper(result, nextX, yPosition, movesArray);
             movesArray = processedResult[0];
             if (processedResult[1]) break;
@@ -130,7 +184,7 @@ export class rook extends piece {
 
         // right 
         for (let nextX = xPosition-1; nextX >= 1; nextX--) { 
-            let result = getMovementBorder(nextX.toString(), yPosString, this.gote_sente);
+            let result = getMovementBorder(nextX, yPosition, this.gote_sente);
             let processedResult = this.movesHelper(result, nextX, yPosition, movesArray);
             movesArray = processedResult[0];
             if (processedResult[1]) break;
@@ -138,7 +192,7 @@ export class rook extends piece {
 
         // up
         for (let nextY = yPosition+1; nextY <= 9; nextY++) { 
-            let result = getMovementBorder(xPosString, nextY.toString(), this.gote_sente);
+            let result = getMovementBorder(xPosition, nextY, this.gote_sente);
             let processedResult = this.movesHelper(result, xPosition, nextY, movesArray);
             movesArray = processedResult[0];
             if (processedResult[1]) break;
@@ -146,7 +200,7 @@ export class rook extends piece {
 
         // down
         for (let nextY = yPosition-1; nextY >= 1; nextY--) { 
-            let result = getMovementBorder(xPosString, nextY.toString(), this.gote_sente);
+            let result = getMovementBorder(xPosition, nextY, this.gote_sente);
             let processedResult = this.movesHelper(result, xPosition, nextY, movesArray);
             movesArray = processedResult[0];
             if (processedResult[1]) break;
@@ -161,24 +215,26 @@ export class bishop extends piece {
         let movesArray = [];
         let xPosition = parseInt(this.position.substring(0, 1));
         let yPosition = parseInt(this.position.substring(1, 2));
+
         // right up
         let xPositionMove = xPosition; 
         let yPositionMove = yPosition; 
         while (xPositionMove > 1 && yPositionMove > 1) {
             xPositionMove -= 1; 
             yPositionMove -= 1;
-            let result = getMovementBorder(xPositionMove.toString(), yPositionMove.toString(), this.gote_sente);
+            let result = getMovementBorder(xPositionMove, yPositionMove, this.gote_sente);
             let processedResult = this.movesHelper(result, xPositionMove, yPositionMove, movesArray);
             movesArray = processedResult[0];
             if (processedResult[1]) break;
         }
+
         // right down 
         xPositionMove = xPosition; 
         yPositionMove = yPosition; 
         while (xPositionMove > 1 && yPositionMove < 9) {
             xPositionMove -= 1; 
             yPositionMove += 1;
-            let result = getMovementBorder(xPositionMove.toString(), yPositionMove.toString(), this.gote_sente);
+            let result = getMovementBorder(xPositionMove, yPositionMove, this.gote_sente);
             let processedResult = this.movesHelper(result, xPositionMove, yPositionMove, movesArray);
             movesArray = processedResult[0];
             if (processedResult[1]) break;
@@ -190,7 +246,7 @@ export class bishop extends piece {
         while (xPositionMove < 9 && yPositionMove > 1) {
             xPositionMove += 1; 
             yPositionMove -= 1;
-            let result = getMovementBorder(xPositionMove.toString(), yPositionMove.toString(), this.gote_sente);
+            let result = getMovementBorder(xPositionMove, yPositionMove, this.gote_sente);
             let processedResult = this.movesHelper(result, xPositionMove, yPositionMove, movesArray);
             movesArray = processedResult[0];
             if (processedResult[1]) break;
@@ -201,7 +257,7 @@ export class bishop extends piece {
         while (xPositionMove < 9 && yPositionMove < 9) {
             xPositionMove += 1; 
             yPositionMove += 1;
-            let result = getMovementBorder(xPositionMove.toString(), yPositionMove.toString(), this.gote_sente);
+            let result = getMovementBorder(xPositionMove, yPositionMove, this.gote_sente);
             let processedResult = this.movesHelper(result, xPositionMove, yPositionMove, movesArray);
             movesArray = processedResult[0];
             if (processedResult[1]) break;
@@ -219,8 +275,31 @@ export class knight extends piece {
         let movesArray = [];
         let xPosition = parseInt(this.position.substring(0, 1));
         let yPosition = parseInt(this.position.substring(1, 2));
-        movesArray.push((xPosition+1).toString() + (yPosition-2).toString());
-        movesArray.push((xPosition-1).toString() + (yPosition-2).toString());
+        let leftMoveX;
+        let leftMoveY;
+        let rightMoveX;
+        let rightMoveY;
+
+        if (this.gote_sente === "gote") { 
+            leftMoveX = xPosition-1;
+            leftMoveY = yPosition+2;
+            rightMoveX = xPosition+1;
+            rightMoveY = yPosition+2;
+        } else { 
+            leftMoveX = xPosition-1;
+            leftMoveY = yPosition-2;
+            rightMoveX = xPosition+1;
+            rightMoveY = yPosition-2;
+        }
+        
+        let resultLeft = getMovementBorder(leftMoveX, leftMoveY, this.gote_sente);
+        let processedResultLeft = this.movesHelper(resultLeft, leftMoveX, leftMoveY, movesArray);
+        movesArray = processedResultLeft[0];
+
+        let resultRight = getMovementBorder(rightMoveX, rightMoveY, this.gote_sente);
+        let processedResultRight = this.movesHelper(resultRight, rightMoveX, rightMoveY, movesArray);
+        movesArray = processedResultRight[0];
+
         return movesArray;
     }
 }
@@ -230,8 +309,22 @@ export class lance extends piece {
         let movesArray = [];
         let xPosition = parseInt(this.position.substring(0, 1));
         let yPosition = parseInt(this.position.substring(1, 2));
-        for (let i = yPosition; i >= 1; i--) {
-            movesArray.push(xPosition.toString() + i.toString());
+
+        if (this.gote_sente === "gote") {
+            for (let nextY = yPosition + 1; nextY <= 9; nextY++) {
+                let result = getMovementBorder(xPosition, nextY, this.gote_sente);
+                let processedResult = this.movesHelper(result, xPosition, nextY, movesArray);
+                movesArray = processedResult[0];
+                if (processedResult[1]) break;
+            }
+        } else { 
+            for (let nextY = yPosition - 1; nextY >= 1; nextY--) {
+                let result = getMovementBorder(xPosition, nextY, this.gote_sente);
+                let processedResult = this.movesHelper(result, xPosition, nextY, movesArray);
+                movesArray = processedResult[0];
+                if (processedResult[1]) break;
+                
+            }
         }
         return movesArray;
     }
@@ -240,14 +333,24 @@ export class lance extends piece {
 
 // pawn 
 export class pawn extends piece { 
-    // problem <-- the movemnet would be differnet for the different players? 
     getPossibleMoves() { 
         let movesArray = [];
-        //if (playerTwoView) { 
-            //movesArray.push(this.position.substring(0,1) + (parseInt(this.position.substring(1, 2))+1).toString());
-        //} else { 
-            //}
-        movesArray.push(this.position.substring(0,1) + (parseInt(this.position.substring(1, 2))-1).toString());
+        let xPosition = parseInt(this.position.substring(0, 1));
+        let yPosition = parseInt(this.position.substring(1, 2));
+
+        if (this.gote_sente === "gote") { 
+            let yLocalPosChange = yPosition+1;
+
+            let result = getMovementBorder(xPosition, yLocalPosChange, this.gote_sente);
+            let processedResult = this.movesHelper(result, xPosition, yLocalPosChange, movesArray);
+            movesArray = processedResult[0];
+        } else { 
+            let yLocalPosChange = yPosition-1;
+
+            let result = getMovementBorder(xPosition, yLocalPosChange, this.gote_sente);
+            let processedResult = this.movesHelper(result, xPosition, yLocalPosChange, movesArray);
+            movesArray = processedResult[0];
+        }
         return movesArray;
     }
 }
