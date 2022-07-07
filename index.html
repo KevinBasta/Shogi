@@ -11,16 +11,6 @@
 </head>
 <body>
     <shogi>
-        <opponent-piece-stand>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-        </opponent-piece-stand>
-
         <shogi-board-wrapper>
             <columns>
                 <span>9</span>
@@ -141,16 +131,31 @@
                 <span>九</span> 
             </rows> 
         </shogi-board-wrapper>
+        <piece-stands id="standsId">
+            <opponent-piece-stand id="opponent-piece-stand">
+                <div style="background-color: green"></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </opponent-piece-stand>
+            
+            <div id="game-log">
+            </div>
 
-        <player-piece-stand>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-        </player-piece-stand>
+            <player-piece-stand id="player-piece-stand">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div style="background-color: purple"></div>
+            </player-piece-stand>
+        </piece-stands>
+
 
     </shogi>
 </body>

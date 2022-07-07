@@ -30,7 +30,18 @@ export class piece {
         this.gote_sente = newGoteSente;
     }
 
+    changeFacingDirection() { 
+        this.isfacingup = !this.isfacingup;
+    }
     
+    changeGoteSente() { 
+        if (this.gote_sente == "sente") { 
+            this.gote_sente = "gote";
+        } else if (this.gote_sente == "gote") { 
+            this.gote_sente = "sente";
+        }
+    }
+
     toString() { 
        return `${this.pieceObjectName} is of type ${this.pieceType} and belongs to ${this.gote_sente}. Currently it's at position ${this.position}.`;
     }

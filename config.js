@@ -52,6 +52,25 @@ export const defultBoardSetup = {
     "gotePawnNine":  ["13", "Pawn"]
 };
 
+export const defultStandSetups = {
+    "sentePawnStand": ["s0", "Pawn"],
+    "senteLanceStand": ["s1", "Lance"],
+    "senteKnightStand": ["s2", "Knight"],
+    "senteSilverGeneralStand": ["s3", "SilverGeneral"],
+    "senteGoldenGeneral": ["s4", "GoldGeneral"],
+    "senteRookStand": ["s5", "Rook"],
+    "senteBishopStand": ["s6", "Bishop"],
+
+
+    "gotePawnStand": ["s7", "Pawn"],
+    "goteLanceStand": ["s8", "Lance"],
+    "goteKnightStand": ["s9", "Knight"],
+    "goteSilverGeneralStand": ["s10", "SilverGeneral"],
+    "goteGoldenGeneral": ["s11", "GoldGeneral"],
+    "goteRookStand": ["s12", "Rook"],
+    "goteBishopStand": ["s13", "Bishop"]
+};
+
 export const picesImages = { 
     "King": "/pieces/syougi01_ousyou.png", 
     "ChallengingKing": "/pieces/syougi02_gyokusyou.png", 

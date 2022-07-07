@@ -7,34 +7,10 @@ export class player {
         this.player_bot = player_bot;
         this.pieces = {}; //can be changed later in config for custome games
     }
-
-    // Initializes all the player pices with the appropriate piece subclass
-    initpieces() { 
-        for (const pieceName in defultBoardSetup) { 
-            if (pieceName.substring(0, 4) == this.gote_sente || pieceName.substring(0, 5) == this.gote_sente) { 
-                let pieceIndexInObj = defultBoardSetup[pieceName];
-                if (pieceIndexInObj[1] == "King" || pieceIndexInObj[1] == "ChallengingKing") { 
-                    this.pieces[pieceIndexInObj[0]] = new king(this.gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
-                } else if (pieceIndexInObj[1] == "GoldGeneral") { 
-                    this.pieces[pieceIndexInObj[0]] = new goldGeneral(this.gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
-                } else if (pieceIndexInObj[1] == "SilverGeneral") { 
-                    this.pieces[pieceIndexInObj[0]] = new silverGeneral(this.gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
-                } else if (pieceIndexInObj[1] == "Rook") { 
-                    this.pieces[pieceIndexInObj[0]] = new rook(this.gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
-                } else if (pieceIndexInObj[1] == "Bishop") { 
-                    this.pieces[pieceIndexInObj[0]] = new bishop(this.gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
-                } else if (pieceIndexInObj[1] == "Knight") { 
-                    this.pieces[pieceIndexInObj[0]] = new knight(this.gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
-                } else if (pieceIndexInObj[1] == "Lance") { 
-                    this.pieces[pieceIndexInObj[0]] = new lance(this.gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
-                } else if (pieceIndexInObj[1] == "Pawn") {
-                    this.pieces[pieceIndexInObj[0]] = new pawn(this.gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
-                }
-            }
-        }
-    }
-
     
+    piecesReturnTest() { 
+        return this.pieces;
+    }
 
     getPieces(fullBoard) { 
         // why not just return this.pieces? 
@@ -49,19 +25,19 @@ export class player {
         console.log(movePositions);
     }
 
-    givePieceOwnership(pieceObj, otherPlayer) {
-/*         if (pieceObj.gote_sente == "gote") { 
-            pieceObj.gote_sente = "sente";
-        } else if (pieceObj.gote_sente == "sente") { 
-            pieceObj.gote_sente = "gote";
-        }
-        otherPlayer[pieceObj] = this.pieces[pieceObj];
-        delete this.pieces[pieceObj]; */
+    getPieceOwnership(pieceObj, otherPlayer) {
+        pieceObj.changeGoteSente();
+        pieceObj.changeFacingDirection();
     }
 
     addPiece(pieceObj) { 
+        
         this.pieces[pieceObj] = pieceObj;
         //pieceObj set direction and gote/sente reset promotion etc..
+    }
+
+    deletePiece(pieceObj) {
+        delete this.pieces[this.pieceObj];
     }
 
     movePiece(piece, newPosition) {

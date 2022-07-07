@@ -1,19 +1,37 @@
 /* overall game area styling */
+body {
+    margin: 0px;
+    max-height: 100%;
+}
+
 shogi { 
     display: grid;    
-    grid-template-columns: 2fr 7fr 2fr;
+    gap: minmax(1rem, 100rem);
+    grid-template-columns: 6fr 4fr;  
+    grid-template-rows: 1fr;
+    align-items: center;
+    height: 100vh;
+    overflow: none;
+    /* background-color: rgb(255, 193, 70); */
 }
+
 
 span { 
     font-size:  2vw;
 }
 
+
+
+
 /* shogi board, rows and columns */
 shogi-board-wrapper {
+    
     display: grid;
     grid-template-columns: 20fr 1fr;
     
     aspect-ratio:initial;
+    padding: 0.5rem;
+    
 }
 
 columns {
@@ -86,6 +104,16 @@ rows span {
 
 
 /* opponent and play piece stands */
+piece-stands {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem;
+}
+
+.piece-stands-reverse { 
+    flex-direction: column-reverse;
+}
+
 opponent-piece-stand,
 player-piece-stand 
 { 
@@ -113,6 +141,33 @@ player-piece-stand div
     background-color: rgb(47, 33, 6);
 }
 
+opponent-piece-stand div span,
+player-piece-stand div span { 
+    /* place-self: center;
+    border: 2px solid;
+    border-color: black;  */
+}
+
+.cell-label-stands {
+    position:absolute;
+    
+    /* font-size: 5vw; */
+    font-size: 2vw;
+    color: #444;
+    opacity: 0.9;
+    z-index: 1;
+    /* important */
+    pointer-events: none;
+}
+
+#game-log { 
+    background-color: red;
+    height: 5rem;
+}
+
+
+
+/* general board properties */
 .cell-label {
     position:absolute;
     bottom: 0px;

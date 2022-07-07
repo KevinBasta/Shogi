@@ -13,6 +13,8 @@ let columnCounter;
 let rowCounter;
 
 if (playerTwoView) {
+    let pieceStands = document.getElementById('standsId');
+    pieceStands.setAttribute('class', "piece-stands-reverse")
     columnCounter = 1;
     rowCounter = 8;
 } else { 
@@ -48,6 +50,31 @@ for (let child of children) {
         }
     }
 }
+
+let standNumbCounter = 0;
+let standElementOne = document.getElementById('player-piece-stand');
+let standOneChildren = standElementOne.children;
+formatStand(standOneChildren);
+
+let standElementTwo = document.getElementById('opponent-piece-stand');
+let standTwoChildren = standElementTwo.children;
+formatStand(standTwoChildren);
+
+
+function formatStand(standChildren) { 
+    for (let child of standChildren) {
+        let label = "s" + standNumbCounter;
+        let spanText = document.createElement("span");
+    
+        spanText.innerHTML = label;
+        spanText.setAttribute("class", "cell-label-stands");
+    
+        child.setAttribute("id", label);
+        child.appendChild(spanText);
+        standNumbCounter += 1;
+    }
+}
+
 console.log(boardArray);
 
 

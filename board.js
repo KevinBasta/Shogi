@@ -1,6 +1,7 @@
 import {player} from "/player.js";
 import {defultBoardSetup, picesImages} from "/config.js"; 
 import {addEvent, removeEmptyCellEvent} from "/main.js";
+import {piece, king, goldGeneral, silverGeneral, rook, bishop, knight, lance, pawn} from "/pieces.js";
 
 export class board { 
     constructor(player1, player2, playerTwoView, lastClicked) { 
@@ -9,8 +10,9 @@ export class board {
         this.lastBoardStates = [];
         this.playerTwoView = playerTwoView;
         this.lastClicked = lastClicked;
-        player1.initpieces();
-        player2.initpieces();
+        this.player1 = player1;
+        this.player2 = player2;
+        this.initpieces();
         this.player1PieceStand = [];
         this.player2PieceStand = [];
 
@@ -39,6 +41,12 @@ export class board {
             // Gettind rid of opponent piece from game board object and saving it
             // Maybe pass it to player.js to handle there all the value changes
             let opponentCapturedPiece = this.gameBoard[newPosition];
+
+            if (opponentCapturedPiece.gote_sente === "sente") {
+                this.player2.getPieceOwnership(opponentCapturedPiece, this.player2)
+            } if (opponentCapturedPiece.gote_sente === "gote") { 
+                this.player1.getPieceOwnership(opponentCapturedPiece, this.player1)
+            }
             /*if (opponentCapturedPiece.getGoteSente() === "gote") { 
                 opponentCapturedPiece.setGoteSente("sente");
             } else if (opponentCapturedPiece.getGoteSente() === "sente") { 
@@ -47,7 +55,6 @@ export class board {
             opponentCapturedPiece.position = "00";*/
             delete this.gameBoard[newPosition];
         }
-
 
         // Getting rid of the old ui current piece on the board
         let oldCell = document.getElementById(oldPosition);
@@ -93,6 +100,36 @@ export class board {
             addEvent(elem);
         } else if (this.gameBoard[cellCoordinate].gote_sente === "sente" && !this.playerTwoView) {
             addEvent(elem);
+        }
+    }
+
+    initpieces() { 
+        for (const pieceName in defultBoardSetup) { 
+            let gote_sente = "";
+            if (pieceName.substring(0, 4) == "gote") { 
+                gote_sente = "gote";
+            }  else if (pieceName.substring(0, 5) == "sente") {
+                gote_sente = "sente";
+            }
+            
+            let pieceIndexInObj = defultBoardSetup[pieceName];
+            if (pieceIndexInObj[1] == "King" || pieceIndexInObj[1] == "ChallengingKing") { 
+                this.gameBoard[pieceIndexInObj[0]] = new king(gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
+            } else if (pieceIndexInObj[1] == "GoldGeneral") { 
+                this.gameBoard[pieceIndexInObj[0]] = new goldGeneral(gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
+            } else if (pieceIndexInObj[1] == "SilverGeneral") { 
+                this.gameBoard[pieceIndexInObj[0]] = new silverGeneral(gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
+            } else if (pieceIndexInObj[1] == "Rook") { 
+                this.gameBoard[pieceIndexInObj[0]] = new rook(gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
+            } else if (pieceIndexInObj[1] == "Bishop") { 
+                this.gameBoard[pieceIndexInObj[0]] = new bishop(gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
+            } else if (pieceIndexInObj[1] == "Knight") { 
+                this.gameBoard[pieceIndexInObj[0]] = new knight(gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
+            } else if (pieceIndexInObj[1] == "Lance") { 
+                this.gameBoard[pieceIndexInObj[0]] = new lance(gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
+            } else if (pieceIndexInObj[1] == "Pawn") {
+                this.gameBoard[pieceIndexInObj[0]] = new pawn(gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
+            }
         }
     }
 
