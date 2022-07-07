@@ -20,6 +20,16 @@ export class piece {
         }
         
     }
+
+    // Getters and setters
+    getGoteSente() { 
+        return this.gote_sente;
+    }
+
+    setGoteSente(newGoteSente) { 
+        this.gote_sente = newGoteSente;
+    }
+
     
     toString() { 
        return `${this.pieceObjectName} is of type ${this.pieceType} and belongs to ${this.gote_sente}. Currently it's at position ${this.position}.`;

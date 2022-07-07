@@ -1,17 +1,19 @@
-stage 1: 
-make shogi bord (9*9)
-define pieces and their movements
+To do: 
+implement piece stands
+define capture and drop mechanism
 define promotion (option to promote once at oppostie 3 squares)
+define illigal movements (no two pawns in a file (drop), can't move king into danger(movements))
 
 make mechanism for keeping track of movements (current state of board vs previous)
-define capture and drop mechanism
-define illigal movements (no two pawns in a file, can't move king into danger)
 
-stage 2: 
-user interface
-react? maybe dom or canvas first..
 
-stage 3: 
+
+
+
+
+
+
+future ideas: 
 simple algorithm to play against
 implement already existing shogi algorithms 
 ai? 

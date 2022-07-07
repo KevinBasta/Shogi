@@ -126,6 +126,10 @@ player-piece-stand div
     pointer-events: none;
 }
 
+.opponent-piece-unclickable { 
+    pointer-events: none;
+}
+
 .piece { 
     width: 5vw;
     aspect-ratio: 1;

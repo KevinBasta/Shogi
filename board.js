@@ -11,6 +11,8 @@ export class board {
         this.lastClicked = lastClicked;
         player1.initpieces();
         player2.initpieces();
+        this.player1PieceStand = [];
+        this.player2PieceStand = [];
 
         this.gameBoard = player1.getPieces(this.gameBoard);
         this.gameBoard = player2.getPieces(this.gameBoard);
@@ -20,56 +22,79 @@ export class board {
     // put render in board.js or player.js, no need for it to be here. Should be able to access all attributes from there anyways.
     render() { 
         for (let i in this.gameBoard) { 
-            let position = document.getElementById(this.gameBoard[i].position);
-            let elem = document.createElement("img");
-            
-            elem.setAttribute("src", picesImages[this.gameBoard[i].pieceType]);
-            elem.setAttribute("class", "piece");
-            if ((this.gameBoard[i].isfacingup == false && !this.playerTwoView) || (this.playerTwoView && this.gameBoard[i].isfacingup == true)) {
-                elem.setAttribute("class", "piece piece-rotate");
-            }
-            elem.setAttribute("pieceName", this.gameBoard[i].pieceObjectName);
-
-            position.appendChild(elem);
-            addEvent(elem);
+            this.renderNewPieceImage(i);
         }
     }
 
     movePiece(oldPosition, newPosition) { 
         //needs to move in the ui and in the data
-        console.log('in!')
-        
-        let oldCell = document.getElementById(this.gameBoard[oldPosition].position);
-        let oldPiece = document.querySelector(`[pieceName=${this.gameBoard[oldPosition].pieceObjectName}]`);
-        oldCell.removeChild(oldPiece);
 
+        // If the target position has an opponent piece [can add extra check of gote sente]
+        if (newPosition in this.gameBoard) {    
+            // Getting rid of opponent piece from ui
+            let opponentCell = document.getElementById(newPosition);
+            let opponentPieceImage = document.querySelector(`[pieceName=${this.gameBoard[newPosition].pieceObjectName}]`);
+            opponentCell.removeChild(opponentPieceImage);
+
+            // Gettind rid of opponent piece from game board object and saving it
+            // Maybe pass it to player.js to handle there all the value changes
+            let opponentCapturedPiece = this.gameBoard[newPosition];
+            /*if (opponentCapturedPiece.getGoteSente() === "gote") { 
+                opponentCapturedPiece.setGoteSente("sente");
+            } else if (opponentCapturedPiece.getGoteSente() === "sente") { 
+                opponentCapturedPiece.setGoteSente("gote");
+            } 
+            opponentCapturedPiece.position = "00";*/
+            delete this.gameBoard[newPosition];
+        }
+
+
+        // Getting rid of the old ui current piece on the board
+        let oldCell = document.getElementById(oldPosition);
+        let oldPieceImage = document.querySelector(`[pieceName=${this.gameBoard[oldPosition].pieceObjectName}]`);
+        oldCell.removeChild(oldPieceImage);
+        
+        // Adding the new position as a key on the game board & deleting old one
         this.gameBoard[newPosition] = this.gameBoard[oldPosition];
         this.gameBoard[newPosition].position = newPosition;
-
         delete this.gameBoard[oldPosition];
 
-        let position = document.getElementById(newPosition);
-        let elem = document.createElement("img");
-        
-        elem.setAttribute("src", picesImages[this.gameBoard[newPosition].pieceType]);
-        elem.setAttribute("class", "piece");
-        if ((this.gameBoard[newPosition].isfacingup == false && !this.playerTwoView) || (this.playerTwoView && this.gameBoard[newPosition].isfacingup == true)) {
-            elem.setAttribute("class", "piece piece-rotate");
-        }
-        elem.setAttribute("pieceName", this.gameBoard[newPosition].pieceObjectName);
+        // Creating new image element and appending it to new cell
+        this.renderNewPieceImage(newPosition);
 
-        position.appendChild(elem);
-        addEvent(elem);
-
+        // Getting rid of old possible move styling and events
         for (let i of this.lastClicked[1]) { 
             let position = document.getElementById(i);
             removeEmptyCellEvent(position);
             position.setAttribute("class", "");
             position.setAttribute("click", "false");
         }
-        //gameBoard[oldPosition]
     }
 
+    // Function to create new shogi piece image and put it somewhere
+    renderNewPieceImage(cellCoordinate) {
+        // Getting the div spesified and creating the image
+        let position = document.getElementById(this.gameBoard[cellCoordinate].position);
+        let elem = document.createElement("img");
+        
+        // Adding the image src, classes, name, and then appending it to div
+        elem.setAttribute("src", picesImages[this.gameBoard[cellCoordinate].pieceType]);
+        elem.setAttribute("pieceName", this.gameBoard[cellCoordinate].pieceObjectName);
+        elem.setAttribute("class", "piece");
+
+        // If image is facing the opposite way then rotate it and make it unclickable
+        if ((this.gameBoard[cellCoordinate].isfacingup == false && !this.playerTwoView) || (this.playerTwoView && this.gameBoard[cellCoordinate].isfacingup == true)) {
+            elem.setAttribute("class", "piece piece-rotate opponent-piece-unclickable");
+        }
+        position.appendChild(elem);
+
+        // only add click events for the appropriate player pieces
+        if (this.gameBoard[cellCoordinate].gote_sente === "gote" && this.playerTwoView) {
+            addEvent(elem);
+        } else if (this.gameBoard[cellCoordinate].gote_sente === "sente" && !this.playerTwoView) {
+            addEvent(elem);
+        }
+    }
 
     getBoard() { 
         return this.gameBoard;
