@@ -147,11 +147,12 @@ export class board {
         position.appendChild(elem);
 
         // only add click events for the appropriate player pieces
-        if (this.gameBoard[cellCoordinate].gote_sente === "gote" && this.playerTwoView) {
+/*         if (this.gameBoard[cellCoordinate].gote_sente === "gote" && this.playerTwoView) {
             addEvent(elem);
         } else if (this.gameBoard[cellCoordinate].gote_sente === "sente" && !this.playerTwoView) {
             addEvent(elem);
-        }
+        } */
+        addEvent(elem);
     }
 
     renderStandPiece(standPosition, pieceType, pieceName) {

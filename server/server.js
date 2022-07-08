@@ -16,7 +16,7 @@ io.on('connection', (sock) => {
         io.emit('message', text)
     })
 
-    //sock.on('turn', (newGameBoard) => io.emit('turn', newGameBoard));
+    sock.on('turn', ([lastposition, currentEmptyCellEmit]) => sock.broadcast.emit('turn', [lastposition, currentEmptyCellEmit]));
 
 });
 

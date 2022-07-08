@@ -109,6 +109,7 @@ export function addEvent(elem) {
         let currentPieceCell = e.target.parentElement.getAttribute('id');
         let pieceObject = game.gameBoard[currentPieceCell];
         //console.log(e.target.parentElement.getAttribute('id'));
+        console.log(pieceObject);
         let possibleMoveCellsArray = pieceObject.getPossibleMoves();
         
         // HERE
@@ -168,10 +169,17 @@ export function removeEmptyCellEvent(cell) {
 function emptyCellEvent(e) {
     let currentEmptyCell = e.target.getAttribute('id');
     game.movePiece(game.lastClicked[2], currentEmptyCell);
-    //sock.emit('turn', game.gameBoard);
+    sock.emit('turn', [game.lastClicked[2], currentEmptyCell]);
 }
 
-//sock.on('turn', (newGameBoard) => (game.rerender(newGameBoard)));
+function emptyCellServerEvent(lastposition, currentEmptyCellEmit)  {
+    let currentEmptyCell = currentEmptyCellEmit;
+    game.movePiece(lastposition, currentEmptyCell);
+}
+
+sock.on('turn', ([lastposition, currentEmptyCellEmit]) => {
+    emptyCellServerEvent(lastposition, currentEmptyCellEmit)
+});
 
 function moveStop(cellToCheck, gote_sente) {
     if (cellToCheck in tempboard) { 
