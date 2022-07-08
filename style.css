@@ -135,11 +135,15 @@ player-piece-stand {
 opponent-piece-stand div,
 player-piece-stand div 
 { 
+    position: relative;
     aspect-ratio: 1;
     border: 2px solid;
     border-color: black; 
     background-color: rgb(47, 33, 6);
+    display: flex;
+    justify-content: center;
 }
+
 
 opponent-piece-stand div span,
 player-piece-stand div span { 
@@ -149,7 +153,9 @@ player-piece-stand div span {
 }
 
 .cell-label-stands {
-    position:absolute;
+    position: absolute; 
+    top: 0;
+    left: 0;
     
     /* font-size: 5vw; */
     font-size: 2vw;
@@ -160,10 +166,35 @@ player-piece-stand div span {
     pointer-events: none;
 }
 
+.stand-piece-count {
+    position: absolute; 
+    bottom: 0; 
+    right: 0;
+    /* font-size: 5vw; */
+    font-size: 2vw;
+    color: #444;
+    opacity: 0.9;
+    z-index: 2;
+    /* important */
+    pointer-events: none;
+}
+
+.stand-piece-placeholder { 
+    width: 5vw;
+    aspect-ratio: 1;
+    z-index: 1;
+    opacity: 0.2;
+}
+
+
+
 #game-log { 
     background-color: red;
     height: 5rem;
 }
+
+
+
 
 
 
@@ -179,6 +210,7 @@ player-piece-stand div span {
     z-index: 0;
     /* important */
     pointer-events: none;
+    user-select:none;
 }
 
 .opponent-piece-unclickable { 

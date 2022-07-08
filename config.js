@@ -53,22 +53,22 @@ export const defultBoardSetup = {
 };
 
 export const defultStandSetups = {
-    "sentePawnStand": ["s0", "Pawn"],
-    "senteLanceStand": ["s1", "Lance"],
-    "senteKnightStand": ["s2", "Knight"],
-    "senteSilverGeneralStand": ["s3", "SilverGeneral"],
-    "senteGoldenGeneral": ["s4", "GoldGeneral"],
-    "senteRookStand": ["s5", "Rook"],
-    "senteBishopStand": ["s6", "Bishop"],
+    "sentePawnStand": ["p0", "Pawn"],
+    "senteLanceStand": ["p1", "Lance"],
+    "senteKnightStand": ["p2", "Knight"],
+    "senteSilverGeneralStand": ["p3", "SilverGeneral"],
+    "senteGoldenGeneral": ["p4", "GoldGeneral"],
+    "senteRookStand": ["p5", "Rook"],
+    "senteBishopStand": ["p6", "Bishop"],
 
 
-    "gotePawnStand": ["s7", "Pawn"],
-    "goteLanceStand": ["s8", "Lance"],
-    "goteKnightStand": ["s9", "Knight"],
-    "goteSilverGeneralStand": ["s10", "SilverGeneral"],
-    "goteGoldenGeneral": ["s11", "GoldGeneral"],
-    "goteRookStand": ["s12", "Rook"],
-    "goteBishopStand": ["s13", "Bishop"]
+    "gotePawnStand": ["o7", "Pawn"],
+    "goteLanceStand": ["o8", "Lance"],
+    "goteKnightStand": ["o9", "Knight"],
+    "goteSilverGeneralStand": ["o10", "SilverGeneral"],
+    "goteGoldenGeneral": ["o11", "GoldGeneral"],
+    "goteRookStand": ["o12", "Rook"],
+    "goteBishopStand": ["o13", "Bishop"]
 };
 
 export const picesImages = { 

@@ -1,6 +1,6 @@
 import {player} from "/player.js";
-import {defultBoardSetup, picesImages} from "/config.js"; 
 import {addEvent, removeEmptyCellEvent} from "/main.js";
+import {defultBoardSetup, defultStandSetups, picesImages} from "/config.js"; 
 import {piece, king, goldGeneral, silverGeneral, rook, bishop, knight, lance, pawn} from "/pieces.js";
 
 export class board { 
@@ -13,11 +13,8 @@ export class board {
         this.player1 = player1;
         this.player2 = player2;
         this.initpieces();
-        this.player1PieceStand = [];
-        this.player2PieceStand = [];
+        this.standPieces = {};
 
-        this.gameBoard = player1.getPieces(this.gameBoard);
-        this.gameBoard = player2.getPieces(this.gameBoard);
         console.log(this.gameBoard);
     }
 
@@ -26,6 +23,48 @@ export class board {
         for (let i in this.gameBoard) { 
             this.renderNewPieceImage(i);
         }
+
+        for (const pieceName in defultStandSetups) { 
+            let pieceIndexInObj = defultStandSetups[pieceName];
+            this.renderStandPiece(pieceIndexInObj[0], pieceIndexInObj[1], pieceName)
+        }
+    }
+
+    capturedPieceParametersChange(opponentCapturedPiece) { 
+        let standPiecesMap = { 
+            "Pawn": ["p0", "o7"],
+            "Lance": ["p1", "o8"],
+            "Knight": ["p2", "o9"],
+            "SilverGeneral": ["p3", "o10"],
+            "GoldGeneral": ["p4", "o11"],
+            "Rook": ["p5", "o12"],
+            "Bishop": ["p6", "o13"]
+        }
+        
+        if (opponentCapturedPiece.getPieceType() != "King" && opponentCapturedPiece.getPieceType() != "ChallengingKing" ) {
+            let positionInStand;
+            opponentCapturedPiece.changeGoteSente();
+            if (opponentCapturedPiece.getGoteSente() === "gote") { 
+                positionInStand = standPiecesMap[opponentCapturedPiece.getPieceType()][1];
+            } else if (opponentCapturedPiece.getGoteSente() === "sente") { 
+                positionInStand = standPiecesMap[opponentCapturedPiece.getPieceType()][0];           
+            }
+    
+            let standCell = document.getElementById(positionInStand);
+            let pieceOnStand = standCell.querySelector(`img`);
+            // for displaying how many are captured
+            //let pieceCounter = standCell.querySelector(`img`);
+            console.log(pieceOnStand)
+    
+            if ((positionInStand.substring(0, 1) === 'o' && !this.playerTwoView) || (this.playerTwoView && positionInStand.substring(0, 1) === 'p')) {
+                pieceOnStand.setAttribute("class", "piece piece-rotate opponent-piece-unclickable");
+            } else { 
+                pieceOnStand.setAttribute("class", "piece");
+            }
+        }
+        
+
+        
     }
 
     movePiece(oldPosition, newPosition) { 
@@ -41,18 +80,11 @@ export class board {
             // Gettind rid of opponent piece from game board object and saving it
             // Maybe pass it to player.js to handle there all the value changes
             let opponentCapturedPiece = this.gameBoard[newPosition];
+            this.capturedPieceParametersChange(opponentCapturedPiece);
+            
+            
+            
 
-            if (opponentCapturedPiece.gote_sente === "sente") {
-                this.player2.getPieceOwnership(opponentCapturedPiece, this.player2)
-            } if (opponentCapturedPiece.gote_sente === "gote") { 
-                this.player1.getPieceOwnership(opponentCapturedPiece, this.player1)
-            }
-            /*if (opponentCapturedPiece.getGoteSente() === "gote") { 
-                opponentCapturedPiece.setGoteSente("sente");
-            } else if (opponentCapturedPiece.getGoteSente() === "sente") { 
-                opponentCapturedPiece.setGoteSente("gote");
-            } 
-            opponentCapturedPiece.position = "00";*/
             delete this.gameBoard[newPosition];
         }
 
@@ -81,7 +113,7 @@ export class board {
     // Function to create new shogi piece image and put it somewhere
     renderNewPieceImage(cellCoordinate) {
         // Getting the div spesified and creating the image
-        let position = document.getElementById(this.gameBoard[cellCoordinate].position);
+        let position = document.getElementById(cellCoordinate);
         let elem = document.createElement("img");
         
         // Adding the image src, classes, name, and then appending it to div
@@ -101,6 +133,21 @@ export class board {
         } else if (this.gameBoard[cellCoordinate].gote_sente === "sente" && !this.playerTwoView) {
             addEvent(elem);
         }
+    }
+
+    renderStandPiece(standPosition, pieceType, pieceName) {
+        let position = document.getElementById(standPosition);
+        let elem = document.createElement("img");
+        elem.setAttribute("src", picesImages[pieceType]);
+        elem.setAttribute("pieceName", pieceName);
+        elem.setAttribute("standpos", standPosition);
+        elem.setAttribute("class", "stand-piece-placeholder");
+
+        // If image is facing the opposite way then rotate it and make it unclickable
+        if ((standPosition.substring(0, 1) === 'o' && !this.playerTwoView) || (this.playerTwoView && standPosition.substring(0, 1) === 'p')) {
+            elem.setAttribute("class", "stand-piece-placeholder piece-rotate opponent-piece-unclickable");
+        }
+        position.appendChild(elem);
     }
 
     initpieces() { 
@@ -131,6 +178,10 @@ export class board {
                 this.gameBoard[pieceIndexInObj[0]] = new pawn(gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
             }
         }
+    }
+
+    initStandPieces() { 
+        
     }
 
     getBoard() { 

@@ -34,6 +34,10 @@ export class piece {
         this.isfacingup = !this.isfacingup;
     }
     
+    getPieceType() { 
+        return this.pieceType;
+    }
+
     changeGoteSente() { 
         if (this.gote_sente == "sente") { 
             this.gote_sente = "gote";
