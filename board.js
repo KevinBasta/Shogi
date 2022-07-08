@@ -2,6 +2,9 @@ import {player} from "/player.js";
 import {addEvent, removeEmptyCellEvent} from "/main.js";
 import {defultBoardSetup, defultStandSetups, picesImages} from "/config.js"; 
 import {piece, king, goldGeneral, silverGeneral, rook, bishop, knight, lance, pawn} from "/pieces.js";
+// Notes
+// sparate game mechanics from ui
+// make functions to reload gameboard and standpieces based on objects
 
 export class board { 
     constructor(player1, player2, playerTwoView, lastClicked) { 
@@ -27,6 +30,22 @@ export class board {
         for (const pieceName in defultStandSetups) { 
             let pieceIndexInObj = defultStandSetups[pieceName];
             this.renderStandPiece(pieceIndexInObj[0], pieceIndexInObj[1], pieceName)
+        }
+    }
+
+    rerender(newGameBoard) {
+        for (let i in this.gameBoard) { 
+            let oldCell = document.getElementById(i);
+            let oldPieceImage = oldCell.querySelector(`img`);
+            oldCell.removeChild(oldPieceImage);
+        }
+        
+
+        this.gameBoard = newGameBoard;
+
+        
+        for (let i in this.gameBoard) { 
+            this.renderNewPieceImage(i);
         }
     }
 

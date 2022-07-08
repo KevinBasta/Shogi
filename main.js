@@ -2,6 +2,13 @@ import { player } from "/player.js";
 import { board } from "/board.js";
 import { piece } from "/pieces.js";
 
+
+const sock = io();
+sock.on('message', (text) => {
+    console.log(text);
+})
+
+
 export let playerTwoView = false; //for flipping the view <-- would need a variable based on socket api
 
 // labeling each shogi cell with ids and text
@@ -145,8 +152,7 @@ export function addEvent(elem) {
         }
 
         console.log(lastClicked);
-        let messageString = pieceObject.toString() + " from server!"; 
-        //sock.emit('turn', messageString);
+        
     });
 }
 
@@ -162,8 +168,10 @@ export function removeEmptyCellEvent(cell) {
 function emptyCellEvent(e) {
     let currentEmptyCell = e.target.getAttribute('id');
     game.movePiece(game.lastClicked[2], currentEmptyCell);
+    //sock.emit('turn', game.gameBoard);
 }
 
+//sock.on('turn', (newGameBoard) => (game.rerender(newGameBoard)));
 
 function moveStop(cellToCheck, gote_sente) {
     if (cellToCheck in tempboard) { 
@@ -238,8 +246,3 @@ let tempboard = [["91", "81", "71", "61", "51", "41", "31", "21", "11"],
                 ["98", "88", "78", "68", "58", "48", "38", "28", "18"],
                 ["99", "89", "79", "69", "59", "49", "39", "29", "19"]];
                 
-//const sock = io();
-/* sock.on('message', (text) => {
-    console.log(text);
-}) */
-//sock.on('turn', )

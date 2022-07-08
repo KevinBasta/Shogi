@@ -16,6 +16,8 @@ io.on('connection', (sock) => {
         io.emit('message', text)
     })
 
+    //sock.on('turn', (newGameBoard) => io.emit('turn', newGameBoard));
+
 });
 
 
