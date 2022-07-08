@@ -3,100 +3,154 @@ import { board } from "/board.js";
 import { piece } from "/pieces.js";
 
 
-const sock = io();
-sock.on('message', (text) => {
-    console.log(text);
-})
+const socket = io();
+socket.on('init', (number) => {
+    hendleInit(number);
+    startGame();
+});
 
+socket.on('log', (n) => {
+    console.log(n);
+});
+
+socket.on('unknownGame', () => alert('unknowngame'));
+socket.on('tooManyPlayers', () => alert('tooManyPlayers'));
+
+socket.on('turn', ([lastposition, currentEmptyCellEmit]) => {
+    emptyCellServerEvent(lastposition, currentEmptyCellEmit);
+});
 
 export let playerTwoView = false; //for flipping the view <-- would need a variable based on socket api
 
-// labeling each shogi cell with ids and text
-const rows = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
-const rowsKanji = ["一", "二", "三", "四", "五", "六", "七", "八", "九"];
-
-let boardArray = [[],[],[],[],[],[],[],[],[]];
-let columnCounter;
-let rowCounter;
-
-if (playerTwoView) {
-    let pieceStands = document.getElementById('standsId');
-    pieceStands.setAttribute('class', "piece-stands-reverse")
-    columnCounter = 1;
-    rowCounter = 8;
-} else { 
-    columnCounter = 9;
-    rowCounter = 0;
-}
-
-let element = document.getElementById('shogiBoard');
-let children = element.children;
-
-for (let child of children) {
-    let label = columnCounter + rows[rowCounter];
-    boardArray[rowCounter][Math.abs(columnCounter-9)] = (columnCounter.toString() + rows[rowCounter].toString());
-    let spanText = document.createElement("span");
-
-    spanText.innerHTML = label;
-    spanText.setAttribute("class", "cell-label");
-
-    child.setAttribute("id", label);
-    child.appendChild(spanText);
-
-    if (playerTwoView) { 
-        columnCounter += 1;
-        if (columnCounter == 10) {
-            columnCounter = 1;
-            rowCounter -= 1;
-        }
-    } else { 
-        columnCounter -= 1;
-        if (columnCounter == 0) {
-            columnCounter = 9;
-            rowCounter += 1;
-        }
+function hendleInit(number) {
+    if (number === 2) {
+        playerTwoView = true;
     }
+    console.log(number + playerTwoView);
 }
 
-let standNumbCounter = 0;
-let standElementOne = document.getElementById('player-piece-stand');
-let standOneChildren = standElementOne.children;
-formatStand(standOneChildren);
+let newgametext = document.getElementById("newgame");
+newgametext.addEventListener("click", function (e) {
+    socket.emit('newGame');
+});
 
-let standElementTwo = document.getElementById('opponent-piece-stand');
-let standTwoChildren = standElementTwo.children;
-formatStand(standTwoChildren);
+let joingametext = document.getElementById("joingame");
+joingametext.addEventListener("click", function (e) {
+    socket.emit('joinGame', "234");
+    console.log('clcik')
+});
+
+function startGame() { 
+    labelBoard();
+    newGame();
+}
 
 
-function formatStand(standChildren) { 
-    for (let child of standChildren) {
-        let label;
-        if (standNumbCounter < 7) {
-            label = "p" + standNumbCounter;
-        } else if (standNumbCounter >= 7) {
-            label = "o" + standNumbCounter;
-        }
+
+
+
+
+// labeling each shogi cell with ids and text
+function labelBoard() { 
+    const rows = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    const rowsKanji = ["一", "二", "三", "四", "五", "六", "七", "八", "九"];
+
+    let boardArray = [[],[],[],[],[],[],[],[],[]];
+    let columnCounter;
+    let rowCounter;
+
+    if (playerTwoView) {
+        let pieceStands = document.getElementById('standsId');
+        pieceStands.setAttribute('class', "piece-stands-reverse")
+        columnCounter = 1;
+        rowCounter = 8;
+    } else { 
+        columnCounter = 9;
+        rowCounter = 0;
+    }
+
+    let element = document.getElementById('shogiBoard');
+    let children = element.children;
+
+    for (let child of children) {
+        let label = columnCounter + rows[rowCounter];
+        boardArray[rowCounter][Math.abs(columnCounter-9)] = (columnCounter.toString() + rows[rowCounter].toString());
         let spanText = document.createElement("span");
-    
+
         spanText.innerHTML = label;
-        spanText.setAttribute("class", "cell-label-stands");
-    
+        spanText.setAttribute("class", "cell-label");
+
         child.setAttribute("id", label);
         child.appendChild(spanText);
-        standNumbCounter += 1;
+
+        if (playerTwoView) { 
+            columnCounter += 1;
+            if (columnCounter == 10) {
+                columnCounter = 1;
+                rowCounter -= 1;
+            }
+        } else { 
+            columnCounter -= 1;
+            if (columnCounter == 0) {
+                columnCounter = 9;
+                rowCounter += 1;
+            }
+        }
     }
+
+    let standNumbCounter = 0;
+    let standElementOne = document.getElementById('player-piece-stand');
+    let standOneChildren = standElementOne.children;
+    formatStand(standOneChildren);
+
+    let standElementTwo = document.getElementById('opponent-piece-stand');
+    let standTwoChildren = standElementTwo.children;
+    formatStand(standTwoChildren);
+
+
+    function formatStand(standChildren) { 
+        for (let child of standChildren) {
+            let label;
+            if (standNumbCounter < 7) {
+                label = "p" + standNumbCounter;
+            } else if (standNumbCounter >= 7) {
+                label = "o" + standNumbCounter;
+            }
+            let spanText = document.createElement("span");
+        
+            spanText.innerHTML = label;
+            spanText.setAttribute("class", "cell-label-stands");
+        
+            child.setAttribute("id", label);
+            child.appendChild(spanText);
+            standNumbCounter += 1;
+        }
+    }
+
+    console.log(boardArray);
 }
 
-console.log(boardArray);
+
+let player1;
+let player2;
+let lastClicked;
+let game;
 
 
 // game initialization
-let player1 = new player("sente", false);
-let player2 = new player("gote", false);
-let lastClicked = ["", []];
+function newGame() { 
+    player1 = new player("sente", false);
+    player2 = new player("gote", false);
+    lastClicked = ["", []];
+    
+    game = new board(player1, player2, playerTwoView, lastClicked);
+    game.render();
+}
 
-let game = new board(player1, player2, playerTwoView, lastClicked);
-game.render();
+function joinGame() { 
+    socket.emit('joinGame', code);
+}
+
 //console.log(player1.pieces);
 //console.log(game.gameBoard);
 
@@ -169,7 +223,7 @@ export function removeEmptyCellEvent(cell) {
 function emptyCellEvent(e) {
     let currentEmptyCell = e.target.getAttribute('id');
     game.movePiece(game.lastClicked[2], currentEmptyCell);
-    sock.emit('turn', [game.lastClicked[2], currentEmptyCell]);
+    socket.emit('turn', [game.lastClicked[2], currentEmptyCell]);
 }
 
 function emptyCellServerEvent(lastposition, currentEmptyCellEmit)  {
@@ -177,9 +231,7 @@ function emptyCellServerEvent(lastposition, currentEmptyCellEmit)  {
     game.movePiece(lastposition, currentEmptyCell);
 }
 
-sock.on('turn', ([lastposition, currentEmptyCellEmit]) => {
-    emptyCellServerEvent(lastposition, currentEmptyCellEmit)
-});
+
 
 function moveStop(cellToCheck, gote_sente) {
     if (cellToCheck in tempboard) { 
