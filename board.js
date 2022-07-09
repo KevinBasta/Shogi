@@ -1,11 +1,14 @@
 import {player} from "/player.js";
-import {addEvent, removeEmptyCellEvent} from "/main.js";
+import {addPossibleMovesEvent, removeEmptyCellEvent, playerTwoView} from "/main.js";
 import {defultBoardSetup, defultStandSetups, picesImages} from "/config.js"; 
 import {piece, king, goldGeneral, silverGeneral, rook, bishop, knight, lance, pawn} from "/pieces.js";
-// Notes
-// sparate game mechanics from ui
-// make functions to reload gameboard and standpieces based on objects
+import {renderNewPieceImage, renderStandPiece, renderCapturedPieceInStand, removeChildElement, removeOldPossibleMovesStyling} from "/view.js";
 
+
+/*
+ Class for controlling most of the game mechanics and logic.
+ Changes data representation here and ui with view.js
+ */
 export class board { 
     constructor(player1, player2, playerTwoView, lastClicked) { 
         this.gameBoard = {};
@@ -21,35 +24,75 @@ export class board {
         console.log(this.gameBoard);
     }
 
-    // put render in board.js or player.js, no need for it to be here. Should be able to access all attributes from there anyways.
-    render() { 
-        for (let i in this.gameBoard) { 
-            this.renderNewPieceImage(i);
-        }
 
+    /*
+     Renders the initial state of the board and piece stands
+     */
+    render() { 
+        // Rendering game board
+        for (let i in this.gameBoard) { 
+            renderNewPieceImage(i, this.gameBoard);
+        }
+        // Rendering stand pieces placeholders
         for (const pieceName in defultStandSetups) { 
             let pieceIndexInObj = defultStandSetups[pieceName];
-            this.renderStandPiece(pieceIndexInObj[0], pieceIndexInObj[1], pieceName)
+            renderStandPiece(pieceIndexInObj[0], pieceIndexInObj[1], pieceName);
         }
     }
 
+    /*
+     Rerenders the gameboard ui and data
+     */
     rerender(newGameBoard) {
+        // Deleting all the old pieces
         for (let i in this.gameBoard) { 
-            let oldCell = document.getElementById(i);
-            let oldPieceImage = oldCell.querySelector(`img`);
-            oldCell.removeChild(oldPieceImage);
+            removeChildElement(i, `img`);
         }
-        
-
+        // Changing current gameboard to the new gamebboard
         this.gameBoard = newGameBoard;
-
-        
+        // Rendering the new gameboard 
         for (let i in this.gameBoard) { 
-            this.renderNewPieceImage(i);
+            renderNewPieceImage(i, this.gameBoard);
         }
     }
 
-    capturedPieceParametersChange(opponentCapturedPiece) { 
+
+    /*
+     Moves a piece in the data and ui
+     */
+    movePiece(oldPosition, newPosition) { 
+        // If the target position has an opponent piece [can add extra check of gote sente]
+        if (newPosition in this.gameBoard) {    
+            // Getting rid of opponent piece from ui
+            removeChildElement(newPosition, `[pieceName=${this.gameBoard[newPosition].pieceObjectName}]`);
+
+            // Gettind rid of opponent piece from game board object
+            let opponentCapturedPiece = this.gameBoard[newPosition];
+            this.capturedPieceParametersChange(opponentCapturedPiece);
+            delete this.gameBoard[newPosition];
+        }
+
+        // Getting rid of the current piece on the board from its old position in ui
+        removeChildElement(oldPosition, `[pieceName=${this.gameBoard[oldPosition].pieceObjectName}]`)
+        
+        // Adding the new position as a key on the game board & deleting old one
+        this.gameBoard[newPosition] = this.gameBoard[oldPosition];
+        this.gameBoard[newPosition].position = newPosition;
+        delete this.gameBoard[oldPosition];
+
+        // Creating new image element for the piece and appending it to new cell
+        renderNewPieceImage(newPosition, this.gameBoard);
+
+        // Getting rid of old possible move styling and events
+        removeOldPossibleMovesStyling(this.lastClicked[1]);
+    }
+
+
+    /*
+     Changes the properties of a captured piece 
+     */
+     capturedPieceParametersChange(opponentCapturedPiece) { 
+        // Each piece first array index is the player and second is opponent
         let standPiecesMap = { 
             "Pawn": ["p0", "o7"],
             "Lance": ["p1", "o8"],
@@ -60,118 +103,29 @@ export class board {
             "Bishop": ["p6", "o13"]
         }
         
+        // chaning gote/sente value and finding the piece position in the stands
         if (opponentCapturedPiece.getPieceType() != "King" && opponentCapturedPiece.getPieceType() != "ChallengingKing" ) {
             let positionInStand;
+
             opponentCapturedPiece.changeGoteSente();
             if (opponentCapturedPiece.getGoteSente() === "gote") { 
                 positionInStand = standPiecesMap[opponentCapturedPiece.getPieceType()][1];
             } else if (opponentCapturedPiece.getGoteSente() === "sente") { 
                 positionInStand = standPiecesMap[opponentCapturedPiece.getPieceType()][0];           
             }
-    
-            let standCell = document.getElementById(positionInStand);
-            let pieceOnStand = standCell.querySelector(`img`);
-            // for displaying how many are captured
-            //let pieceCounter = standCell.querySelector(`img`);
-            console.log(pieceOnStand)
-    
-            if ((positionInStand.substring(0, 1) === 'o' && !this.playerTwoView) || (this.playerTwoView && positionInStand.substring(0, 1) === 'p')) {
-                pieceOnStand.setAttribute("class", "piece piece-rotate opponent-piece-unclickable");
-            } else { 
-                pieceOnStand.setAttribute("class", "piece");
-            }
-        }
-        
-
-        
-    }
-
-    movePiece(oldPosition, newPosition) { 
-        //needs to move in the ui and in the data
-
-        // If the target position has an opponent piece [can add extra check of gote sente]
-        if (newPosition in this.gameBoard) {    
-            // Getting rid of opponent piece from ui
-            let opponentCell = document.getElementById(newPosition);
-            let opponentPieceImage = document.querySelector(`[pieceName=${this.gameBoard[newPosition].pieceObjectName}]`);
-            opponentCell.removeChild(opponentPieceImage);
-
-            // Gettind rid of opponent piece from game board object and saving it
-            // Maybe pass it to player.js to handle there all the value changes
-            let opponentCapturedPiece = this.gameBoard[newPosition];
-            this.capturedPieceParametersChange(opponentCapturedPiece);
             
-            
-            
-
-            delete this.gameBoard[newPosition];
-        }
-
-        // Getting rid of the old ui current piece on the board
-        let oldCell = document.getElementById(oldPosition);
-        let oldPieceImage = document.querySelector(`[pieceName=${this.gameBoard[oldPosition].pieceObjectName}]`);
-        oldCell.removeChild(oldPieceImage);
-        
-        // Adding the new position as a key on the game board & deleting old one
-        this.gameBoard[newPosition] = this.gameBoard[oldPosition];
-        this.gameBoard[newPosition].position = newPosition;
-        delete this.gameBoard[oldPosition];
-
-        // Creating new image element and appending it to new cell
-        this.renderNewPieceImage(newPosition);
-
-        // Getting rid of old possible move styling and events
-        for (let i of this.lastClicked[1]) { 
-            let position = document.getElementById(i);
-            removeEmptyCellEvent(position);
-            position.setAttribute("class", "");
-            position.setAttribute("click", "false");
+            // Shows the piece on the appropriate piece stand
+            renderCapturedPieceInStand(positionInStand);
         }
     }
 
-    // Function to create new shogi piece image and put it somewhere
-    renderNewPieceImage(cellCoordinate) {
-        // Getting the div spesified and creating the image
-        let position = document.getElementById(cellCoordinate);
-        let elem = document.createElement("img");
-        
-        // Adding the image src, classes, name, and then appending it to div
-        elem.setAttribute("src", picesImages[this.gameBoard[cellCoordinate].pieceType]);
-        elem.setAttribute("pieceName", this.gameBoard[cellCoordinate].pieceObjectName);
-        elem.setAttribute("class", "piece");
 
-        // If image is facing the opposite way then rotate it and make it unclickable
-        if ((this.gameBoard[cellCoordinate].isfacingup == false && !this.playerTwoView) || (this.playerTwoView && this.gameBoard[cellCoordinate].isfacingup == true)) {
-            elem.setAttribute("class", "piece piece-rotate opponent-piece-unclickable");
-        }
-        position.appendChild(elem);
-
-        // only add click events for the appropriate player pieces
-/*         if (this.gameBoard[cellCoordinate].gote_sente === "gote" && this.playerTwoView) {
-            addEvent(elem);
-        } else if (this.gameBoard[cellCoordinate].gote_sente === "sente" && !this.playerTwoView) {
-            addEvent(elem);
-        } */
-        addEvent(elem);
-    }
-
-    renderStandPiece(standPosition, pieceType, pieceName) {
-        let position = document.getElementById(standPosition);
-        let elem = document.createElement("img");
-        elem.setAttribute("src", picesImages[pieceType]);
-        elem.setAttribute("pieceName", pieceName);
-        elem.setAttribute("standpos", standPosition);
-        elem.setAttribute("class", "stand-piece-placeholder");
-
-        // If image is facing the opposite way then rotate it and make it unclickable
-        if ((standPosition.substring(0, 1) === 'o' && !this.playerTwoView) || (this.playerTwoView && standPosition.substring(0, 1) === 'p')) {
-            elem.setAttribute("class", "stand-piece-placeholder piece-rotate opponent-piece-unclickable");
-        }
-        position.appendChild(elem);
-    }
-
+    /*
+     Initializes pieces data from config.js
+     */
     initpieces() { 
         for (const pieceName in defultBoardSetup) { 
+            // Setting sente and gote pices based on piece name
             let gote_sente = "";
             if (pieceName.substring(0, 4) == "gote") { 
                 gote_sente = "gote";
@@ -179,6 +133,7 @@ export class board {
                 gote_sente = "sente";
             }
             
+            // Creating a piece object with the appropriate class based on the piece type from config.js
             let pieceIndexInObj = defultBoardSetup[pieceName];
             if (pieceIndexInObj[1] == "King" || pieceIndexInObj[1] == "ChallengingKing") { 
                 this.gameBoard[pieceIndexInObj[0]] = new king(gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
@@ -200,10 +155,10 @@ export class board {
         }
     }
 
-    initStandPieces() { 
-        
-    }
 
+    /*
+     returns gameboard
+     */
     getBoard() { 
         return this.gameBoard;
     }
@@ -222,19 +177,3 @@ function logBoard() {
     boardLogs[("log_" + logNumber)] = ['lol'];
 }
 
-
-/* 2 player objects created that have the gote or sente property
-   to allow for piece movemnts in online multiplayer, offline multiplayer, 
-   and player vs computer. 
-
-   The player class can have the properties of pices in possetion, pices captured, etc..
-   
-   the second player can have the property of a real player or a bot or 
-   it can also be a different computer player object that gets initialized instead
-   of a player or maybe it's just inheritance of the class player.
-   
-   look up the input/output for already existing shogi bots to integrate in design
-   */ 
-
-/* game object created at the start of each game that takes the mode and 
-   determiens how to set stuff up. */

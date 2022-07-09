@@ -12,6 +12,7 @@ const io = socketio(server);
 // using state as a previous board states array
 const state = {};
 const clientRooms = {};
+const roomsWithClients = {};
 
 io.on('connection', client => {
     client.emit('message', 'You are connected');
@@ -26,6 +27,7 @@ io.on('connection', client => {
     function handleNewGame() {
         let roomName = makeid(5);
         clientRooms[client.id] = roomName;
+        roomsWithClients[roomName] = [client.id];
         //client.emit('gameCode', roomName);
     
         //state[roomName] = [];
@@ -38,6 +40,25 @@ io.on('connection', client => {
     client.on('joinGame', handleJoinGame);
 
     function handleJoinGame(gameCode) { 
+        if (gameCode in roomsWithClients) { 
+            console.log(roomsWithClients);
+            if (roomsWithClients[gameCode].length > 1) {
+                client.emit('tooManyPlayers');
+                return;
+            }
+            console.log(roomsWithClients[gameCode]);
+
+            
+            clientRooms[client.id] = gameCode;
+            roomsWithClients[gameCode].push(client.id);
+
+            client.join(gameCode);
+            client.number = 2;
+            client.emit('init', 2);
+        } else { 
+            client.emit('unknownGame');
+            return;
+        }
         /* const room = io.sockets.adapter.rooms[gameCode];
 
         let allUsers;
@@ -57,11 +78,10 @@ io.on('connection', client => {
             client.emit('tooManyPlayers');
             return;
         }  */
-        clientRooms[client.id] = gameCode;
 
-        client.join(gameCode);
-        client.number = 2;
-        client.emit('init', 2);
+
+
+        
     }
 
 });

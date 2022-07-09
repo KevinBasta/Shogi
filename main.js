@@ -2,33 +2,33 @@ import { player } from "/player.js";
 import { board } from "/board.js";
 import { piece } from "/pieces.js";
 
+/* const socket = io();
 
-const socket = io();
-socket.on('init', (number) => {
-    hendleInit(number);
-    startGame();
-});
-
+// Logging on the client from the server
 socket.on('log', (n) => {
     console.log(n);
 });
 
-socket.on('unknownGame', () => alert('unknowngame'));
-socket.on('tooManyPlayers', () => alert('tooManyPlayers'));
+// Starting game and checking if client is second player
+socket.on('init', (number) => {
+    hendleInit(number);
+    startGame();
+}); */
 
-socket.on('turn', ([lastposition, currentEmptyCellEmit]) => {
-    emptyCellServerEvent(lastposition, currentEmptyCellEmit);
-});
+function startGame() { 
+    labelBoard();
+    newGame();
+}
 
-export let playerTwoView = false; //for flipping the view <-- would need a variable based on socket api
-
-function hendleInit(number) {
+export let playerTwoView = false;
+/* function hendleInit(number) {
     if (number === 2) {
         playerTwoView = true;
     }
-    console.log(number + playerTwoView);
+    console.log(number + " " + playerTwoView);
 }
 
+// Creating new game, joining a game, and joining errors
 let newgametext = document.getElementById("newgame");
 newgametext.addEventListener("click", function (e) {
     socket.emit('newGame');
@@ -40,25 +40,55 @@ joingametext.addEventListener("click", function (e) {
     console.log('clcik')
 });
 
-function startGame() { 
-    labelBoard();
-    newGame();
+socket.on('unknownGame', () => alert('unknowngame'));
+socket.on('tooManyPlayers', () => alert('tooManyPlayers'));
+
+// Sending information to other client
+socket.on('turn', ([lastposition, currentEmptyCellEmit]) => {
+    emptyCellServerEvent(lastposition, currentEmptyCellEmit);
+}); */
+
+
+/* 
+ Variables for game initialization
+ */
+let player1;
+let player2;
+let lastClicked;
+let game;
+
+/* 
+ Clientside game initialization
+ */
+function newGame() { 
+    player1 = new player("sente", false);
+    player2 = new player("gote", false);
+
+    // Format: piece object, possible moves array, current position
+    lastClicked = ["", [], 0];
+    
+    game = new board(player1, player2, playerTwoView, lastClicked);
+    game.render();
+}
+
+function joinGame() { 
+    //socket.emit('joinGame', code);
 }
 
 
-
-
-
-
-// labeling each shogi cell with ids and text
+/* 
+ Labeling each cell on ui shogi board with ids and text.
+ Also labeling and giving ids to cells in piece stands.
+ */
 function labelBoard() { 
     const rows = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
     const rowsKanji = ["一", "二", "三", "四", "五", "六", "七", "八", "九"];
-
     let boardArray = [[],[],[],[],[],[],[],[],[]];
     let columnCounter;
     let rowCounter;
 
+
+    // Reversing the board numbering and piece stands if player 2
     if (playerTwoView) {
         let pieceStands = document.getElementById('standsId');
         pieceStands.setAttribute('class', "piece-stands-reverse")
@@ -69,20 +99,18 @@ function labelBoard() {
         rowCounter = 0;
     }
 
-    let element = document.getElementById('shogiBoard');
-    let children = element.children;
 
-    for (let child of children) {
-        let label = columnCounter + rows[rowCounter];
+    // Getting the shogi board and its div children 
+    let shogiBoard = document.getElementById('shogiBoard');
+    let shogiBoardDivs = shogiBoard.children;
+
+    // Labeling the shogi board divs
+    for (let div of shogiBoardDivs) {
+        // Passing each div to a function that labels it
+        formatCell(div, columnCounter + rows[rowCounter], "");
         boardArray[rowCounter][Math.abs(columnCounter-9)] = (columnCounter.toString() + rows[rowCounter].toString());
-        let spanText = document.createElement("span");
-
-        spanText.innerHTML = label;
-        spanText.setAttribute("class", "cell-label");
-
-        child.setAttribute("id", label);
-        child.appendChild(spanText);
-
+        
+        // Changing the column and row based on which players view
         if (playerTwoView) { 
             columnCounter += 1;
             if (columnCounter == 10) {
@@ -98,87 +126,60 @@ function labelBoard() {
         }
     }
 
+
+    // Labeling the player stands divs
     let standNumbCounter = 0;
     let standElementOne = document.getElementById('player-piece-stand');
     let standOneChildren = standElementOne.children;
-    formatStand(standOneChildren);
+    for (let child of standOneChildren) {
+        formatCell(child, standNumbCounter, "p");
+        standNumbCounter += 1;
+    }
 
     let standElementTwo = document.getElementById('opponent-piece-stand');
     let standTwoChildren = standElementTwo.children;
-    formatStand(standTwoChildren);
+    for (let child of standTwoChildren) {
+        formatCell(child, standNumbCounter, "o");
+        standNumbCounter += 1;
+    }
 
 
-    function formatStand(standChildren) { 
-        for (let child of standChildren) {
-            let label;
-            if (standNumbCounter < 7) {
-                label = "p" + standNumbCounter;
-            } else if (standNumbCounter >= 7) {
-                label = "o" + standNumbCounter;
-            }
+    // Give stand divs an id and span label
+    function formatCell(child, cellNumber, labelPrefix) { 
+            // Creating a label and putting it in a span element
+            let label = labelPrefix + cellNumber;
             let spanText = document.createElement("span");
-        
             spanText.innerHTML = label;
             spanText.setAttribute("class", "cell-label-stands");
         
+            // Giving the div/cell an id with cell number and appending the span element to it
             child.setAttribute("id", label);
             child.appendChild(spanText);
-            standNumbCounter += 1;
-        }
     }
-
-    console.log(boardArray);
 }
 
 
-let player1;
-let player2;
-let lastClicked;
-let game;
 
-
-// game initialization
-function newGame() { 
-    player1 = new player("sente", false);
-    player2 = new player("gote", false);
-    lastClicked = ["", []];
-    
-    game = new board(player1, player2, playerTwoView, lastClicked);
-    game.render();
-}
-
-function joinGame() { 
-    socket.emit('joinGame', code);
-}
-
-//console.log(player1.pieces);
-//console.log(game.gameBoard);
-
-
-// adding event listener to each piece
-export function addEvent(elem) {
-    elem.addEventListener("click", function (e) {
-        console.log(game)
+/*
+  Function for letting the user see where the piece they clicked on 
+  can move on the board. Handles giving and removing events from 
+  the cells where the players piece can possibly move.
+ */
+export function addPossibleMovesEvent(pieceClicked) {
+    pieceClicked.addEventListener("click", function (e) {
+        // Other way to do thing using attribute, maybe just use the div order to make more secure?
         //let pieceObject = game.gameBoard[e.target.getAttribute("pieceName")];
+        //console.log(e.target.parentElement.getAttribute('id'));
+
+        // Getting the cell in ui, the piece in gameboard, then possible moves
         let currentPieceCell = e.target.parentElement.getAttribute('id');
         let pieceObject = game.gameBoard[currentPieceCell];
-        //console.log(e.target.parentElement.getAttribute('id'));
-        console.log(pieceObject);
         let possibleMoveCellsArray = pieceObject.getPossibleMoves();
+        console.log(game);
+        console.log(pieceObject);
         
-        // HERE
-        // use this to determine if you can capture that piece OR if it's your own piece that you
-        // can't bypass
-/*         if (pieceObject.player1orplayer2 == "player1") { 
-            let thisPlayerPieces = player1.getPieces(); 
-            let otherPlayerPieces = player2.getPieces();
-        } else if (pieceObject.player1orplayer2 == "player2") { 
-            let thisPlayerPieces = player2.getPieces();
-            let otherPlayerPieces = player1.getPieces(); 
-        } */
-
-        // if the last piece clicked is not the same as the current piece clicked
-        // then reset the cell possible move identifiers
+        // If the last piece clicked is not the same as the current piece clicked
+        // then get rid of old possible moves cell identifiers and event
         if (game.lastClicked[0] != pieceObject) { 
             for (let i of game.lastClicked[1]) { 
                 let position = document.getElementById(i);
@@ -188,10 +189,13 @@ export function addEvent(elem) {
             }
         }
         
+        // Setting data for the lastclicked array
         game.lastClicked[0] = pieceObject;
         game.lastClicked[1] = possibleMoveCellsArray; 
         game.lastClicked[2] = currentPieceCell;
         
+        // For all cells the given piece can move to
+        // deactivate if active and activate if deactivated
         for (let i of possibleMoveCellsArray) { 
             let position = document.getElementById(i);
             if (position.getAttribute("click") == "true") { 
@@ -202,16 +206,17 @@ export function addEvent(elem) {
                 addEmptyCellEvent(position);
                 position.setAttribute("class", "piece-possible-move-position");
                 position.setAttribute("click", "true");
-            }
-            
+            }            
         }
-
-        console.log(lastClicked);
-        
     });
 }
 
 
+
+/* 
+ Events for possible move cells adding, removing, and the callback
+ to move a piece when they are clicked 
+ */
 function addEmptyCellEvent(cell) {
     cell.addEventListener("click", emptyCellEvent);
 }
@@ -223,9 +228,14 @@ export function removeEmptyCellEvent(cell) {
 function emptyCellEvent(e) {
     let currentEmptyCell = e.target.getAttribute('id');
     game.movePiece(game.lastClicked[2], currentEmptyCell);
-    socket.emit('turn', [game.lastClicked[2], currentEmptyCell]);
+    //socket.emit('turn', [game.lastClicked[2], currentEmptyCell]);
 }
 
+
+/* 
+ When the server sends the other player's move, this gives info about it
+ to have the same effects happen on the other client 
+ */
 function emptyCellServerEvent(lastposition, currentEmptyCellEmit)  {
     let currentEmptyCell = currentEmptyCellEmit;
     game.movePiece(lastposition, currentEmptyCell);
@@ -233,76 +243,32 @@ function emptyCellServerEvent(lastposition, currentEmptyCellEmit)  {
 
 
 
-function moveStop(cellToCheck, gote_sente) {
-    if (cellToCheck in tempboard) { 
-        if (cellToCheck in game.gameBoard) { 
-            let nextCellPieceObj = game.gameBoard[cellToCheck];
-            if (nextCellPieceObj.gote_sente === gote_sente) {
-                return "samePlayer";
-            }
-            return "oppositePlayer";
-        }
-        return "empty";
-    }
-
-    // Three return types samePlayer, oppositePlayer, edge, empty
-    return "edge";
-}
-
-
+/* 
+ Takes x, y, and gote sente. Checks if the cell is an edge, if it has
+ a player or opponent piece, and if it's empty. Returns for pieces.js to use 
+ */
 export function getMovementBorder(xPositionInt, yPositionInt, gote_sente) {
-
-
-    // [up, down, left, right]
-    // format pieceObj, piceposition, squaresbetween
-/*     let closestPieces = [[], [], [], []];
-    for (let piece of game.gameBoard) { 
-        let playingPiecePosition = pieceObject.position;
-        let playingPiecePositionX = parseInt(playingPiecePosition.substring(0,1));
-        let playingPiecePositionY = parseInt(playingPiecePosition.substring(1,2));
-
-        let checkingPiecePoseition = piece.position; 
-        let checkingPiecePoseitionX = parseInt(checkingPiecePoseition.substring(0,1));
-        let checkingPiecePoseitionY = parseInt(checkingPiecePoseition.substring(1,2));
-    } */
-    // should include other player's pieces too but not own's pieces
-    // have to figure out how multiplayer works first
-/*     for (let piece in game.gameBoard) { 
-        if (game.gameBoard[piece].position == cellCheck && piece.gote_sente == gote_sente) { 
-            but then how do you define only being able to hit this one if it's the opposite player's 
-            piece but not the one after it? 
-            return true;
-        }
-    } */
     let xPosString = xPositionInt.toString();
     let yPosString = yPositionInt.toString();
 
+    // Four return types samePlayer, oppositePlayer, edge, empty
     if (xPositionInt > 9 || xPositionInt < 1 || yPositionInt > 9 || yPositionInt < 1) {
         return "edge";
     }
 
+    // Checking if the cell has a piece and whos piece
     let cellToCheck = xPosString + yPosString;
-        if (cellToCheck in game.gameBoard) { 
-            let nextCellPieceObj = game.gameBoard[cellToCheck];
-            if (nextCellPieceObj.gote_sente === gote_sente) {
-                return "samePlayer";
-            }
-            return "oppositePlayer";
+    if (cellToCheck in game.gameBoard) { 
+        let nextCellPieceObj = game.gameBoard[cellToCheck];
+        if (nextCellPieceObj.gote_sente === gote_sente) {
+            return "samePlayer";
         }
+        return "oppositePlayer";
+    }
 
-    // Three return types samePlayer, oppositePlayer, edge, empty
     return "empty";
-
 }
 
 
-let tempboard = [["91", "81", "71", "61", "51", "41", "31", "21", "11"],
-                ["92", "82", "72", "62", "52", "42", "32", "22", "12"],
-                ["93", "83", "73", "63", "53", "43", "33", "23", "13"],
-                ["94", "84", "74", "64", "54", "44", "34", "24", "14"],
-                ["95", "85", "75", "65", "55", "45", "35", "25", "15"],
-                ["96", "86", "76", "66", "56", "46", "36", "26", "16"], 
-                ["97", "87", "77", "67", "57", "47", "37", "27", "17"],
-                ["98", "88", "78", "68", "58", "48", "38", "28", "18"],
-                ["99", "89", "79", "69", "59", "49", "39", "29", "19"]];
-                
+// For local testing
+startGame();

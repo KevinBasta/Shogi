@@ -13,11 +13,7 @@ export class piece {
         this.isPromoted = false; 
         this.inCheck = false;
         
-        if (this.gote_sente == "sente") { 
-            this.isfacingup = true;
-        } else if (this.gote_sente == "gote") { 
-            this.isfacingup = false;
-        }
+        this.setFacingDirection();
         
     }
 
@@ -26,25 +22,28 @@ export class piece {
         return this.gote_sente;
     }
 
-    setGoteSente(newGoteSente) { 
-        this.gote_sente = newGoteSente;
-    }
-
-    changeFacingDirection() { 
-        this.isfacingup = !this.isfacingup;
-    }
-    
-    getPieceType() { 
-        return this.pieceType;
-    }
-
     changeGoteSente() { 
         if (this.gote_sente == "sente") { 
             this.gote_sente = "gote";
         } else if (this.gote_sente == "gote") { 
             this.gote_sente = "sente";
         }
+        this.setFacingDirection();
     }
+
+    setFacingDirection() { 
+        if (this.gote_sente == "sente") { 
+            this.isfacingup = true;
+        } else if (this.gote_sente == "gote") { 
+            this.isfacingup = false;
+        }
+    }
+    
+    getPieceType() { 
+        return this.pieceType;
+    }
+
+    
 
     toString() { 
        return `${this.pieceObjectName} is of type ${this.pieceType} and belongs to ${this.gote_sente}. Currently it's at position ${this.position}.`;
