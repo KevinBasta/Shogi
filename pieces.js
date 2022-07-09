@@ -70,6 +70,10 @@ export class piece {
         // Implemented in all subclasses
     }
 
+    getPossibleDrops() { 
+        //Implemented in all subclasses
+    }
+
     movepiece(piece, newPosition) { 
         // Keep in board.js?
     }
@@ -413,5 +417,9 @@ export class pawn extends piece {
             movesArray = processedResult[0];
         }
         return movesArray;
+    }
+
+    getPossibleDrops() { 
+        
     }
 }

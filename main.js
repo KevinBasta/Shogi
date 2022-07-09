@@ -165,7 +165,7 @@ function labelBoard() {
   can move on the board. Handles giving and removing events from 
   the cells where the players piece can possibly move.
  */
-export function addPossibleMovesEvent(pieceClicked) {
+export function addPossibleMovesEvent(pieceClicked, pieceInStand) {
     pieceClicked.addEventListener("click", function (e) {
         // Other way to do thing using attribute, maybe just use the div order to make more secure?
         //let pieceObject = game.gameBoard[e.target.getAttribute("pieceName")];
@@ -173,8 +173,18 @@ export function addPossibleMovesEvent(pieceClicked) {
 
         // Getting the cell in ui, the piece in gameboard, then possible moves
         let currentPieceCell = e.target.parentElement.getAttribute('id');
-        let pieceObject = game.gameBoard[currentPieceCell];
-        let possibleMoveCellsArray = pieceObject.getPossibleMoves();
+        let pieceObject;
+        let possibleMoveCellsArray;
+
+        if (!pieceInStand) {
+            pieceObject = game.gameBoard[currentPieceCell];
+            possibleMoveCellsArray = pieceObject.getPossibleMoves();
+        } else {
+            let capturedPieceTypeArray = game.standPieces[currentPieceCell];
+            pieceObject = capturedPieceTypeArray[capturedPieceTypeArray.length - 1];
+            console.log(pieceObject)
+            possibleMoveCellsArray = pieceObject.getPossibleDrops();
+        }
         console.log(game);
         console.log(pieceObject);
         
@@ -198,6 +208,7 @@ export function addPossibleMovesEvent(pieceClicked) {
         // deactivate if active and activate if deactivated
         for (let i of possibleMoveCellsArray) { 
             let position = document.getElementById(i);
+            console.log(position);
             if (position.getAttribute("click") == "true") { 
                 removeEmptyCellEvent(position);
                 position.setAttribute("class", "");

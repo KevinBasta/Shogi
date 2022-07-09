@@ -23,9 +23,9 @@ import {addPossibleMovesEvent, removeEmptyCellEvent, playerTwoView} from "/main.
 
     // only add click events for the appropriate player pieces
     if (gameBoard[cellCoordinate].gote_sente === "gote" && playerTwoView) {
-        addPossibleMovesEvent(pieceImage);
+        addPossibleMovesEvent(pieceImage, false);
     } else if (gameBoard[cellCoordinate].gote_sente === "sente" && !playerTwoView) {
-        addPossibleMovesEvent(pieceImage);
+        addPossibleMovesEvent(pieceImage, false);
     }
 }
 
@@ -81,6 +81,7 @@ export function renderCapturedPieceInStand(positionInStand, totalOfPiece) {
     } else { 
         pieceOnStand.setAttribute("class", "piece");
     }
+    addPossibleMovesEvent(pieceOnStand, true);
 }
 
 

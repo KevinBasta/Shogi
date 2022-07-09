@@ -12,15 +12,18 @@ import {renderNewPieceImage, renderPlaceholderStandPiece, renderCapturedPieceInS
 export class board { 
     constructor(player1, player2, playerTwoView, lastClicked) { 
         this.gameBoard = {};
+        this.standPieces = {};
+
         this.logTurnNumber = 1;
         this.lastBoardStates = [];
+
         this.playerTwoView = playerTwoView;
         this.lastClicked = lastClicked;
+
         this.player1 = player1;
         this.player2 = player2;
+        
         this.initpieces();
-        this.standPieces = {};
-        this.initStandPieces();
 
         console.log(this.gameBoard);
     }
@@ -39,6 +42,7 @@ export class board {
             let pieceIndexInObj = defultStandSetups[pieceName];
             renderPlaceholderStandPiece(pieceIndexInObj[0], pieceIndexInObj[1], pieceName);
         }
+        console.log(this.standPieces);
     }
 
     /*
@@ -116,7 +120,7 @@ export class board {
             }
 
             opponentCapturedPiece.unpromote();
-            let opponentCapturedPieceTotal = this.addStandPiece(opponentCapturedPiece.getGoteSente() + opponentCapturedPiece.getPieceType(), opponentCapturedPiece);
+            let opponentCapturedPieceTotal = this.addStandPiece(positionInStand, opponentCapturedPiece);
 
             // Shows the piece on the appropriate piece stand
             renderCapturedPieceInStand(positionInStand, opponentCapturedPieceTotal);
@@ -157,34 +161,18 @@ export class board {
                 this.gameBoard[pieceIndexInObj[0]] = new pawn(gote_sente, pieceIndexInObj[1], pieceIndexInObj[0], pieceName);
             }
         }
-    }
 
-    initStandPieces() { 
-        // Giving each player an array for each type of captured piece
-        this.standPieces = { 
-            "sentePawn":          [],
-            "senteLance":         [],
-            "senteKnight":        [],
-            "senteSilverGeneral": [],
-            "senteGoldGeneral":   [],
-            "senteRook":          [],
-            "senteBishop":        [],
-
-            "gotePawn":          [],
-            "goteLance":         [],
-            "goteKnight":        [],
-            "goteSilverGeneral": [],
-            "goteGoldGeneral":   [],
-            "goteRook":          [],
-            "goteBishop":        []
+        // Giving each player an array for each piece in their piece stand
+        for (const pieceName in defultStandSetups) { 
+            this.standPieces[defultStandSetups[pieceName][0]] = [];
         }
     }
 
     // Adds a piece to standPieces obj data
-    addStandPiece(pieceIdentifier, pieceCaptured) {
-        this.standPieces[pieceIdentifier].push(pieceCaptured);
+    addStandPiece(piecePosition, pieceCaptured) {
+        this.standPieces[piecePosition].push(pieceCaptured);
 
-        return this.standPieces[pieceIdentifier].length;
+        return this.standPieces[piecePosition].length;
     }
 
     /*
