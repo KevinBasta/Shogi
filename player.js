@@ -1,6 +1,7 @@
 import {piece, king, goldGeneral, silverGeneral, rook, bishop, knight, lance, pawn} from "/pieces.js";
 import {defultBoardSetup, picesImages} from "/config.js";
-
+// Get rid of this class? 
+// it does nothing
 export class player { 
     constructor(gote_sente, player_bot) { 
         this.gote_sente = gote_sente;

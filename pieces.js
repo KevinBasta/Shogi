@@ -1,9 +1,9 @@
 import {defultBoardSetup, picesImages} from "/config.js";
 import {board} from "/board.js";
 import { getMovementBorder, playerTwoView } from "/main.js";
-
 //import {game} from "/main.js"; 
-// super class
+
+// Super class
 export class piece { 
     constructor(gote_sente, pieceType, position, pieceObjectName) { 
         this.gote_sente = gote_sente; 
@@ -15,6 +15,7 @@ export class piece {
         
         this.setFacingDirection();
     }
+
 
     // Getters and setters
     getGoteSente() { 
@@ -42,28 +43,8 @@ export class piece {
         return this.pieceType;
     }
 
-    
 
-    toString() { 
-       return `${this.pieceObjectName} is of type ${this.pieceType} and belongs to ${this.gote_sente}. Currently it's at position ${this.position}.`;
-    }
-
-    getPossibleMoves() { 
-        
-    }
-
-    movepiece(piece, newPosition) { 
-
-    }
-
-    switchOwner(newOwner) { 
-        // pop from old player obj array and add to other player's array
-    }
-
-    filterMoves(movesList, board) {
-        
-    }
-
+    // Analyzes result of getMovementBorder in main.js
     movesHelper(resultStr, xCoordinate, yCoordinate, movesArr) {
         let brakeLoop = false;
         
@@ -78,16 +59,33 @@ export class piece {
 
         return [movesArr, brakeLoop];
     }
+
+
+    // Other
+    getPossibleMoves() { 
+        // Implemented in all subclasses
+    }
+
+    movepiece(piece, newPosition) { 
+        // Keep in board.js?
+    }
+
+    filterMoves(movesList, board) {
+        // What was this for again?
+    }
+
+    toString() { 
+        return `${this.pieceObjectName} is of type ${this.pieceType} and belongs to ${this.gote_sente}. Currently it's at position ${this.position}.`;
+     }
 }
 
 
-/* each class below defines it's own legal movments and promotions */
-// king
+
+/*
+ Each class below defines it's own legal movments and promotions
+ king
+ */
 export class king extends piece { 
-/*  don't need a constructor since the piece one would be used instead
-    constructor(gote_sente, pieceType, position, pieceObjectName) { 
-        super(gote_sente, pieceType, position, pieceObjectName);
-    }  */
     getPossibleMoves() { 
         let movesArray = [];
         let xPosition = parseInt(this.position.substring(0, 1));
@@ -109,13 +107,15 @@ export class king extends piece {
         }        
         return movesArray;
     }
-
-    // Have an upper level function that gets the moves of all the pieces from the other player so that the king doesn't diliberatly die
+    // Have an upper level function that gets the moves of all the pieces 
+    // from the other player so that the king doesn't diliberatly die
 }
 
 
-// generals
-export class goldGeneral extends piece { 
+/* 
+ generals
+ */
+ export class goldGeneral extends piece { 
     /* maybe should interact with an array representation of the board */
     getPossibleMoves() { 
         // different moves for promotion and in check?
@@ -170,10 +170,7 @@ export class goldGeneral extends piece {
         movesArray = processedResultBottom[0]; 
 
         return movesArray;
-
     }
-
-
 }
 
 export class silverGeneral extends piece { 
@@ -220,7 +217,9 @@ export class silverGeneral extends piece {
 }
 
 
-// rook and bishop 
+/* 
+ rook and bishop 
+ */
 export class rook extends piece { 
     getPossibleMoves() { 
         let movesArray = [];
@@ -304,6 +303,7 @@ export class bishop extends piece {
             movesArray = processedResult[0];
             if (processedResult[1]) break;
         }
+
         // left down
         xPositionMove = xPosition; 
         yPositionMove = yPosition; 
@@ -318,11 +318,12 @@ export class bishop extends piece {
 
         return movesArray;
     }
-    
 }
 
 
-// knight and lance
+/* 
+ knight and lance
+ */
 export class knight extends piece { 
     getPossibleMoves() { 
         let movesArray = [];
@@ -345,10 +346,12 @@ export class knight extends piece {
             rightMoveY = yPosition-2;
         }
         
+        // Top left
         let resultLeft = getMovementBorder(leftMoveX, leftMoveY, this.gote_sente);
         let processedResultLeft = this.movesHelper(resultLeft, leftMoveX, leftMoveY, movesArray);
         movesArray = processedResultLeft[0];
 
+        // Top Right
         let resultRight = getMovementBorder(rightMoveX, rightMoveY, this.gote_sente);
         let processedResultRight = this.movesHelper(resultRight, rightMoveX, rightMoveY, movesArray);
         movesArray = processedResultRight[0];
@@ -376,7 +379,6 @@ export class lance extends piece {
                 let processedResult = this.movesHelper(result, xPosition, nextY, movesArray);
                 movesArray = processedResult[0];
                 if (processedResult[1]) break;
-                
             }
         }
         return movesArray;
@@ -384,7 +386,9 @@ export class lance extends piece {
 }
 
 
-// pawn 
+/*
+ pawn
+ */ 
 export class pawn extends piece { 
     getPossibleMoves() { 
         let movesArray = [];

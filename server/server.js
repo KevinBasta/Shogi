@@ -22,6 +22,7 @@ io.on('connection', client => {
     })
 
     client.on('turn', ([lastposition, currentEmptyCellEmit]) => client.broadcast.emit('turn', [lastposition, currentEmptyCellEmit]));
+    
     client.on('newGame', handleNewGame);
 
     function handleNewGame() {
