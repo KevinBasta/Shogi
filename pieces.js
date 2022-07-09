@@ -43,6 +43,10 @@ export class piece {
         return this.pieceType;
     }
 
+    unpromote() { 
+        this.isPromoted = false;
+    }
+
 
     // Analyzes result of getMovementBorder in main.js
     movesHelper(resultStr, xCoordinate, yCoordinate, movesArr) {

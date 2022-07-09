@@ -20,6 +20,7 @@ export class board {
         this.player2 = player2;
         this.initpieces();
         this.standPieces = {};
+        this.initStandPieces();
 
         console.log(this.gameBoard);
     }
@@ -113,9 +114,12 @@ export class board {
             } else if (opponentCapturedPiece.getGoteSente() === "sente") { 
                 positionInStand = standPiecesMap[opponentCapturedPiece.getPieceType()][0];           
             }
-            
+
+            opponentCapturedPiece.unpromote();
+            let opponentCapturedPieceTotal = this.addStandPiece(opponentCapturedPiece.getGoteSente() + opponentCapturedPiece.getPieceType(), opponentCapturedPiece);
+
             // Shows the piece on the appropriate piece stand
-            renderCapturedPieceInStand(positionInStand);
+            renderCapturedPieceInStand(positionInStand, opponentCapturedPieceTotal);
         }
     }
 
@@ -155,6 +159,33 @@ export class board {
         }
     }
 
+    initStandPieces() { 
+        // Giving each player an array for each type of captured piece
+        this.standPieces = { 
+            "sentePawn":          [],
+            "senteLance":         [],
+            "senteKnight":        [],
+            "senteSilverGeneral": [],
+            "senteGoldGeneral":   [],
+            "senteRook":          [],
+            "senteBishop":        [],
+
+            "gotePawn":          [],
+            "goteLance":         [],
+            "goteKnight":        [],
+            "goteSilverGeneral": [],
+            "goteGoldGeneral":   [],
+            "goteRook":          [],
+            "goteBishop":        []
+        }
+    }
+
+    // Adds a piece to standPieces obj data
+    addStandPiece(pieceIdentifier, pieceCaptured) {
+        this.standPieces[pieceIdentifier].push(pieceCaptured);
+
+        return this.standPieces[pieceIdentifier].length;
+    }
 
     /*
      returns gameboard

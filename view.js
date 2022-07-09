@@ -34,35 +34,46 @@ import {addPossibleMovesEvent, removeEmptyCellEvent, playerTwoView} from "/main.
  Showing where a captured piece of a given type would go on the stands
  */
 export function renderPlaceholderStandPiece(standPosition, pieceType, pieceName) {
-    // Getting the div spesified and creating the image
+    // Getting the div spesified, creating the image and piece counter
     let position = document.getElementById(standPosition);
     let pieceImage = document.createElement("img");
+    let pieceCounter = document.createElement("span");
 
     // Setting the image src, name, popsition, and classes
     pieceImage.setAttribute("src", picesImages[pieceType]);
     pieceImage.setAttribute("pieceName", pieceName);
     pieceImage.setAttribute("standpos", standPosition);
     pieceImage.setAttribute("class", "stand-piece-placeholder");
+    
+    // Making the pieceCounter hidden at start of game
+    let counterNumb = document.createTextNode("0");
+    pieceCounter.setAttribute("pieceCounter", "true");
+    pieceCounter.setAttribute("class", "stand-piece-count stand-piece-count-nodisplay");
+    pieceCounter.appendChild(counterNumb);
 
     // If image is facing the opposite way then rotate it and make it unclickable
     if ((standPosition.substring(0, 1) === 'o' && !playerTwoView) || (playerTwoView && standPosition.substring(0, 1) === 'p')) {
         pieceImage.setAttribute("class", "stand-piece-placeholder piece-rotate opponent-piece-unclickable");
     }
     position.appendChild(pieceImage);
+    position.appendChild(pieceCounter);
 }
 
 
 /* 
  Showing the piece captured in the stand and how many there are
  */
-export function renderCapturedPieceInStand(positionInStand) { 
+export function renderCapturedPieceInStand(positionInStand, totalOfPiece) { 
     // Getting the div spesified and selecting the image
     let standCell = document.getElementById(positionInStand);
     let pieceOnStand = standCell.querySelector(`img`);
+    let pieceCounter = standCell.querySelector('span[pieceCounter="true"]'); 
 
     // for displaying how many are captured
-    //let pieceCounter = standCell.querySelector(`img`);
-    console.log(pieceOnStand)
+    let counterNumb = document.createTextNode(totalOfPiece);
+    pieceCounter.setAttribute("class", "stand-piece-count");
+    pieceCounter.removeChild(pieceCounter.firstChild);
+    pieceCounter.appendChild(counterNumb);
 
     // Setting classes for the piece based on player two view
     if ((positionInStand.substring(0, 1) === 'o' && !playerTwoView) || (playerTwoView && positionInStand.substring(0, 1) === 'p')) {

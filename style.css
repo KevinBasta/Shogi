@@ -173,13 +173,23 @@ player-piece-stand div span {
     position: absolute; 
     bottom: 0; 
     right: 0;
-    /* font-size: 5vw; */
-    font-size: 2vw;
-    color: #444;
+    z-index: 10;
+
+    font-size: 1.5vw;
     opacity: 0.9;
-    z-index: 2;
+    color: rgb(255, 255, 255);
+
+    border: 3px solid black;
+    padding: 0vw 0.4vw;
+    border-radius: 50%;
+    background-color: black;
+    
     /* important */
     pointer-events: none;
+}
+
+.stand-piece-count-nodisplay {
+    display: none;
 }
 
 .stand-piece-placeholder { 
