@@ -14,7 +14,6 @@ export class piece {
         this.inCheck = false;
         
         this.setFacingDirection();
-        
     }
 
     // Getters and setters

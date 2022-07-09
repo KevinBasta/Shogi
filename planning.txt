@@ -9,9 +9,30 @@ define illigal movements (no two pawns in a file (drop), can't move king into da
 make mechanism for keeping track of movements (current state of board vs previous)
 
 
+Restrictions. There are three restrictions on dropping pieces; the last two of these apply only to pawns:
+Piece with No Moves (Japanese: 行き所のない駒 ikidokorononaikoma): Pawns, lances and knights may not be dropped onto the last (9th) rank, and knights may not be dropped onto the penultimate (8th) rank; this is because such dropped pieces would have no legal moves on subsequent turns (as they can only move in the forward direction).
+Two Pawns (Japanese: 二歩 nifu): A pawn may not be dropped onto a file (column) containing another unpromoted pawn of the same player (promoted pawns do not count).
+Drop Pawn Mate (Japanese: 打ち歩詰め uchifudzume): A pawn may not be dropped to give an immediate checkmate. (This rule only applies specifically to pawns, drops and checkmates − to clarify, a player may deliver an immediate checkmate by dropping a non-pawn piece, a player may checkmate a king with a pawn that is already on the board, and a pawn may be dropped to give an immediate check as long as it does not also result in checkmate.)
 
 
 
+Illegal moves include:
+Violating the Two Pawns (nifu) restriction (See §Drops above.)
+Violating the Drop Pawn Mate (uchifuzume) restriction
+Dropping or moving a piece to position where it cannot move (such as dropping a knight to an opponent's last two ranks, etc.)
+Dropping a piece with its promoted value
+Playing out of turn, e.g. making more than one move or white moving first instead of moving second.
+Making perpetual check four times (cf. sennichite)
+Leaving one's king in check, or moving one's king into check
+Moving a piece contrary to how its movements are defined (for example, moving a gold like a silver, or moving an unpromoted bishop off its legal diagonal)
+
+
+
+Promoting a piece changes the way it moves. The various pieces promote as follows:
+A silver general, knight, lance, or pawn has its normal power of movement replaced by that of a gold general.
+A rook or bishop keeps its original movement and gains the power to move one square in any direction (like a king). For a promoted bishop, this means it is able to reach any square on the board, given enough moves.
+A king or a gold general does not promote; nor can a piece that is already promoted.
+When captured, a piece loses its promoted status. Otherwise promotion is permanent.
 
 
 

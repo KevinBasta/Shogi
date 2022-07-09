@@ -2,7 +2,7 @@ import {player} from "/player.js";
 import {addPossibleMovesEvent, removeEmptyCellEvent, playerTwoView} from "/main.js";
 import {defultBoardSetup, defultStandSetups, picesImages} from "/config.js"; 
 import {piece, king, goldGeneral, silverGeneral, rook, bishop, knight, lance, pawn} from "/pieces.js";
-import {renderNewPieceImage, renderStandPiece, renderCapturedPieceInStand, removeChildElement, removeOldPossibleMovesStyling} from "/view.js";
+import {renderNewPieceImage, renderPlaceholderStandPiece, renderCapturedPieceInStand, removeChildElement, removeOldPossibleMovesStyling} from "/view.js";
 
 
 /*
@@ -36,7 +36,7 @@ export class board {
         // Rendering stand pieces placeholders
         for (const pieceName in defultStandSetups) { 
             let pieceIndexInObj = defultStandSetups[pieceName];
-            renderStandPiece(pieceIndexInObj[0], pieceIndexInObj[1], pieceName);
+            renderPlaceholderStandPiece(pieceIndexInObj[0], pieceIndexInObj[1], pieceName);
         }
     }
 
