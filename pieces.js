@@ -12,6 +12,7 @@ export class piece {
         this.pieceObjectName = pieceObjectName;
         this.isPromoted = false; 
         this.inCheck = false;
+        this.inStand = false;
         
         this.setFacingDirection();
     }
@@ -47,6 +48,13 @@ export class piece {
         this.isPromoted = false;
     }
 
+    inStandTrue() { 
+        this.inStand = true;
+    }
+
+    inStandFalse() { 
+        this.inStand = false;
+    }
 
     // Analyzes result of getMovementBorder in main.js
     movesHelper(resultStr, xCoordinate, yCoordinate, movesArr) {

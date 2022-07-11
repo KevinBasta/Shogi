@@ -92,6 +92,12 @@ export class board {
         removeOldPossibleMovesStyling(this.lastClicked[1]);
     }
 
+    /*
+     Moves a piece from the stand in the data and ui
+     */
+    movePieceFromStand() { 
+
+    }
 
     /*
      Changes the properties of a captured piece 
@@ -120,6 +126,7 @@ export class board {
             }
 
             opponentCapturedPiece.unpromote();
+            opponentCapturedPiece.inStandTrue();
             let opponentCapturedPieceTotal = this.addStandPiece(positionInStand, opponentCapturedPiece);
 
             // Shows the piece on the appropriate piece stand

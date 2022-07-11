@@ -181,6 +181,7 @@ export function addPossibleMovesEvent(pieceClicked, pieceInStand) {
             possibleMoveCellsArray = pieceObject.getPossibleMoves();
         } else {
             let capturedPieceTypeArray = game.standPieces[currentPieceCell];
+            //loc_array.at(-1) instead of the line below to get last element
             pieceObject = capturedPieceTypeArray[capturedPieceTypeArray.length - 1];
             console.log(pieceObject)
             possibleMoveCellsArray = pieceObject.getPossibleDrops();
@@ -238,7 +239,11 @@ export function removeEmptyCellEvent(cell) {
 
 function emptyCellEvent(e) {
     let currentEmptyCell = e.target.getAttribute('id');
-    game.movePiece(game.lastClicked[2], currentEmptyCell);
+    if (game.lastClicked[0].inStand === false) {
+        game.movePiece(game.lastClicked[2], currentEmptyCell);
+    } else { 
+        game.movePieceFromStand();
+    }
     //socket.emit('turn', [game.lastClicked[2], currentEmptyCell]);
 }
 
@@ -249,6 +254,7 @@ function emptyCellEvent(e) {
  */
 function emptyCellServerEvent(lastposition, currentEmptyCellEmit)  {
     let currentEmptyCell = currentEmptyCellEmit;
+    // Need to copy setup above
     game.movePiece(lastposition, currentEmptyCell);
 }
 
