@@ -165,64 +165,115 @@ function labelBoard() {
   can move on the board. Handles giving and removing events from 
   the cells where the players piece can possibly move.
  */
-export function addPossibleMovesEvent(pieceClicked, pieceInStand) {
-    pieceClicked.addEventListener("click", function (e) {
-        // Other way to do thing using attribute, maybe just use the div order to make more secure?
-        //let pieceObject = game.gameBoard[e.target.getAttribute("pieceName")];
-        //console.log(e.target.parentElement.getAttribute('id'));
-
-        // Getting the cell in ui, the piece in gameboard, then possible moves
-        let currentPieceCell = e.target.parentElement.getAttribute('id');
-        let pieceObject;
-        let possibleMoveCellsArray;
-
-        if (!pieceInStand) {
-            pieceObject = game.gameBoard[currentPieceCell];
-            possibleMoveCellsArray = pieceObject.getPossibleMoves();
-        } else {
-            let capturedPieceTypeArray = game.standPieces[currentPieceCell];
-            //loc_array.at(-1) instead of the line below to get last element
-            pieceObject = capturedPieceTypeArray[capturedPieceTypeArray.length - 1];
-            console.log(pieceObject)
-            possibleMoveCellsArray = pieceObject.getPossibleDrops();
-        }
-        console.log(game);
-        console.log(pieceObject);
-        
-        // If the last piece clicked is not the same as the current piece clicked
-        // then get rid of old possible moves cell identifiers and event
-        if (game.lastClicked[0] != pieceObject) { 
-            for (let i of game.lastClicked[1]) { 
-                let position = document.getElementById(i);
-                removeEmptyCellEvent(position);
-                position.setAttribute("class", "");
-                position.setAttribute("click", "false");
-            }
-        }
-        
-        // Setting data for the lastclicked array
-        game.lastClicked[0] = pieceObject;
-        game.lastClicked[1] = possibleMoveCellsArray; 
-        game.lastClicked[2] = currentPieceCell;
-        
-        // For all cells the given piece can move to
-        // deactivate if active and activate if deactivated
-        for (let i of possibleMoveCellsArray) { 
-            let position = document.getElementById(i);
-            console.log(position);
-            if (position.getAttribute("click") == "true") { 
-                removeEmptyCellEvent(position);
-                position.setAttribute("class", "");
-                position.setAttribute("click", "false");
-            } else { 
-                addEmptyCellEvent(position);
-                position.setAttribute("class", "piece-possible-move-position");
-                position.setAttribute("click", "true");
-            }            
-        }
-    });
+export function addPossibleMovesEvent(pieceClicked) {
+    pieceClicked.addEventListener("click", pieceClickEvent);
 }
 
+function pieceClickEvent(e) {
+    // Other way to do thing using attribute, maybe just use the div order to make more secure?
+    //let pieceObject = game.gameBoard[e.target.getAttribute("pieceName")];
+    //console.log(e.target.parentElement.getAttribute('id'));
+    
+    // Getting the cell in ui, the piece in gameboard, then possible moves
+    let currentPieceCell = e.target.parentElement.getAttribute('id');
+    let pieceObject;
+    let possibleMoveCellsArray;
+    
+    
+    pieceObject = game.gameBoard[currentPieceCell];
+    possibleMoveCellsArray = pieceObject.getPossibleMoves();
+    
+    console.log(game);
+    console.log(pieceObject);
+    
+    // If the last piece clicked is not the same as the current piece clicked
+    // then get rid of old possible moves cell identifiers and event
+    if (game.lastClicked[0] != pieceObject) { 
+        for (let i of game.lastClicked[1]) { 
+            let position = document.getElementById(i);
+            removeEmptyCellEvent(position);
+            position.setAttribute("class", "");
+            position.setAttribute("click", "false");
+        }
+    }
+    
+    // Setting data for the lastclicked array
+    game.lastClicked[0] = pieceObject;
+    game.lastClicked[1] = possibleMoveCellsArray; 
+    game.lastClicked[2] = currentPieceCell;
+    
+    // For all cells the given piece can move to
+    // deactivate if active and activate if deactivated
+    for (let i of possibleMoveCellsArray) { 
+        let position = document.getElementById(i);
+        console.log(position);
+        if (position.getAttribute("click") == "true") { 
+            removeEmptyCellEvent(position);
+            position.setAttribute("class", "");
+            position.setAttribute("click", "false");
+        } else { 
+            addEmptyCellEvent(position);
+            position.setAttribute("class", "piece-possible-move-position");
+            position.setAttribute("click", "true");
+        }            
+    }
+}
+
+export function addStandPossibleMovesEvent(pieceClicked) {
+    pieceClicked.addEventListener("click", standPieceClickEvent);
+}
+
+export function removeStandPossibleMovesEvent(pieceClicked) { 
+    pieceClicked.removeEventListener("click", standPieceClickEvent);
+}
+
+function standPieceClickEvent(e) {    
+    // Getting the cell in ui, the piece in gameboard, then possible moves
+    let currentPieceCell = e.target.parentElement.getAttribute('id');
+    let pieceObject;
+    let possibleMoveCellsArray;
+    
+    let capturedPieceTypeArray = game.standPieces[currentPieceCell];
+    //loc_array.at(-1) instead of the line below to get last element
+    pieceObject = capturedPieceTypeArray[capturedPieceTypeArray.length - 1];
+    console.log(pieceObject)
+    possibleMoveCellsArray = pieceObject.getPossibleDrops();
+    
+    console.log(game);
+    console.log(pieceObject);
+    
+    // If the last piece clicked is not the same as the current piece clicked
+    // then get rid of old possible moves cell identifiers and event
+    if (game.lastClicked[0] != pieceObject) { 
+        for (let i of game.lastClicked[1]) { 
+            let position = document.getElementById(i);
+            removeEmptyCellEvent(position);
+            position.setAttribute("class", "");
+            position.setAttribute("click", "false");
+        }
+    }
+    
+    // Setting data for the lastclicked array
+    game.lastClicked[0] = pieceObject;
+    game.lastClicked[1] = possibleMoveCellsArray; 
+    game.lastClicked[2] = currentPieceCell;
+    
+    // For all cells the given piece can move to
+    // deactivate if active and activate if deactivated
+    for (let i of possibleMoveCellsArray) { 
+        let position = document.getElementById(i);
+        console.log(position);
+        if (position.getAttribute("click") == "true") { 
+            removeEmptyCellEvent(position);
+            position.setAttribute("class", "");
+            position.setAttribute("click", "false");
+        } else { 
+            addEmptyCellEvent(position);
+            position.setAttribute("class", "piece-possible-move-position");
+            position.setAttribute("click", "true");
+        }            
+    }
+}
 
 
 /* 
@@ -242,7 +293,7 @@ function emptyCellEvent(e) {
     if (game.lastClicked[0].inStand === false) {
         game.movePiece(game.lastClicked[2], currentEmptyCell);
     } else { 
-        game.movePieceFromStand();
+        game.movePieceFromStand(game.lastClicked[2], currentEmptyCell);
     }
     //socket.emit('turn', [game.lastClicked[2], currentEmptyCell]);
 }

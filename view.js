@@ -1,5 +1,5 @@
 import {defultBoardSetup, defultStandSetups, picesImages} from "/config.js"; 
-import {addPossibleMovesEvent, removeEmptyCellEvent, playerTwoView} from "/main.js";
+import {addPossibleMovesEvent, addStandPossibleMovesEvent, removeStandPossibleMovesEvent, removeEmptyCellEvent, playerTwoView} from "/main.js";
 
 
 /* 
@@ -43,7 +43,7 @@ export function renderPlaceholderStandPiece(standPosition, pieceType, pieceName)
     pieceImage.setAttribute("src", picesImages[pieceType]);
     pieceImage.setAttribute("pieceName", pieceName);
     pieceImage.setAttribute("standpos", standPosition);
-    pieceImage.setAttribute("class", "stand-piece-placeholder");
+    pieceImage.setAttribute("class", "piece stand-piece-placeholder");
     
     // Making the pieceCounter hidden at start of game
     let counterNumb = document.createTextNode("0");
@@ -53,7 +53,7 @@ export function renderPlaceholderStandPiece(standPosition, pieceType, pieceName)
 
     // If image is facing the opposite way then rotate it and make it unclickable
     if ((standPosition.substring(0, 1) === 'o' && !playerTwoView) || (playerTwoView && standPosition.substring(0, 1) === 'p')) {
-        pieceImage.setAttribute("class", "stand-piece-placeholder piece-rotate opponent-piece-unclickable");
+        pieceImage.setAttribute("class", "piece stand-piece-placeholder piece-rotate opponent-piece-unclickable");
     }
     position.appendChild(pieceImage);
     position.appendChild(pieceCounter);
@@ -81,8 +81,44 @@ export function renderCapturedPieceInStand(positionInStand, totalOfPiece) {
     } else { 
         pieceOnStand.setAttribute("class", "piece");
     }
-    addPossibleMovesEvent(pieceOnStand, true);
+    addStandPossibleMovesEvent(pieceOnStand);
 }
+
+ export function updateCapturedPieceInStand(positionInStand, totalOfPiece) { 
+    
+    let classAttributes = "";
+    // Setting classes for the piece based on player two view
+    if ((positionInStand.substring(0, 1) === 'o' && !playerTwoView) || (playerTwoView && positionInStand.substring(0, 1) === 'p')) {
+        classAttributes += "piece piece-rotate opponent-piece-unclickable ";
+    } else { 
+        classAttributes += "piece ";
+    }
+    
+    // Getting the div spesified and selecting the image
+    let standCell = document.getElementById(positionInStand);
+    let pieceOnStand = standCell.querySelector(`img`);
+    
+    
+    // for displaying how many are captured
+    let pieceCounter = standCell.querySelector('span[pieceCounter="true"]'); ;
+    let counterNumb = document.createTextNode(totalOfPiece);
+
+    if (totalOfPiece > 0) { 
+        pieceCounter.setAttribute("class", "stand-piece-count");
+    } else { 
+        classAttributes += "stand-piece-placeholder";
+        pieceCounter.setAttribute("class", "stand-piece-count stand-piece-count-nodisplay");
+        removeStandPossibleMovesEvent(pieceOnStand);
+    }
+
+    pieceCounter.removeChild(pieceCounter.firstChild);
+    pieceCounter.appendChild(counterNumb);
+
+
+    pieceOnStand.setAttribute("class", classAttributes);
+    
+}
+
 
 
 /* 

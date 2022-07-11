@@ -56,6 +56,14 @@ export class piece {
         this.inStand = false;
     }
 
+    setPosition(newPosition) {
+        this.position = newPosition;
+    }
+
+    getPosition() {
+        return this.position;
+    }
+
     // Analyzes result of getMovementBorder in main.js
     movesHelper(resultStr, xCoordinate, yCoordinate, movesArr) {
         let brakeLoop = false;
@@ -428,6 +436,6 @@ export class pawn extends piece {
     }
 
     getPossibleDrops() { 
-        
+        return ["55"];
     }
 }

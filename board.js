@@ -2,7 +2,7 @@ import {player} from "/player.js";
 import {addPossibleMovesEvent, removeEmptyCellEvent, playerTwoView} from "/main.js";
 import {defultBoardSetup, defultStandSetups, picesImages} from "/config.js"; 
 import {piece, king, goldGeneral, silverGeneral, rook, bishop, knight, lance, pawn} from "/pieces.js";
-import {renderNewPieceImage, renderPlaceholderStandPiece, renderCapturedPieceInStand, removeChildElement, removeOldPossibleMovesStyling} from "/view.js";
+import {renderNewPieceImage, renderPlaceholderStandPiece, renderCapturedPieceInStand, updateCapturedPieceInStand, removeChildElement, removeOldPossibleMovesStyling} from "/view.js";
 
 
 /*
@@ -82,7 +82,7 @@ export class board {
         
         // Adding the new position as a key on the game board & deleting old one
         this.gameBoard[newPosition] = this.gameBoard[oldPosition];
-        this.gameBoard[newPosition].position = newPosition;
+        this.gameBoard[newPosition].setPosition(newPosition);
         delete this.gameBoard[oldPosition];
 
         // Creating new image element for the piece and appending it to new cell
@@ -95,8 +95,23 @@ export class board {
     /*
      Moves a piece from the stand in the data and ui
      */
-    movePieceFromStand() { 
+    movePieceFromStand(standPosition, positionInBoard) { 
+        // Removing the piece from the stand data
+        let pieceToDrop = this.removeStandPiece(standPosition);
 
+        // Updating stand ui
+        updateCapturedPieceInStand(standPosition, this.standPieces[standPosition].length);
+
+        // Adding piece to gameboard
+        this.gameBoard[positionInBoard] = pieceToDrop;
+        this.gameBoard[positionInBoard].setPosition(positionInBoard);
+        this.gameBoard[positionInBoard].inStandFalse();
+
+        // Creating new image element for the piece and appending it to new cell
+        renderNewPieceImage(positionInBoard, this.gameBoard);
+
+        // Getting rid of old possible move styling and events
+        removeOldPossibleMovesStyling(this.lastClicked[1]);
     }
 
     /*
@@ -127,6 +142,7 @@ export class board {
 
             opponentCapturedPiece.unpromote();
             opponentCapturedPiece.inStandTrue();
+            opponentCapturedPiece.setPosition(positionInStand);
             let opponentCapturedPieceTotal = this.addStandPiece(positionInStand, opponentCapturedPiece);
 
             // Shows the piece on the appropriate piece stand
@@ -180,6 +196,14 @@ export class board {
         this.standPieces[piecePosition].push(pieceCaptured);
 
         return this.standPieces[piecePosition].length;
+    }
+
+    // Removes a piece from the standPieces obj data
+    removeStandPiece(piecePosition) {
+        console.log(this.standPieces[piecePosition]);
+        let pieceToDrop = this.standPieces[piecePosition].pop();
+
+        return pieceToDrop;
     }
 
     /*
