@@ -84,39 +84,39 @@ export function renderCapturedPieceInStand(positionInStand, totalOfPiece) {
     addStandPossibleMovesEvent(pieceOnStand);
 }
 
+/* 
+ updating the piece captured in the stand and how many there are
+ */
  export function updateCapturedPieceInStand(positionInStand, totalOfPiece) { 
+     // Getting the div spesified and selecting the image
+     let standCell = document.getElementById(positionInStand);
+     let pieceOnStand = standCell.querySelector(`img`);
+     let classAttributes = "";
     
-    let classAttributes = "";
-    // Setting classes for the piece based on player two view
-    if ((positionInStand.substring(0, 1) === 'o' && !playerTwoView) || (playerTwoView && positionInStand.substring(0, 1) === 'p')) {
-        classAttributes += "piece piece-rotate opponent-piece-unclickable ";
-    } else { 
-        classAttributes += "piece ";
-    }
-    
-    // Getting the div spesified and selecting the image
-    let standCell = document.getElementById(positionInStand);
-    let pieceOnStand = standCell.querySelector(`img`);
-    
-    
-    // for displaying how many are captured
-    let pieceCounter = standCell.querySelector('span[pieceCounter="true"]'); ;
+    // for displaying how many still captured
+    let pieceCounter = standCell.querySelector('span[pieceCounter="true"]');
     let counterNumb = document.createTextNode(totalOfPiece);
 
     if (totalOfPiece > 0) { 
         pieceCounter.setAttribute("class", "stand-piece-count");
     } else { 
-        classAttributes += "stand-piece-placeholder";
+        classAttributes += "stand-piece-placeholder ";
         pieceCounter.setAttribute("class", "stand-piece-count stand-piece-count-nodisplay");
         removeStandPossibleMovesEvent(pieceOnStand);
     }
 
     pieceCounter.removeChild(pieceCounter.firstChild);
     pieceCounter.appendChild(counterNumb);
-
-
-    pieceOnStand.setAttribute("class", classAttributes);
     
+    // Setting classes for the piece based on player two view
+    if ((positionInStand.substring(0, 1) === 'o' && !playerTwoView) || (playerTwoView && positionInStand.substring(0, 1) === 'p')) {
+        classAttributes += "piece piece-rotate opponent-piece-unclickable ";
+    } else { 
+        classAttributes += "piece ";
+    }
+
+    // adding classes based on the ones in the class Atrtributes variable
+    pieceOnStand.setAttribute("class", classAttributes);
 }
 
 

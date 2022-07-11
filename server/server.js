@@ -21,7 +21,8 @@ io.on('connection', client => {
         io.emit('message', text)
     })
 
-    client.on('turn', ([lastposition, currentEmptyCellEmit]) => client.broadcast.emit('turn', [lastposition, currentEmptyCellEmit]));
+    client.on('pieceMove', ([lastposition, currentEmptyCellEmit]) => client.broadcast.emit('pieceMove', [lastposition, currentEmptyCellEmit]));
+    client.on('pieceDrop', ([lastposition, currentEmptyCellEmit]) => client.broadcast.emit('pieceDrop', [lastposition, currentEmptyCellEmit]));
     
     client.on('newGame', handleNewGame);
 

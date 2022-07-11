@@ -1,6 +1,6 @@
 import {defultBoardSetup, picesImages} from "/config.js";
 import {board} from "/board.js";
-import { getMovementBorder, playerTwoView } from "/main.js";
+import { getMovementBorder, playerTwoView, boardArray } from "/main.js";
 //import {game} from "/main.js"; 
 
 // Super class
@@ -40,8 +40,12 @@ export class piece {
         }
     }
     
-    getPieceType() { 
+    getType() { 
         return this.pieceType;
+    }
+
+    getPromotion() { 
+        return this.isPromoted;
     }
 
     unpromote() { 
@@ -88,6 +92,7 @@ export class piece {
 
     getPossibleDrops() { 
         //Implemented in all subclasses
+        return ["55"];
     }
 
     movepiece(piece, newPosition) { 
@@ -435,7 +440,36 @@ export class pawn extends piece {
         return movesArray;
     }
 
-    getPossibleDrops() { 
-        return ["55"];
+    getPossibleDrops(gameBoard) {
+        // ***still need to implement: A pawn may not be dropped to give an immediate checkmate
+        // No two pawns in one file (unless one is promoted)
+        let movesArray = []; 
+        let dropAllowFutureMovesStart; 
+        let dropAllowFutureMovesEnd;
+        
+        if (this.gote_sente === "gote") {
+            dropAllowFutureMovesStart = 0;
+            dropAllowFutureMovesEnd = boardArray.length - 1;
+        } else { 
+            dropAllowFutureMovesStart = 1;
+            dropAllowFutureMovesEnd = boardArray.length;
+        }
+
+        for (let column = 0; column < boardArray[0].length; column++) { 
+            let tempMovesArray = [];
+            for (let row = dropAllowFutureMovesStart; row < dropAllowFutureMovesEnd; row++) { 
+                let position = boardArray[row][column];
+                if (position in gameBoard) {
+                    if (gameBoard[position].getType() == "Pawn" && gameBoard[position].getPromotion() == false && this.gote_sente == gameBoard[position].getGoteSente()) {
+                        tempMovesArray = [];
+                        break;
+                    }
+                } else {
+                    tempMovesArray.push(position);
+                } 
+            }
+            movesArray.push(...tempMovesArray);
+        }
+        return movesArray;
     }
 }

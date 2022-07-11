@@ -2,7 +2,7 @@ import { player } from "/player.js";
 import { board } from "/board.js";
 import { piece } from "/pieces.js";
 
-/* const socket = io();
+const socket = io();
 
 // Logging on the client from the server
 socket.on('log', (n) => {
@@ -13,7 +13,7 @@ socket.on('log', (n) => {
 socket.on('init', (number) => {
     hendleInit(number);
     startGame();
-}); */
+});
 
 function startGame() { 
     labelBoard();
@@ -21,7 +21,7 @@ function startGame() {
 }
 
 export let playerTwoView = false;
-/* function hendleInit(number) {
+function hendleInit(number) {
     if (number === 2) {
         playerTwoView = true;
     }
@@ -44,14 +44,20 @@ socket.on('unknownGame', () => alert('unknowngame'));
 socket.on('tooManyPlayers', () => alert('tooManyPlayers'));
 
 // Sending information to other client
-socket.on('turn', ([lastposition, currentEmptyCellEmit]) => {
-    emptyCellServerEvent(lastposition, currentEmptyCellEmit);
-}); */
+socket.on('pieceMove', ([lastposition, currentEmptyCellEmit]) => {
+    pieceMoveServerEvent(lastposition, currentEmptyCellEmit);
+});
+
+socket.on('pieceDrop', ([lastposition, currentEmptyCellEmit]) => {
+    pieceDropServerEvent(lastposition, currentEmptyCellEmit);
+});
+
 
 
 /* 
  Variables for game initialization
  */
+export let boardArray;
 let player1;
 let player2;
 let lastClicked;
@@ -81,9 +87,9 @@ function joinGame() {
  Also labeling and giving ids to cells in piece stands.
  */
 function labelBoard() { 
+    boardArray = [[],[],[],[],[],[],[],[],[]];
     const rows = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
     const rowsKanji = ["一", "二", "三", "四", "五", "六", "七", "八", "九"];
-    let boardArray = [[],[],[],[],[],[],[],[],[]];
     let columnCounter;
     let rowCounter;
 
@@ -125,6 +131,8 @@ function labelBoard() {
             }
         }
     }
+
+    console.log(boardArray)
 
 
     // Labeling the player stands divs
@@ -237,7 +245,7 @@ function standPieceClickEvent(e) {
     //loc_array.at(-1) instead of the line below to get last element
     pieceObject = capturedPieceTypeArray[capturedPieceTypeArray.length - 1];
     console.log(pieceObject)
-    possibleMoveCellsArray = pieceObject.getPossibleDrops();
+    possibleMoveCellsArray = pieceObject.getPossibleDrops(game.gameBoard);
     
     console.log(game);
     console.log(pieceObject);
@@ -290,12 +298,13 @@ export function removeEmptyCellEvent(cell) {
 
 function emptyCellEvent(e) {
     let currentEmptyCell = e.target.getAttribute('id');
-    if (game.lastClicked[0].inStand === false) {
+    if (game.lastClicked[0].inStand == false) {
         game.movePiece(game.lastClicked[2], currentEmptyCell);
+        socket.emit('pieceMove', [game.lastClicked[2], currentEmptyCell]);
     } else { 
         game.movePieceFromStand(game.lastClicked[2], currentEmptyCell);
+        socket.emit('pieceDrop', [game.lastClicked[2], currentEmptyCell]);
     }
-    //socket.emit('turn', [game.lastClicked[2], currentEmptyCell]);
 }
 
 
@@ -303,12 +312,15 @@ function emptyCellEvent(e) {
  When the server sends the other player's move, this gives info about it
  to have the same effects happen on the other client 
  */
-function emptyCellServerEvent(lastposition, currentEmptyCellEmit)  {
+function pieceMoveServerEvent(lastposition, currentEmptyCellEmit)  {
     let currentEmptyCell = currentEmptyCellEmit;
-    // Need to copy setup above
     game.movePiece(lastposition, currentEmptyCell);
 }
 
+function pieceDropServerEvent(lastposition, currentEmptyCellEmit) { 
+    let currentEmptyCell = currentEmptyCellEmit;
+    game.movePieceFromStand(lastposition, currentEmptyCell);    
+}
 
 
 /* 
@@ -339,4 +351,4 @@ export function getMovementBorder(xPositionInt, yPositionInt, gote_sente) {
 
 
 // For local testing
-startGame();
+//startGame();

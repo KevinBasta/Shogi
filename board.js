@@ -130,14 +130,14 @@ export class board {
         }
         
         // chaning gote/sente value and finding the piece position in the stands
-        if (opponentCapturedPiece.getPieceType() != "King" && opponentCapturedPiece.getPieceType() != "ChallengingKing" ) {
+        if (opponentCapturedPiece.getType() != "King" && opponentCapturedPiece.getType() != "ChallengingKing" ) {
             let positionInStand;
 
             opponentCapturedPiece.changeGoteSente();
             if (opponentCapturedPiece.getGoteSente() === "gote") { 
-                positionInStand = standPiecesMap[opponentCapturedPiece.getPieceType()][1];
+                positionInStand = standPiecesMap[opponentCapturedPiece.getType()][1];
             } else if (opponentCapturedPiece.getGoteSente() === "sente") { 
-                positionInStand = standPiecesMap[opponentCapturedPiece.getPieceType()][0];           
+                positionInStand = standPiecesMap[opponentCapturedPiece.getType()][0];           
             }
 
             opponentCapturedPiece.unpromote();
