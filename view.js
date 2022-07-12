@@ -1,11 +1,11 @@
 import {defultBoardSetup, defultStandSetups, picesImages} from "/config.js"; 
-import {addPossibleMovesEvent, addStandPossibleMovesEvent, removeStandPossibleMovesEvent, removeEmptyCellEvent, playerTwoView} from "/main.js";
+import {addPossibleMovesEvent, addStandPossibleMovesEvent, removeStandPossibleMovesEvent, removeEmptyCellEvent, promotePiece, playerTwoView} from "/main.js";
 
 
 /* 
  Function to create new shogi piece image and put it in a cell
  */
- export function renderNewPieceImage(cellCoordinate, gameBoard) {
+export function renderNewPieceImage(cellCoordinate, gameBoard) {
     // Getting the div spesified and creating the image
     let position = document.getElementById(cellCoordinate);
     let pieceImage = document.createElement("img");
@@ -30,6 +30,19 @@ import {addPossibleMovesEvent, addStandPossibleMovesEvent, removeStandPossibleMo
         addPossibleMovesEvent(pieceImage, false);
     } else if (gameBoard[cellCoordinate].gote_sente === "sente" && !playerTwoView) {
         addPossibleMovesEvent(pieceImage, false);
+    }
+}
+
+export function updatePieceImage(cellCoordinate, gameBoard) {
+    // Getting the div spesified and creating the image
+    let position = document.getElementById(cellCoordinate);
+    let pieceImage = position.querySelector(`img`);
+    
+    // Adding the image src, classes, name, and then appending it to div
+    if (gameBoard[cellCoordinate].getPromotion()) {
+        pieceImage.setAttribute("src", picesImages["promoted" + gameBoard[cellCoordinate].pieceType]);
+    } else { 
+        pieceImage.setAttribute("src", picesImages[gameBoard[cellCoordinate].pieceType]);
     }
 }
 
@@ -145,4 +158,34 @@ export function removeOldPossibleMovesStyling(oldPossibleMoves) {
         position.setAttribute("class", "");
         position.setAttribute("click", "false");
     }
+}
+
+
+export function promotionQuestion(oldPiecePosition, newPiecePosition, gameBoard) { 
+    let promotionQuestion = document.getElementById("promotionContainer");
+    promotionQuestion.setAttribute("class", "promotionFlex");
+    let unpromotedButton = promotionQuestion.querySelector('div[id="unpromotedButton"');
+    let promotedButton = promotionQuestion.querySelector('div[id="promotedButton"');
+    unpromotedButton.removeChild(unpromotedButton.firstChild);
+    promotedButton.removeChild(promotedButton.firstChild);
+
+    let unpromotedPieceImage = document.createElement("img");
+    unpromotedPieceImage.setAttribute("src", picesImages[gameBoard[oldPiecePosition].getType()]);
+    console.log(gameBoard[oldPiecePosition].getType());
+    unpromotedPieceImage.setAttribute("class", "piece");
+    unpromotedButton.appendChild(unpromotedPieceImage);
+    unpromotedPieceImage.addEventListener("click", () => { 
+        promotionQuestion.setAttribute("class", "promotionFlex hide");;
+    });
+
+    let promotedPieceImage = document.createElement("img");
+    promotedPieceImage.setAttribute("src", picesImages["promoted" + gameBoard[oldPiecePosition].getType()]);
+    promotedPieceImage.setAttribute("class", "piece");
+    promotedButton.appendChild(promotedPieceImage);
+    promotedPieceImage.addEventListener("click", () => { 
+        //gameBoard[piecePosition].promote();
+        //gameBoard.promotepiece(piecePosition)
+        promotePiece(newPiecePosition);
+        promotionQuestion.setAttribute("class", "promotionFlex hide");
+    });
 }

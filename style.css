@@ -4,6 +4,56 @@ body {
     max-height: 100%;
 }
 
+.promotionFlex {
+    margin-top: 1%;
+    width: 100%;
+    height: minmax(15vh, auto);
+    z-index: 100;
+    position: absolute;
+    top: auto;
+    left: auto;
+    
+    display:flex;
+    justify-content: center;
+}
+
+
+
+#promotionQuestion {
+    background-color: rgb(72, 72, 72);
+    width: 55%;
+    height: 100%;
+    border-radius: 7px;
+    display: flex;
+    flex-direction: column;
+}
+
+#promotionQuestion p {
+    padding: 2% 0 0 7%;
+    color: rgb(201, 201, 201);
+}
+
+
+
+#pieceButtons {
+    display: flex;
+    gap: 20%;
+    justify-content: center;
+    margin: 2vh;
+}
+
+#pieceButtons div {
+    background-color: rgb(112, 112, 112);
+    aspect-ratio: 1;
+    border: 2px solid;
+    border-color: black;
+}
+
+
+.hide { 
+    display: none;
+}
+
 shogi { 
     display: grid;    
     gap: minmax(1rem, 100rem);
@@ -19,6 +69,7 @@ shogi {
 span { 
     font-size:  2vw;
 }
+
 
 
 

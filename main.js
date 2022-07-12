@@ -1,6 +1,7 @@
 import { player } from "/player.js";
 import { board } from "/board.js";
 import { piece } from "/pieces.js";
+import { promotionQuestion } from "/view.js";
 
 /* const socket = io();
 
@@ -168,6 +169,7 @@ function labelBoard() {
         
             // Giving the div/cell an id with cell number and appending the span element to it
             child.setAttribute("id", label);
+            //child.setAttribute("data-id", label);
             child.appendChild(spanText);
     }
 }
@@ -353,6 +355,14 @@ export function getMovementBorder(xPositionInt, yPositionInt, gote_sente) {
     }
 
     return "empty";
+}
+
+export function askIfWantsToPromote(oldPiecePosition, newPiecePosition) { 
+    promotionQuestion(oldPiecePosition, newPiecePosition, game.gameBoard);
+}
+
+export function promotePiece(piecePosition) {
+    game.promotePieceHandle(piecePosition);
 }
 
 

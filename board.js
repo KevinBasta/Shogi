@@ -2,7 +2,7 @@ import {player} from "/player.js";
 import {addPossibleMovesEvent, removeEmptyCellEvent, playerTwoView} from "/main.js";
 import {defultBoardSetup, defultStandSetups, picesImages} from "/config.js"; 
 import {piece, king, goldGeneral, silverGeneral, rook, bishop, knight, lance, pawn} from "/pieces.js";
-import {renderNewPieceImage, renderPlaceholderStandPiece, renderCapturedPieceInStand, updateCapturedPieceInStand, removeChildElement, removeOldPossibleMovesStyling} from "/view.js";
+import {renderNewPieceImage, renderPlaceholderStandPiece, renderCapturedPieceInStand, updateCapturedPieceInStand, removeChildElement, removeOldPossibleMovesStyling, promotionQuestion, updatePieceImage} from "/view.js";
 
 
 /*
@@ -150,6 +150,11 @@ export class board {
         }
     }
 
+    promotePieceHandle(piecePosition) {
+        console.log(piecePosition);
+        this.gameBoard[piecePosition].promote();
+        updatePieceImage(piecePosition, this.gameBoard);
+    }
 
     /*
      Initializes pieces data from config.js
