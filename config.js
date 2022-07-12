@@ -83,5 +83,10 @@ export const picesImages = {
     "Pawn": "/pieces/syougi14_fuhyou.png", 
 
     // promotions
-    "": ""
+    "promotedSilverGeneral": "/pieces/syougi09_narigin.png", 
+    "promotedKnight": "/pieces/syougi11_narikei.png", 
+    "promotedLance": "/pieces/syougi13_narikyou.png", 
+    "promotedRook": "/pieces/syougi04_ryuuou.png", 
+    "promotedBishop": "/pieces/syougi06_ryuuma.png", 
+    "promotedPawn": "/pieces/syougi15_tokin.png"
 };

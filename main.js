@@ -2,7 +2,7 @@ import { player } from "/player.js";
 import { board } from "/board.js";
 import { piece } from "/pieces.js";
 
-const socket = io();
+/* const socket = io();
 
 // Logging on the client from the server
 socket.on('log', (n) => {
@@ -13,7 +13,7 @@ socket.on('log', (n) => {
 socket.on('init', (number) => {
     hendleInit(number);
     startGame();
-});
+}); */
 
 function startGame() { 
     labelBoard();
@@ -21,7 +21,7 @@ function startGame() {
 }
 
 export let playerTwoView = false;
-function hendleInit(number) {
+/* function hendleInit(number) {
     if (number === 2) {
         playerTwoView = true;
     }
@@ -50,7 +50,7 @@ socket.on('pieceMove', ([lastposition, currentEmptyCellEmit]) => {
 
 socket.on('pieceDrop', ([lastposition, currentEmptyCellEmit]) => {
     pieceDropServerEvent(lastposition, currentEmptyCellEmit);
-});
+}); */
 
 
 
@@ -86,6 +86,12 @@ function joinGame() {
  Labeling each cell on ui shogi board with ids and text.
  Also labeling and giving ids to cells in piece stands.
  */
+// start of game
+// Make a funciton to append the divs to html
+
+// right before each client or server move
+// make a funciton to erase and reappend divs to html incase elements are edited by user
+// make a function to earase and reappend all the pieces on the board and stands
 function labelBoard() { 
     boardArray = [[],[],[],[],[],[],[],[],[]];
     const rows = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
@@ -300,10 +306,10 @@ function emptyCellEvent(e) {
     let currentEmptyCell = e.target.getAttribute('id');
     if (game.lastClicked[0].inStand == false) {
         game.movePiece(game.lastClicked[2], currentEmptyCell);
-        socket.emit('pieceMove', [game.lastClicked[2], currentEmptyCell]);
+        //socket.emit('pieceMove', [game.lastClicked[2], currentEmptyCell]);
     } else { 
         game.movePieceFromStand(game.lastClicked[2], currentEmptyCell);
-        socket.emit('pieceDrop', [game.lastClicked[2], currentEmptyCell]);
+        //socket.emit('pieceDrop', [game.lastClicked[2], currentEmptyCell]);
     }
 }
 
@@ -351,4 +357,4 @@ export function getMovementBorder(xPositionInt, yPositionInt, gote_sente) {
 
 
 // For local testing
-//startGame();
+startGame();

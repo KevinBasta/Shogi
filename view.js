@@ -11,7 +11,11 @@ import {addPossibleMovesEvent, addStandPossibleMovesEvent, removeStandPossibleMo
     let pieceImage = document.createElement("img");
     
     // Adding the image src, classes, name, and then appending it to div
-    pieceImage.setAttribute("src", picesImages[gameBoard[cellCoordinate].pieceType]);
+    if (gameBoard[cellCoordinate].getPromotion()) {
+        pieceImage.setAttribute("src", picesImages["promoted" + gameBoard[cellCoordinate].pieceType]);
+    } else { 
+        pieceImage.setAttribute("src", picesImages[gameBoard[cellCoordinate].pieceType]);
+    }
     pieceImage.setAttribute("pieceName", gameBoard[cellCoordinate].pieceObjectName);
     pieceImage.setAttribute("class", "piece");
 

@@ -158,14 +158,6 @@ export class king extends piece {
  export class goldGeneral extends piece { 
     /* maybe should interact with an array representation of the board */
     getPossibleMoves() { 
-        // different moves for promotion and in check?
-    /*  if (isPromoted) { 
-
-        } else if (inCheck) { 
-        
-        } else { 
-
-        } */
         let movesArray = [];
 
         let xPosition = parseInt(this.position.substring(0, 1));
@@ -214,6 +206,14 @@ export class king extends piece {
 }
 
 export class silverGeneral extends piece { 
+        // different moves for promotion and in check?
+    /*  if (isPromoted) { 
+
+        } else if (inCheck) { 
+        
+        } else { 
+
+        } */
     getPossibleMoves() { 
         let movesArray = [];
         let xPosition = parseInt(this.position.substring(0, 1));
@@ -365,6 +365,25 @@ export class bishop extends piece {
  knight and lance
  */
 export class knight extends piece { 
+    setPosition(newPosition) {
+        this.position = newPosition;
+
+        // If a knight moves into the last two opposit cells it gets promoted
+        // due to not having any future moves
+        let pieceInLastRank = [];
+        if (this.gote_sente === "gote") {
+            pieceInLastRank.push(...boardArray[boardArray.length - 1].filter(cell => this.position == cell));
+            pieceInLastRank.push(...boardArray[boardArray.length - 2].filter(cell => this.position == cell));
+        } else { 
+            pieceInLastRank.push(...boardArray[0].filter(cell => this.position == cell));
+            pieceInLastRank.push(...boardArray[1].filter(cell => this.position == cell));
+        }
+        console.log(pieceInLastRank);
+        if (pieceInLastRank.length === 1) {
+            this.isPromoted = true;
+        }
+    }
+
     getPossibleMoves() { 
         let movesArray = [];
         let xPosition = parseInt(this.position.substring(0, 1));
@@ -425,6 +444,23 @@ export class knight extends piece {
 }
 
 export class lance extends piece { 
+    setPosition(newPosition) {
+        this.position = newPosition;
+
+        // If a lance moves into the last opposit cell it gets promoted
+        // due to not having any future moves
+        let pieceInLastRank;
+        if (this.gote_sente === "gote") {
+            pieceInLastRank = boardArray[boardArray.length - 1].filter(cell => this.position == cell);
+        } else { 
+            pieceInLastRank = boardArray[0].filter(cell => this.position == cell);
+        }
+        
+        if (pieceInLastRank.length === 1) {
+            this.isPromoted = true;
+        }
+    }
+
     getPossibleMoves() { 
         let movesArray = [];
         let xPosition = parseInt(this.position.substring(0, 1));
@@ -478,6 +514,23 @@ export class lance extends piece {
  pawn
  */ 
 export class pawn extends piece { 
+    setPosition(newPosition) {
+        this.position = newPosition;
+
+        // If a pawn moves into the last opposit cell it gets promoted
+        // due to not having any future moves
+        let pieceInLastRank;
+        if (this.gote_sente === "gote") {
+            pieceInLastRank = boardArray[boardArray.length - 1].filter(cell => this.position == cell);
+        } else { 
+            pieceInLastRank = boardArray[0].filter(cell => this.position == cell);
+        }
+
+        if (pieceInLastRank.length === 1) {
+            this.isPromoted = true;
+        }
+    }
+
     getPossibleMoves() { 
         let movesArray = [];
         let xPosition = parseInt(this.position.substring(0, 1));
