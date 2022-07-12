@@ -90,9 +90,20 @@ export class piece {
         // Implemented in all subclasses
     }
 
-    getPossibleDrops() { 
-        //Implemented in all subclasses
-        return ["55"];
+    getPossibleDrops(gameBoard) { 
+        // Changed in pawn, lance, and knight
+        // Used for bishop, rook, gold general, and silver general
+        let movesArray = []; 
+        
+        for (let column = 0; column < boardArray[0].length; column++) { 
+            for (let row = 0; row < boardArray.length; row++) { 
+                let position = boardArray[row][column];
+                if (!(position in gameBoard)) {
+                    movesArray.push(position);
+                }
+            }
+        }
+        return movesArray;
     }
 
     movepiece(piece, newPosition) { 
@@ -387,6 +398,30 @@ export class knight extends piece {
 
         return movesArray;
     }
+
+    getPossibleDrops(gameBoard) {
+        let movesArray = []; 
+        let dropAllowFutureMovesStart; 
+        let dropAllowFutureMovesEnd;
+        
+        if (this.gote_sente === "gote") {
+            dropAllowFutureMovesStart = 0;
+            dropAllowFutureMovesEnd = boardArray.length - 2;
+        } else { 
+            dropAllowFutureMovesStart = 2;
+            dropAllowFutureMovesEnd = boardArray.length;
+        }
+
+        for (let column = 0; column < boardArray[0].length; column++) { 
+            for (let row = dropAllowFutureMovesStart; row < dropAllowFutureMovesEnd; row++) { 
+                let position = boardArray[row][column];
+                if (!(position in gameBoard)) {
+                    movesArray.push(position);
+                }
+            }
+        }
+        return movesArray;
+    }
 }
 
 export class lance extends piece { 
@@ -408,6 +443,30 @@ export class lance extends piece {
                 let processedResult = this.movesHelper(result, xPosition, nextY, movesArray);
                 movesArray = processedResult[0];
                 if (processedResult[1]) break;
+            }
+        }
+        return movesArray;
+    }
+
+    getPossibleDrops(gameBoard) {
+        let movesArray = []; 
+        let dropAllowFutureMovesStart; 
+        let dropAllowFutureMovesEnd;
+        
+        if (this.gote_sente === "gote") {
+            dropAllowFutureMovesStart = 0;
+            dropAllowFutureMovesEnd = boardArray.length - 1;
+        } else { 
+            dropAllowFutureMovesStart = 1;
+            dropAllowFutureMovesEnd = boardArray.length;
+        }
+
+        for (let column = 0; column < boardArray[0].length; column++) { 
+            for (let row = dropAllowFutureMovesStart; row < dropAllowFutureMovesEnd; row++) { 
+                let position = boardArray[row][column];
+                if (!(position in gameBoard)) {
+                    movesArray.push(position);
+                }
             }
         }
         return movesArray;
