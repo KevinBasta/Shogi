@@ -23,6 +23,7 @@ io.on('connection', client => {
 
     client.on('pieceMove', ([lastposition, currentEmptyCellEmit]) => client.broadcast.emit('pieceMove', [lastposition, currentEmptyCellEmit]));
     client.on('pieceDrop', ([lastposition, currentEmptyCellEmit]) => client.broadcast.emit('pieceDrop', [lastposition, currentEmptyCellEmit]));
+    client.on('piecePromote', (piecePosition) => client.broadcast.emit('piecePromote', piecePosition));
     
     client.on('newGame', handleNewGame);
 

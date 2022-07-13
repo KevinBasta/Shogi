@@ -93,7 +93,7 @@ export class piece {
     checkIfCanPromote(oldPosition, newPosition) { 
         let canPromote = false; 
         
-        if (this.isPromoted === false && this.inStand === false) {
+        if (this.isPromoted === false && this.inStand === false && ((playerTwoView && this.gote_sente === "gote") || (!playerTwoView && this.gote_sente === "sente"))) {
             let oldrow = oldPosition.substring(1,2);
             let newrow = newPosition.substring(1,2);
             if (this.gote_sente === "gote") {    
@@ -112,6 +112,53 @@ export class piece {
                 askIfWantsToPromote(oldPosition, newPosition);
             }
         }
+    }
+
+    promotedPieceGoldGeneralMovement() { 
+        let movesArray = [];
+
+        let xPosition = parseInt(this.position.substring(0, 1));
+        let yPosition = parseInt(this.position.substring(1, 2));
+
+        let topYPos;
+        let botYPos;
+        let leftXPos;
+        let rightXPos;
+
+        if (this.gote_sente === "gote") { 
+            topYPos = yPosition+1;
+            botYPos = yPosition-1;
+            leftXPos =  xPosition-1;
+            rightXPos = xPosition+1;
+        } else { 
+            topYPos = yPosition-1;
+            botYPos = yPosition+1;
+            leftXPos =  xPosition+1;
+            rightXPos = xPosition-1;
+        }
+
+        // Top Three
+        for (let nextX = xPosition-1; nextX <= xPosition+1; nextX++) {
+            let result = getMovementBorder(nextX, topYPos, this.gote_sente);
+            let processedResult = this.movesHelper(result, nextX, topYPos, movesArray);
+            movesArray = processedResult[0]; 
+        }
+        
+        // Left and Right
+        let resultLeft = getMovementBorder(leftXPos, yPosition, this.gote_sente);
+        let processedResultLeft = this.movesHelper(resultLeft, leftXPos, yPosition, movesArray);
+        movesArray = processedResultLeft[0]; 
+        
+        let resultRight = getMovementBorder(rightXPos, yPosition, this.gote_sente);
+        let processedResultRight = this.movesHelper(resultRight, rightXPos, yPosition, movesArray);
+        movesArray = processedResultRight[0]; 
+
+        // Bottom One
+        let resultBottom = getMovementBorder(xPosition, botYPos, this.gote_sente);
+        let processedResultBottom = this.movesHelper(resultBottom, xPosition, botYPos, movesArray);
+        movesArray = processedResultBottom[0]; 
+
+        return movesArray;
     }
 
     // Other
@@ -252,41 +299,46 @@ export class silverGeneral extends piece {
         } */
     getPossibleMoves() { 
         let movesArray = [];
-        let xPosition = parseInt(this.position.substring(0, 1));
-        let yPosition = parseInt(this.position.substring(1, 2));
 
-        let topYPos;
-        let botYPos;
-        let leftXPos;
-        let rightXPos;
+        if (!this.isPromoted) {
+            let xPosition = parseInt(this.position.substring(0, 1));
+            let yPosition = parseInt(this.position.substring(1, 2));
 
-        if (this.gote_sente === "gote") { 
-            topYPos = yPosition+1;
-            botYPos = yPosition-1;
-            leftXPos =  xPosition-1;
-            rightXPos = xPosition+1;
+            let topYPos;
+            let botYPos;
+            let leftXPos;
+            let rightXPos;
+
+            if (this.gote_sente === "gote") { 
+                topYPos = yPosition+1;
+                botYPos = yPosition-1;
+                leftXPos =  xPosition-1;
+                rightXPos = xPosition+1;
+            } else { 
+                topYPos = yPosition-1;
+                botYPos = yPosition+1;
+                leftXPos =  xPosition+1;
+                rightXPos = xPosition-1;
+            }
+
+            // Top Three
+            for (let nextX = xPosition-1; nextX <= xPosition+1; nextX++) {
+                let result = getMovementBorder(nextX, topYPos, this.gote_sente);
+                let processedResult = this.movesHelper(result, nextX, topYPos, movesArray);
+                movesArray = processedResult[0]; 
+            }
+
+            //Bottom Corners
+            let resultLeftCorner = getMovementBorder(leftXPos, botYPos, this.gote_sente);
+            let processedResultLeftCorner = this.movesHelper(resultLeftCorner, leftXPos, botYPos, movesArray);
+            movesArray = processedResultLeftCorner[0]; 
+            
+            let resultRightCorner = getMovementBorder(rightXPos, botYPos, this.gote_sente);
+            let processedResultRightCorner = this.movesHelper(resultRightCorner, rightXPos, botYPos, movesArray);
+            movesArray = processedResultRightCorner[0]; 
         } else { 
-            topYPos = yPosition-1;
-            botYPos = yPosition+1;
-            leftXPos =  xPosition+1;
-            rightXPos = xPosition-1;
+            movesArray = this.promotedPieceGoldGeneralMovement();
         }
-
-        // Top Three
-        for (let nextX = xPosition-1; nextX <= xPosition+1; nextX++) {
-            let result = getMovementBorder(nextX, topYPos, this.gote_sente);
-            let processedResult = this.movesHelper(result, nextX, topYPos, movesArray);
-            movesArray = processedResult[0]; 
-        }
-
-        //Bottom Corners
-        let resultLeftCorner = getMovementBorder(leftXPos, botYPos, this.gote_sente);
-        let processedResultLeftCorner = this.movesHelper(resultLeftCorner, leftXPos, botYPos, movesArray);
-        movesArray = processedResultLeftCorner[0]; 
-        
-        let resultRightCorner = getMovementBorder(rightXPos, botYPos, this.gote_sente);
-        let processedResultRightCorner = this.movesHelper(resultRightCorner, rightXPos, botYPos, movesArray);
-        movesArray = processedResultRightCorner[0]; 
 
         return movesArray;
     }
@@ -426,34 +478,39 @@ export class knight extends piece {
 
     getPossibleMoves() { 
         let movesArray = [];
-        let xPosition = parseInt(this.position.substring(0, 1));
-        let yPosition = parseInt(this.position.substring(1, 2));
-        let leftMoveX;
-        let leftMoveY;
-        let rightMoveX;
-        let rightMoveY;
 
-        if (this.gote_sente === "gote") { 
-            leftMoveX = xPosition-1;
-            leftMoveY = yPosition+2;
-            rightMoveX = xPosition+1;
-            rightMoveY = yPosition+2;
+        if (!this.isPromoted) {
+            let xPosition = parseInt(this.position.substring(0, 1));
+            let yPosition = parseInt(this.position.substring(1, 2));
+            let leftMoveX;
+            let leftMoveY;
+            let rightMoveX;
+            let rightMoveY;
+
+            if (this.gote_sente === "gote") { 
+                leftMoveX = xPosition-1;
+                leftMoveY = yPosition+2;
+                rightMoveX = xPosition+1;
+                rightMoveY = yPosition+2;
+            } else { 
+                leftMoveX = xPosition-1;
+                leftMoveY = yPosition-2;
+                rightMoveX = xPosition+1;
+                rightMoveY = yPosition-2;
+            }
+            
+            // Top left
+            let resultLeft = getMovementBorder(leftMoveX, leftMoveY, this.gote_sente);
+            let processedResultLeft = this.movesHelper(resultLeft, leftMoveX, leftMoveY, movesArray);
+            movesArray = processedResultLeft[0];
+
+            // Top Right
+            let resultRight = getMovementBorder(rightMoveX, rightMoveY, this.gote_sente);
+            let processedResultRight = this.movesHelper(resultRight, rightMoveX, rightMoveY, movesArray);
+            movesArray = processedResultRight[0];
         } else { 
-            leftMoveX = xPosition-1;
-            leftMoveY = yPosition-2;
-            rightMoveX = xPosition+1;
-            rightMoveY = yPosition-2;
+            movesArray = this.promotedPieceGoldGeneralMovement();
         }
-        
-        // Top left
-        let resultLeft = getMovementBorder(leftMoveX, leftMoveY, this.gote_sente);
-        let processedResultLeft = this.movesHelper(resultLeft, leftMoveX, leftMoveY, movesArray);
-        movesArray = processedResultLeft[0];
-
-        // Top Right
-        let resultRight = getMovementBorder(rightMoveX, rightMoveY, this.gote_sente);
-        let processedResultRight = this.movesHelper(resultRight, rightMoveX, rightMoveY, movesArray);
-        movesArray = processedResultRight[0];
 
         return movesArray;
     }
@@ -507,24 +564,29 @@ export class lance extends piece {
 
     getPossibleMoves() { 
         let movesArray = [];
-        let xPosition = parseInt(this.position.substring(0, 1));
-        let yPosition = parseInt(this.position.substring(1, 2));
+        if (!this.isPromoted) {
+            let xPosition = parseInt(this.position.substring(0, 1));
+            let yPosition = parseInt(this.position.substring(1, 2));
 
-        if (this.gote_sente === "gote") {
-            for (let nextY = yPosition + 1; nextY <= 9; nextY++) {
-                let result = getMovementBorder(xPosition, nextY, this.gote_sente);
-                let processedResult = this.movesHelper(result, xPosition, nextY, movesArray);
-                movesArray = processedResult[0];
-                if (processedResult[1]) break;
+            if (this.gote_sente === "gote") {
+                for (let nextY = yPosition + 1; nextY <= 9; nextY++) {
+                    let result = getMovementBorder(xPosition, nextY, this.gote_sente);
+                    let processedResult = this.movesHelper(result, xPosition, nextY, movesArray);
+                    movesArray = processedResult[0];
+                    if (processedResult[1]) break;
+                }
+            } else { 
+                for (let nextY = yPosition - 1; nextY >= 1; nextY--) {
+                    let result = getMovementBorder(xPosition, nextY, this.gote_sente);
+                    let processedResult = this.movesHelper(result, xPosition, nextY, movesArray);
+                    movesArray = processedResult[0];
+                    if (processedResult[1]) break;
+                }
             }
         } else { 
-            for (let nextY = yPosition - 1; nextY >= 1; nextY--) {
-                let result = getMovementBorder(xPosition, nextY, this.gote_sente);
-                let processedResult = this.movesHelper(result, xPosition, nextY, movesArray);
-                movesArray = processedResult[0];
-                if (processedResult[1]) break;
-            }
+            movesArray = this.promotedPieceGoldGeneralMovement();
         }
+
         return movesArray;
     }
 
@@ -581,22 +643,28 @@ export class pawn extends piece {
 
     getPossibleMoves() { 
         let movesArray = [];
-        let xPosition = parseInt(this.position.substring(0, 1));
-        let yPosition = parseInt(this.position.substring(1, 2));
 
-        if (this.gote_sente === "gote") { 
-            let yLocalPosChange = yPosition+1;
-
-            let result = getMovementBorder(xPosition, yLocalPosChange, this.gote_sente);
-            let processedResult = this.movesHelper(result, xPosition, yLocalPosChange, movesArray);
-            movesArray = processedResult[0];
+        if (!this.isPromoted) {
+            let xPosition = parseInt(this.position.substring(0, 1));
+            let yPosition = parseInt(this.position.substring(1, 2));
+    
+            if (this.gote_sente === "gote") { 
+                let yLocalPosChange = yPosition+1;
+    
+                let result = getMovementBorder(xPosition, yLocalPosChange, this.gote_sente);
+                let processedResult = this.movesHelper(result, xPosition, yLocalPosChange, movesArray);
+                movesArray = processedResult[0];
+            } else { 
+                let yLocalPosChange = yPosition-1;
+    
+                let result = getMovementBorder(xPosition, yLocalPosChange, this.gote_sente);
+                let processedResult = this.movesHelper(result, xPosition, yLocalPosChange, movesArray);
+                movesArray = processedResult[0];
+            }
         } else { 
-            let yLocalPosChange = yPosition-1;
-
-            let result = getMovementBorder(xPosition, yLocalPosChange, this.gote_sente);
-            let processedResult = this.movesHelper(result, xPosition, yLocalPosChange, movesArray);
-            movesArray = processedResult[0];
+            movesArray = this.promotedPieceGoldGeneralMovement();
         }
+
         return movesArray;
     }
 

@@ -51,6 +51,10 @@ socket.on('pieceMove', ([lastposition, currentEmptyCellEmit]) => {
 
 socket.on('pieceDrop', ([lastposition, currentEmptyCellEmit]) => {
     pieceDropServerEvent(lastposition, currentEmptyCellEmit);
+});
+
+socket.on('piecePromote', (piecePosition) => {
+    promotePieceServerEvent(piecePosition);
 }); */
 
 
@@ -363,7 +367,14 @@ export function askIfWantsToPromote(oldPiecePosition, newPiecePosition) {
 
 export function promotePiece(piecePosition) {
     game.promotePieceHandle(piecePosition);
+    //socket.emit('piecePromote', piecePosition);
+    
 }
+
+export function promotePieceServerEvent(piecePosition) {
+    game.promotePieceHandle(piecePosition);
+}
+
 
 
 // For local testing
