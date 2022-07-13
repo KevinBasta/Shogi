@@ -3,7 +3,7 @@ import { board } from "/board.js";
 import { piece } from "/pieces.js";
 import { promotionQuestion } from "/view.js";
 
-/* const socket = io();
+const socket = io();
 
 // Logging on the client from the server
 socket.on('log', (n) => {
@@ -14,7 +14,7 @@ socket.on('log', (n) => {
 socket.on('init', (number) => {
     hendleInit(number);
     startGame();
-}); */
+});
 
 function startGame() { 
     labelBoard();
@@ -22,7 +22,7 @@ function startGame() {
 }
 
 export let playerTwoView = false;
-/* function hendleInit(number) {
+function hendleInit(number) {
     if (number === 2) {
         playerTwoView = true;
     }
@@ -55,7 +55,7 @@ socket.on('pieceDrop', ([lastposition, currentEmptyCellEmit]) => {
 
 socket.on('piecePromote', (piecePosition) => {
     promotePieceServerEvent(piecePosition);
-}); */
+});
 
 
 
@@ -317,11 +317,11 @@ function emptyCellEvent(e) {
             askIfWantsToPromote(game.lastClicked[2], currentEmptyCell);
         } else { 
             game.movePiece(game.lastClicked[2], currentEmptyCell);
-            //socket.emit('pieceMove', [game.lastClicked[2], currentEmptyCell]);
+            socket.emit('pieceMove', [game.lastClicked[2], currentEmptyCell]);
         }
     } else { 
         game.movePieceFromStand(game.lastClicked[2], currentEmptyCell);
-        //socket.emit('pieceDrop', [game.lastClicked[2], currentEmptyCell]);
+        socket.emit('pieceDrop', [game.lastClicked[2], currentEmptyCell]);
     }
 }
 
@@ -374,13 +374,14 @@ export function askIfWantsToPromote(oldPiecePosition, newPiecePosition) {
 export function promotePiece(piecePosition) {
     game.movePiece(game.lastClicked[2], piecePosition);
     game.promotePieceHandle(piecePosition);
-    //socket.emit('pieceMove', [game.lastClicked[2], currentEmptyCell]);
-    //socket.emit('piecePromote', piecePosition);
+    socket.emit('pieceMove', [game.lastClicked[2], piecePosition]);
+    socket.emit('piecePromote', piecePosition);
     
 }
 
 export function dontPromotePiece(piecePosition) {
     game.movePiece(game.lastClicked[2], piecePosition);
+    socket.emit('pieceMove', [game.lastClicked[2], piecePosition]);
 }
 
 export function promotePieceServerEvent(piecePosition) {
@@ -390,4 +391,4 @@ export function promotePieceServerEvent(piecePosition) {
 
 
 // For local testing
-startGame();
+// startGame();

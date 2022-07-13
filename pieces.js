@@ -497,7 +497,7 @@ export class knight extends piece {
 
         // If a knight moves into the last two opposit cells it gets promoted
         // due to not having any future moves
-
+        this.checkFutureMoves(this.position);
     }
 
     checkFutureMoves(newPosition) { 
@@ -587,7 +587,7 @@ export class lance extends piece {
 
         // If a lance moves into the last opposit cell it gets promoted
         // due to not having any future moves
-        
+        this.checkFutureMoves(this.position);
     }
 
     checkFutureMoves(newPosition) { 
@@ -668,9 +668,11 @@ export class pawn extends piece {
 
         // If a pawn moves into the last opposit cell it gets promoted
         // due to not having any future moves
+        this.checkFutureMoves(this.position);
     }
 
-    checkFutureMoves(newPosition) { 
+    checkFutureMoves(newPosition) {
+        console.log('checking...') 
         if (this.inStand === false) {
             let pieceInLastRank;
             if (this.gote_sente === "gote") {
