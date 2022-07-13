@@ -311,8 +311,14 @@ export function removeEmptyCellEvent(cell) {
 function emptyCellEvent(e) {
     let currentEmptyCell = e.target.getAttribute('id');
     if (game.lastClicked[0].inStand == false) {
-        game.movePiece(game.lastClicked[2], currentEmptyCell);
-        //socket.emit('pieceMove', [game.lastClicked[2], currentEmptyCell]);
+        // if in the last three cells, redirect this to somewhere else where
+        // they get called after the user picks if they want to promote or not
+        if (game.lastClicked[0].checkIfCanPromote(game.lastClicked[2], currentEmptyCell)) {
+            askIfWantsToPromote(game.lastClicked[2], currentEmptyCell);
+        } else { 
+            game.movePiece(game.lastClicked[2], currentEmptyCell);
+            //socket.emit('pieceMove', [game.lastClicked[2], currentEmptyCell]);
+        }
     } else { 
         game.movePieceFromStand(game.lastClicked[2], currentEmptyCell);
         //socket.emit('pieceDrop', [game.lastClicked[2], currentEmptyCell]);
@@ -366,9 +372,15 @@ export function askIfWantsToPromote(oldPiecePosition, newPiecePosition) {
 }
 
 export function promotePiece(piecePosition) {
+    game.movePiece(game.lastClicked[2], piecePosition);
     game.promotePieceHandle(piecePosition);
+    //socket.emit('pieceMove', [game.lastClicked[2], currentEmptyCell]);
     //socket.emit('piecePromote', piecePosition);
     
+}
+
+export function dontPromotePiece(piecePosition) {
+    game.movePiece(game.lastClicked[2], piecePosition);
 }
 
 export function promotePieceServerEvent(piecePosition) {

@@ -65,9 +65,7 @@ export class piece {
     }
 
     setPosition(newPosition) {
-        let oldPosition = this.position;
         this.position = newPosition;
-        this.checkIfCanPromote(oldPosition, newPosition);
     }
 
     getPosition() {
@@ -92,8 +90,12 @@ export class piece {
 
     checkIfCanPromote(oldPosition, newPosition) { 
         let canPromote = false; 
-        
-        if (this.isPromoted === false && this.inStand === false && ((playerTwoView && this.gote_sente === "gote") || (!playerTwoView && this.gote_sente === "sente"))) {
+        this.checkFutureMoves(newPosition);
+        if (this.isPromoted === false && this.inStand === false && 
+            ((playerTwoView && this.gote_sente === "gote") || 
+            (!playerTwoView && this.gote_sente === "sente")) && 
+            this.pieceType != "King" && this.pieceType != "ChallengingKing" 
+            && this.pieceType != "GoldGeneral") {
             let oldrow = oldPosition.substring(1,2);
             let newrow = newPosition.substring(1,2);
             if (this.gote_sente === "gote") {    
@@ -108,10 +110,9 @@ export class piece {
                 }
             }
             console.log(canPromote)
-            if (canPromote) {
-                askIfWantsToPromote(oldPosition, newPosition);
-            }
         }
+
+        return canPromote;
     }
 
     promotedPieceGoldGeneralMovement() { 
@@ -164,6 +165,10 @@ export class piece {
     // Other
     getPossibleMoves() { 
         // Implemented in all subclasses
+    }
+
+    checkFutureMoves(newPosition) { 
+
     }
 
     getPossibleDrops(gameBoard) { 
@@ -386,6 +391,23 @@ export class rook extends piece {
             if (processedResult[1]) break;
         }
 
+        if (this.isPromoted) {
+            for (let nextX = xPosition - 1; nextX < xPosition + 2; nextX++) {
+                for (let nextY = yPosition - 1; nextY < yPosition + 2; nextY++) {
+                    let xPosString = nextX.toString();
+                    let yPosString = nextY.toString();
+    
+                    if (this.position != xPosString + yPosString && !movesArray.includes(xPosString + yPosString)){
+                        let result = getMovementBorder(nextX, nextY, this.gote_sente);
+                        if (result === "empty" || result === "oppositePlayer") {
+                            movesArray.push(xPosString + yPosString);
+                        } 
+                    }
+    
+                }
+            }   
+        }
+
         return movesArray;
     }
 }
@@ -444,6 +466,23 @@ export class bishop extends piece {
             if (processedResult[1]) break;
         }
 
+        if (this.isPromoted) {
+            for (let nextX = xPosition - 1; nextX < xPosition + 2; nextX++) {
+                for (let nextY = yPosition - 1; nextY < yPosition + 2; nextY++) {
+                    let xPosString = nextX.toString();
+                    let yPosString = nextY.toString();
+    
+                    if (this.position != xPosString + yPosString && !movesArray.includes(xPosString + yPosString)){
+                        let result = getMovementBorder(nextX, nextY, this.gote_sente);
+                        if (result === "empty" || result === "oppositePlayer") {
+                            movesArray.push(xPosString + yPosString);
+                        } 
+                    }
+    
+                }
+            }   
+        }
+
         return movesArray;
     }
 }
@@ -458,21 +497,23 @@ export class knight extends piece {
 
         // If a knight moves into the last two opposit cells it gets promoted
         // due to not having any future moves
+
+    }
+
+    checkFutureMoves(newPosition) { 
         if (this.inStand === false) {
             let pieceInLastRank = [];
             if (this.gote_sente === "gote") {
-                pieceInLastRank.push(...boardArray[boardArray.length - 1].filter(cell => this.position == cell));
-                pieceInLastRank.push(...boardArray[boardArray.length - 2].filter(cell => this.position == cell));
+                pieceInLastRank.push(...boardArray[boardArray.length - 1].filter(cell => newPosition == cell));
+                pieceInLastRank.push(...boardArray[boardArray.length - 2].filter(cell => newPosition == cell));
             } else { 
-                pieceInLastRank.push(...boardArray[0].filter(cell => this.position == cell));
-                pieceInLastRank.push(...boardArray[1].filter(cell => this.position == cell));
+                pieceInLastRank.push(...boardArray[0].filter(cell => newPosition == cell));
+                pieceInLastRank.push(...boardArray[1].filter(cell => newPosition == cell));
             }
             console.log(pieceInLastRank);
             if (pieceInLastRank.length === 1) {
                 this.isPromoted = true;
-            } else { 
-                this.checkIfCanPromote(this.position, newPosition);
-            }
+            } 
         }
     }
 
@@ -546,18 +587,20 @@ export class lance extends piece {
 
         // If a lance moves into the last opposit cell it gets promoted
         // due to not having any future moves
+        
+    }
+
+    checkFutureMoves(newPosition) { 
         if (this.inStand === false) {
             let pieceInLastRank;
             if (this.gote_sente === "gote") {
-                pieceInLastRank = boardArray[boardArray.length - 1].filter(cell => this.position == cell);
+                pieceInLastRank = boardArray[boardArray.length - 1].filter(cell => newPosition == cell);
             } else { 
-                pieceInLastRank = boardArray[0].filter(cell => this.position == cell);
+                pieceInLastRank = boardArray[0].filter(cell => newPosition == cell);
             }
             
             if (pieceInLastRank.length === 1) {
                 this.isPromoted = true;
-            } else { 
-                this.checkIfCanPromote(this.position, newPosition);
             }
         }
     }
@@ -625,18 +668,19 @@ export class pawn extends piece {
 
         // If a pawn moves into the last opposit cell it gets promoted
         // due to not having any future moves
+    }
+
+    checkFutureMoves(newPosition) { 
         if (this.inStand === false) {
             let pieceInLastRank;
             if (this.gote_sente === "gote") {
-                pieceInLastRank = boardArray[boardArray.length - 1].filter(cell => this.position == cell);
+                pieceInLastRank = boardArray[boardArray.length - 1].filter(cell => newPosition == cell);
             } else { 
-                pieceInLastRank = boardArray[0].filter(cell => this.position == cell);
+                pieceInLastRank = boardArray[0].filter(cell => newPosition == cell);
             }
 
             if (pieceInLastRank.length === 1) {
                 this.isPromoted = true;
-            } else { 
-                this.checkIfCanPromote(this.position, newPosition);
             }
         }
     }

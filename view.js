@@ -1,5 +1,5 @@
 import {defultBoardSetup, defultStandSetups, picesImages} from "/config.js"; 
-import {addPossibleMovesEvent, addStandPossibleMovesEvent, removeStandPossibleMovesEvent, removeEmptyCellEvent, promotePiece, playerTwoView} from "/main.js";
+import {addPossibleMovesEvent, addStandPossibleMovesEvent, removeStandPossibleMovesEvent, removeEmptyCellEvent, promotePiece, dontPromotePiece, playerTwoView} from "/main.js";
 
 
 /* 
@@ -175,6 +175,7 @@ export function promotionQuestion(oldPiecePosition, newPiecePosition, gameBoard)
     unpromotedPieceImage.setAttribute("class", "piece");
     unpromotedButton.appendChild(unpromotedPieceImage);
     unpromotedPieceImage.addEventListener("click", () => { 
+        dontPromotePiece(newPiecePosition);
         promotionQuestion.setAttribute("class", "promotionFlex hide");;
     });
 

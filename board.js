@@ -153,6 +153,7 @@ export class board {
     promotePieceHandle(piecePosition) {
         console.log(piecePosition);
         this.gameBoard[piecePosition].promote();
+        console.log(this.gameBoard[piecePosition])
         updatePieceImage(piecePosition, this.gameBoard);
     }
 
