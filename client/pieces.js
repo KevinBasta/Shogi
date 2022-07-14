@@ -1,6 +1,6 @@
 import {defultBoardSetup, picesImages} from "/config.js";
 import {board} from "/board.js";
-import { getMovementBorder, askIfWantsToPromote, playerTwoView, boardArray } from "/main.js";
+import { getMovementBorder, askIfWantsToPromote, kingInCheck, playerTwoView, boardArray } from "/main.js";
 //import {game} from "/main.js"; 
 
 // Super class
@@ -11,7 +11,6 @@ export class piece {
         this.position = position;
         this.pieceObjectName = pieceObjectName;
         this.isPromoted = false; 
-        this.inCheck = false;
         this.inStand = false;
         
         this.setFacingDirection();
@@ -207,6 +206,19 @@ export class piece {
  king
  */
 export class king extends piece { 
+    constructor(gote_sente, pieceType, position, pieceObjectName) { 
+        super(gote_sente, pieceType, position, pieceObjectName);
+        this.inCheck = false;
+    }   
+
+    check() { 
+        this.inCheck = true;
+    }
+
+    uncheck() { 
+        this.inCheck = false;
+    }
+
     setPosition(newPosition) {
         this.position = newPosition;
     }
@@ -690,27 +702,49 @@ export class pawn extends piece {
     getPossibleMoves() { 
         let movesArray = [];
 
+        let kingInCheckArr = kingInCheck(this.gote_sente);
+        if (kingInCheckArr[0] === true) { 
+            let opponentPieceMovesArray = kingInCheckArr[1];
+            let opponentPosition = kingInCheckArr[2];
+            let playerPieceMovesArray = this.standardMovement();
+
+            console.log(opponentPieceMovesArray);
+            console.log(playerPieceMovesArray);
+
+            let commonMoves = playerPieceMovesArray.filter(cell => opponentPieceMovesArray.includes(cell));
+            console.log(commonMoves)
+            movesArray = commonMoves;
+
+        } else { 
+            movesArray = this.standardMovement();
+        }
+
+        return movesArray;
+    }
+
+    standardMovement() { 
+        let movesArray = [];
         if (!this.isPromoted) {
             let xPosition = parseInt(this.position.substring(0, 1));
             let yPosition = parseInt(this.position.substring(1, 2));
-    
+
             if (this.gote_sente === "gote") { 
                 let yLocalPosChange = yPosition+1;
-    
+
                 let result = getMovementBorder(xPosition, yLocalPosChange, this.gote_sente);
                 let processedResult = this.movesHelper(result, xPosition, yLocalPosChange, movesArray);
                 movesArray = processedResult[0];
             } else { 
                 let yLocalPosChange = yPosition-1;
-    
+
                 let result = getMovementBorder(xPosition, yLocalPosChange, this.gote_sente);
                 let processedResult = this.movesHelper(result, xPosition, yLocalPosChange, movesArray);
                 movesArray = processedResult[0];
             }
         } else { 
             movesArray = this.promotedPieceGoldGeneralMovement();
-        }
-
+        } 
+        
         return movesArray;
     }
 

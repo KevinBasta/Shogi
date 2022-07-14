@@ -9,6 +9,25 @@ define illigal movements (no two pawns in a file (drop), can't move king into da
 make mechanism for keeping track of movements (current state of board vs previous)
 
 
+Next steps: 
+Make all client pieces unclickable when picking to promote or not
+get all possible moves for all pieces of the other player to check if this 
+players king is in check
+When a player's move threatens to capture the opposing king on the next turn,
+the move is said to give check to the king and the king is said to be in check.
+If a player's king is in check, that player's responding move must remove 
+the check if possible.[6] Ways to remove a check include moving the king away 
+from the threat, capturing the threatening piece, or placing another 
+interposing piece between the king and the threatening piece.
+
+If the king is in check and there is no possible move which could 
+protect the king, the move is said to checkmate (tsumi 詰み) the king. 
+Checkmate effectively means that the opponent wins the game as the player 
+would have no remaining legal moves.
+
+
+
+
 Restrictions. There are three restrictions on dropping pieces; the last two of these apply only to pawns:
 Piece with No Moves (Japanese: 行き所のない駒 ikidokorononaikoma): Pawns, lances and knights may not be dropped onto the last (9th) rank, and knights may not be dropped onto the penultimate (8th) rank; this is because such dropped pieces would have no legal moves on subsequent turns (as they can only move in the forward direction).
 Two Pawns (Japanese: 二歩 nifu): A pawn may not be dropped onto a file (column) containing another unpromoted pawn of the same player (promoted pawns do not count).

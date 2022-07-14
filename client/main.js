@@ -226,7 +226,7 @@ function pieceClickEvent(e) {
     // deactivate if active and activate if deactivated
     for (let i of possibleMoveCellsArray) { 
         let position = document.getElementById(i);
-        console.log(position);
+        //console.log(position);
         if (position.getAttribute("click") == "true") { 
             removeEmptyCellEvent(position);
             position.setAttribute("class", "");
@@ -388,7 +388,21 @@ export function promotePieceServerEvent(piecePosition) {
     game.promotePieceHandle(piecePosition);
 }
 
-
+export function kingInCheck(gote_sente) { 
+    if (gote_sente === "gote") { 
+        if (game.goteChecked) { 
+            return [game.goteChecked, game.checkingPiece.getPossibleMoves(), game.checkingPiece.getPosition()]; 
+        } else { 
+            return game.goteChecked;
+        }
+    } else if (gote_sente === "sente") { 
+        if (game.senteChecked) {
+            return [game.senteChecked, game.checkingPiece.getPossibleMoves(), game.checkingPiece.getPosition()];
+        } else { 
+            return game.senteChecked;
+        }
+    }
+}
 
 // For local testing
 // startGame();

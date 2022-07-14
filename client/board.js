@@ -19,6 +19,9 @@ export class board {
 
         this.playerTwoView = playerTwoView;
         this.lastClicked = lastClicked;
+        this.checkingPiece;
+        this.goteChecked = false; 
+        this.senteChecked = false;
 
         this.player1 = player1;
         this.player2 = player2;
@@ -90,7 +93,32 @@ export class board {
 
         // Getting rid of old possible move styling and events
         removeOldPossibleMovesStyling(this.lastClicked[1]);
+
+        this.checkIfKingInCheck(newPosition);
     }
+
+    checkIfKingInCheck(pieceMovedPosition) { 
+        let possibleMoves = this.gameBoard[pieceMovedPosition].getPossibleMoves();
+        console.log(possibleMoves);
+        for (let cell of possibleMoves) {
+            console.log(cell)
+            if (cell in this.gameBoard) {
+                if (this.gameBoard[cell].getType() === "King") {
+                    console.log("sente checked")
+                    this.gameBoard[cell].check();
+                    this.checkingPiece = this.gameBoard[pieceMovedPosition];
+                    this.senteChecked = true;
+                } else if (this.gameBoard[cell].getType() === "ChallengingKing") {
+                    console.log("gote checked")
+                    this.gameBoard[cell].check();
+                    this.checkingPiece = this.gameBoard[pieceMovedPosition];
+                    this.goteChecked = true;
+                }
+            }
+        }
+    }
+
+
 
     /*
      Moves a piece from the stand in the data and ui

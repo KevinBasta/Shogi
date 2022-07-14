@@ -2,6 +2,12 @@
 body {
     margin: 0px;
     max-height: 100%;
+    user-drag: none; 
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
 }
 
 .promotionFlex {
@@ -112,7 +118,7 @@ shogi-board {
     
     display: grid;
     /* how to change board size here, play with the width using the vh */
-    grid-template-columns: repeat(9, minmax(10px, 1fr));
+    grid-template-columns: repeat(9, minmax(10px, 10vh));
     gap: 0.05rem;
 }
 
@@ -287,6 +293,12 @@ player-piece-stand div span {
     /* opacity: 0.1; */
     z-index: 1;
 
+    user-drag: none; 
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
 }
 
 .piece-rotate { 
