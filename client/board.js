@@ -94,30 +94,80 @@ export class board {
         // Getting rid of old possible move styling and events
         removeOldPossibleMovesStyling(this.lastClicked[1]);
 
-        this.checkIfKingInCheck(newPosition);
+        this.checkAllPiecesForKingCheck();
     }
 
     checkIfKingInCheck(pieceMovedPosition) { 
         let possibleMoves = this.gameBoard[pieceMovedPosition].getPossibleMoves();
+        let localSenteCheck = false; 
+        let localGoteCheck = false;
         console.log(possibleMoves);
         for (let cell of possibleMoves) {
+            console.log("bing bong bing bong")
             console.log(cell)
             if (cell in this.gameBoard) {
                 if (this.gameBoard[cell].getType() === "King") {
                     console.log("sente checked")
                     this.gameBoard[cell].check();
                     this.checkingPiece = this.gameBoard[pieceMovedPosition];
-                    this.senteChecked = true;
+                    localSenteCheck = true;
                 } else if (this.gameBoard[cell].getType() === "ChallengingKing") {
                     console.log("gote checked")
                     this.gameBoard[cell].check();
                     this.checkingPiece = this.gameBoard[pieceMovedPosition];
-                    this.goteChecked = true;
+                    localGoteCheck = true;
                 }
             }
         }
+
+        this.senteChecked = localSenteCheck; 
+        this.goteChecked = localGoteCheck;
     }
 
+    // check if king in check but check all pieces for one player first
+    // then the other player
+    checkAllPiecesForKingCheck() { 
+        let localSenteCheck = false; 
+        let localGoteCheck = false;
+
+        for (let shogiPiece in this.gameBoard) { 
+            let possibleMoves = this.gameBoard[shogiPiece].getPossibleMoves();
+            for (let cell of possibleMoves) { 
+                if (cell in this.gameBoard) { 
+                    if (this.gameBoard[cell].getType() === "King") { 
+                        console.log("sente checked")
+                        this.gameBoard[cell].check();
+                        this.checkingPiece = this.gameBoard[shogiPiece];
+                        localSenteCheck = true;
+                    } else if (this.gameBoard[cell].getType() === "ChallengingKing") { 
+                        console.log("gote checked")
+                        this.gameBoard[cell].check();
+                        this.checkingPiece = this.gameBoard[shogiPiece];
+                        localGoteCheck = true;
+                    }
+                }
+            }
+        }
+        
+        this.senteChecked = localSenteCheck; 
+        this.goteChecked = localGoteCheck;
+        console.log("gote: " + this.goteChecked)
+        console.log("sente: " + this.senteChecked)
+    }
+
+    gameBoardClonePieceMoveCheckResult() { 
+        if (newPosition in this.gameBoard) {
+            let opponentCapturedPiece = this.gameBoard[newPosition];
+            this.capturedPieceParametersChange(opponentCapturedPiece);
+            delete this.gameBoard[newPosition];
+        }
+
+        this.gameBoard[newPosition] = this.gameBoard[oldPosition];
+        this.gameBoard[newPosition].setPosition(newPosition);
+        delete this.gameBoard[oldPosition];
+
+        this.checkAllPiecesForKingCheck();
+    }
 
 
     /*
@@ -140,7 +190,7 @@ export class board {
 
         // Getting rid of old possible move styling and events
         removeOldPossibleMovesStyling(this.lastClicked[1]);
-    }
+    } 
 
     /*
      Changes the properties of a captured piece 
@@ -179,9 +229,9 @@ export class board {
     }
 
     promotePieceHandle(piecePosition) {
-        console.log(piecePosition);
+        //console.log(piecePosition);
         this.gameBoard[piecePosition].promote();
-        console.log(this.gameBoard[piecePosition])
+        //console.log(this.gameBoard[piecePosition])
         updatePieceImage(piecePosition, this.gameBoard);
     }
 

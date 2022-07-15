@@ -108,7 +108,7 @@ export class piece {
                     canPromote = true;
                 }
             }
-            console.log(canPromote)
+            // console.log(canPromote)
         }
 
         return canPromote;
@@ -684,7 +684,7 @@ export class pawn extends piece {
     }
 
     checkFutureMoves(newPosition) {
-        console.log('checking...') 
+        //console.log('checking...') 
         if (this.inStand === false) {
             let pieceInLastRank;
             if (this.gote_sente === "gote") {

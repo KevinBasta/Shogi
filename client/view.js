@@ -171,7 +171,7 @@ export function promotionQuestion(oldPiecePosition, newPiecePosition, gameBoard)
 
     let unpromotedPieceImage = document.createElement("img");
     unpromotedPieceImage.setAttribute("src", picesImages[gameBoard[oldPiecePosition].getType()]);
-    console.log(gameBoard[oldPiecePosition].getType());
+    //console.log(gameBoard[oldPiecePosition].getType());
     unpromotedPieceImage.setAttribute("class", "piece");
     unpromotedButton.appendChild(unpromotedPieceImage);
     unpromotedPieceImage.addEventListener("click", () => { 

@@ -202,9 +202,7 @@ function pieceClickEvent(e) {
     
     pieceObject = game.gameBoard[currentPieceCell];
     possibleMoveCellsArray = pieceObject.getPossibleMoves();
-    
-    console.log(game);
-    console.log(pieceObject);
+    //console.log(pieceObject);
     
     // If the last piece clicked is not the same as the current piece clicked
     // then get rid of old possible moves cell identifiers and event
@@ -402,6 +400,10 @@ export function kingInCheck(gote_sente) {
             return game.senteChecked;
         }
     }
+    const clone = structuredClone(game.gameBoard);
+
+    console.log(clone)
+
 }
 
 // For local testing
