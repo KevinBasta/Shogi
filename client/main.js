@@ -404,7 +404,7 @@ export function kingInCheck(gote_sente) {
 
 export function willMoveUncheckKing(oldPosition, newPosition) { 
     let result = game.pieceMoveCheckResult(oldPosition, newPosition);
-    return result;
+    return !result;
 }
 
 // For local testing

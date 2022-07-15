@@ -702,8 +702,13 @@ export class pawn extends piece {
     getPossibleMoves(checkingCheck=false) { 
         
         let movesArray = [];
+        if (checkingCheck) {
+            movesArray = this.standardMovement();
+            return movesArray;
+        }
 
-        let kingInCheckArr = kingInCheck(this.gote_sente);
+        let kingInCheckArr;
+        kingInCheckArr = kingInCheck(this.gote_sente);
         if (kingInCheckArr[0] === true) { 
             let opponentPieceMovesArray = kingInCheckArr[1];
             let opponentPosition = kingInCheckArr[2];
@@ -721,11 +726,11 @@ export class pawn extends piece {
                     movesArray.push(possibleMove);
                 }
             }
+            console.log(movesArray);
 
         } else { 
             movesArray = this.standardMovement();
         }
-        console.log(movesArray);
         return movesArray;
     }
 
