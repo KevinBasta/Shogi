@@ -201,7 +201,7 @@ function pieceClickEvent(e) {
     
     
     pieceObject = game.gameBoard[currentPieceCell];
-    possibleMoveCellsArray = pieceObject.getPossibleMoves();
+    possibleMoveCellsArray = pieceObject.getPossibleMoves(false);
     //console.log(pieceObject);
     
     // If the last piece clicked is not the same as the current piece clicked
@@ -388,17 +388,9 @@ export function promotePieceServerEvent(piecePosition) {
 
 export function kingInCheck(gote_sente) { 
     if (gote_sente === "gote") { 
-        if (game.goteChecked) { 
-            return [game.goteChecked, game.checkingPiece.getPossibleMoves(), game.checkingPiece.getPosition()]; 
-        } else { 
-            return game.goteChecked;
-        }
+        return game.goteChecked;
     } else if (gote_sente === "sente") { 
-        if (game.senteChecked) {
-            return [game.senteChecked, game.checkingPiece.getPossibleMoves(), game.checkingPiece.getPosition()];
-        } else { 
-            return game.senteChecked;
-        }
+        return game.senteChecked;
     }
 }
 

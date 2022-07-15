@@ -97,8 +97,9 @@ export class board {
         this.checkAllPiecesForKingCheck();
     }
 
+    // Unused
     checkIfKingInCheck(pieceMovedPosition) { 
-        let possibleMoves = this.gameBoard[pieceMovedPosition].getPossibleMoves();
+        let possibleMoves = this.gameBoard[pieceMovedPosition].getPossibleMoves(false);
         let localSenteCheck = false; 
         let localGoteCheck = false;
         console.log(possibleMoves);
@@ -184,6 +185,7 @@ export class board {
             this.gameBoard[newPosition] = opponentCapturedPiece;
         }
 
+        this.checkAllPiecesForKingCheck();
         return result[thisPieceGoteSente];
     }
 

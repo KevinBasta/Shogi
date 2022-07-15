@@ -161,11 +161,36 @@ export class piece {
         return movesArray;
     }
 
-    // Other
-    getPossibleMoves() { 
-        // Implemented in all subclasses
+    kingCheckedRestrictMoves(movesArray) { 
+        let kingCheckRestrictedMoves = []; 
+        for (let possibleMove of movesArray) { 
+            let unCheckingMove = willMoveUncheckKing(this.position, possibleMove);
+            if (unCheckingMove) { 
+                kingCheckRestrictedMoves.push(possibleMove);
+            }
+        }
+
+        return kingCheckRestrictedMoves; 
     }
 
+    getPossibleMoves(checkingForFutureCheck) { 
+        let movesArray = this.standardMovement();
+
+        // If this obj is checking if one of it's possible moves
+        // will uncheck the king. Needed to not call willMoveUncheckKing below
+        if (checkingForFutureCheck) {
+            return movesArray;
+        }
+
+        // If the king is in check only allow moves that will uncheck him
+        //let isKingInCheck = kingInCheck(this.gote_sente);
+        let kingCheckRestrictedMoves = this.kingCheckedRestrictMoves(movesArray);
+        return kingCheckRestrictedMoves;
+
+        //return movesArray;
+    }
+
+    // Other
     checkFutureMoves(newPosition) { 
 
     }
@@ -223,7 +248,7 @@ export class king extends piece {
         this.position = newPosition;
     }
 
-    getPossibleMoves() { 
+    standardMovement() { 
         let movesArray = [];
         let xPosition = parseInt(this.position.substring(0, 1));
         let yPosition = parseInt(this.position.substring(1, 2));
@@ -257,7 +282,7 @@ export class king extends piece {
         this.position = newPosition;
     }
 
-    getPossibleMoves() { 
+    standardMovement() { 
         let movesArray = [];
 
         let xPosition = parseInt(this.position.substring(0, 1));
@@ -314,7 +339,7 @@ export class silverGeneral extends piece {
         } else { 
 
         } */
-    getPossibleMoves() { 
+    standardMovement() { 
         let movesArray = [];
 
         if (!this.isPromoted) {
@@ -366,7 +391,7 @@ export class silverGeneral extends piece {
  rook and bishop 
  */
 export class rook extends piece { 
-    getPossibleMoves() { 
+    standardMovement() { 
         let movesArray = [];
         let xPosition = parseInt(this.position.substring(0, 1));
         let yPosition = parseInt(this.position.substring(1, 2));
@@ -425,7 +450,7 @@ export class rook extends piece {
 }
 
 export class bishop extends piece { 
-    getPossibleMoves() { 
+    standardMovement() { 
         let movesArray = [];
         let xPosition = parseInt(this.position.substring(0, 1));
         let yPosition = parseInt(this.position.substring(1, 2));
@@ -529,7 +554,7 @@ export class knight extends piece {
         }
     }
 
-    getPossibleMoves() { 
+    standardMovement() { 
         let movesArray = [];
 
         if (!this.isPromoted) {
@@ -617,7 +642,7 @@ export class lance extends piece {
         }
     }
 
-    getPossibleMoves() { 
+    standardMovement() { 
         let movesArray = [];
         if (!this.isPromoted) {
             let xPosition = parseInt(this.position.substring(0, 1));
@@ -697,41 +722,6 @@ export class pawn extends piece {
                 this.isPromoted = true;
             }
         }
-    }
-
-    getPossibleMoves(checkingCheck=false) { 
-        
-        let movesArray = [];
-        if (checkingCheck) {
-            movesArray = this.standardMovement();
-            return movesArray;
-        }
-
-        let kingInCheckArr;
-        kingInCheckArr = kingInCheck(this.gote_sente);
-        if (kingInCheckArr[0] === true) { 
-            let opponentPieceMovesArray = kingInCheckArr[1];
-            let opponentPosition = kingInCheckArr[2];
-            let playerPieceMovesArray = this.standardMovement();
-
-            console.log(opponentPieceMovesArray);
-            console.log(playerPieceMovesArray);
-
-            //let commonMoves = playerPieceMovesArray.filter(cell => );
-            //console.log(commonMoves)
-            //movesArray = commonMoves;
-            for (let possibleMove of playerPieceMovesArray) { 
-                let result = willMoveUncheckKing(this.position, possibleMove);
-                if (result) { 
-                    movesArray.push(possibleMove);
-                }
-            }
-            console.log(movesArray);
-
-        } else { 
-            movesArray = this.standardMovement();
-        }
-        return movesArray;
     }
 
     standardMovement() { 
