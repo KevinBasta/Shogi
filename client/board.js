@@ -131,7 +131,7 @@ export class board {
         let localGoteCheck = false;
 
         for (let shogiPiece in this.gameBoard) { 
-            let possibleMoves = this.gameBoard[shogiPiece].getPossibleMoves();
+            let possibleMoves = this.gameBoard[shogiPiece].getPossibleMoves(true);
             for (let cell of possibleMoves) { 
                 if (cell in this.gameBoard) { 
                     if (this.gameBoard[cell].getType() === "King") { 
@@ -153,20 +153,38 @@ export class board {
         this.goteChecked = localGoteCheck;
         console.log("gote: " + this.goteChecked)
         console.log("sente: " + this.senteChecked)
+        return {"gote": this.goteChecked, "sente": this.senteChecked};
     }
 
-    gameBoardClonePieceMoveCheckResult() { 
+    pieceMoveCheckResult(oldPosition, newPosition) { 
+        let thisPieceGoteSente; 
+        let opponentCapturedPiece;
+        let opponentPieceInCell = false;
         if (newPosition in this.gameBoard) {
-            let opponentCapturedPiece = this.gameBoard[newPosition];
-            this.capturedPieceParametersChange(opponentCapturedPiece);
+            opponentPieceInCell = true; 
+            opponentCapturedPiece = this.gameBoard[newPosition];
             delete this.gameBoard[newPosition];
         }
 
         this.gameBoard[newPosition] = this.gameBoard[oldPosition];
+        console.log(this.gameBoard[newPosition]);
         this.gameBoard[newPosition].setPosition(newPosition);
+
+        thisPieceGoteSente = this.gameBoard[newPosition].getGoteSente();
         delete this.gameBoard[oldPosition];
 
-        this.checkAllPiecesForKingCheck();
+        let result = this.checkAllPiecesForKingCheck();
+
+        // undoing the temporary movements
+        this.gameBoard[oldPosition] = this.gameBoard[newPosition];
+        this.gameBoard[oldPosition].setPosition(oldPosition);
+        delete this.gameBoard[newPosition];
+
+        if (opponentPieceInCell) { 
+            this.gameBoard[newPosition] = opponentCapturedPiece;
+        }
+
+        return result[thisPieceGoteSente];
     }
 
 

@@ -1,6 +1,6 @@
 import {defultBoardSetup, picesImages} from "/config.js";
 import {board} from "/board.js";
-import { getMovementBorder, askIfWantsToPromote, kingInCheck, playerTwoView, boardArray } from "/main.js";
+import { getMovementBorder, askIfWantsToPromote, willMoveUncheckKing, kingInCheck, playerTwoView, boardArray } from "/main.js";
 //import {game} from "/main.js"; 
 
 // Super class
@@ -699,7 +699,8 @@ export class pawn extends piece {
         }
     }
 
-    getPossibleMoves() { 
+    getPossibleMoves(checkingCheck=false) { 
+        
         let movesArray = [];
 
         let kingInCheckArr = kingInCheck(this.gote_sente);
@@ -711,14 +712,20 @@ export class pawn extends piece {
             console.log(opponentPieceMovesArray);
             console.log(playerPieceMovesArray);
 
-            let commonMoves = playerPieceMovesArray.filter(cell => opponentPieceMovesArray.includes(cell));
-            console.log(commonMoves)
-            movesArray = commonMoves;
+            //let commonMoves = playerPieceMovesArray.filter(cell => );
+            //console.log(commonMoves)
+            //movesArray = commonMoves;
+            for (let possibleMove of playerPieceMovesArray) { 
+                let result = willMoveUncheckKing(this.position, possibleMove);
+                if (result) { 
+                    movesArray.push(possibleMove);
+                }
+            }
 
         } else { 
             movesArray = this.standardMovement();
         }
-
+        console.log(movesArray);
         return movesArray;
     }
 

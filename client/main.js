@@ -400,10 +400,11 @@ export function kingInCheck(gote_sente) {
             return game.senteChecked;
         }
     }
-    const clone = structuredClone(game.gameBoard);
+}
 
-    console.log(clone)
-
+export function willMoveUncheckKing(oldPosition, newPosition) { 
+    let result = game.pieceMoveCheckResult(oldPosition, newPosition);
+    return result;
 }
 
 // For local testing
