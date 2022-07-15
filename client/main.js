@@ -399,5 +399,10 @@ export function willMoveUncheckKing(oldPosition, newPosition) {
     return !result;
 }
 
+export function willPawnDropCheckmateKing(oldStandPosition, newPosition) { 
+    let result = game.pawnDropPreventImmediateCheck(oldStandPosition, newPosition);
+    return result;
+}
+
 // For local testing
 // startGame();

@@ -1,6 +1,6 @@
 import {defultBoardSetup, picesImages} from "/config.js";
 import {board} from "/board.js";
-import { getMovementBorder, askIfWantsToPromote, willMoveUncheckKing, kingInCheck, playerTwoView, boardArray } from "/main.js";
+import { getMovementBorder, askIfWantsToPromote, willMoveUncheckKing, willPawnDropCheckmateKing, kingInCheck, playerTwoView, boardArray } from "/main.js";
 //import {game} from "/main.js"; 
 
 // Super class
@@ -768,14 +768,16 @@ export class pawn extends piece {
         for (let column = 0; column < boardArray[0].length; column++) { 
             let tempMovesArray = [];
             for (let row = dropAllowFutureMovesStart; row < dropAllowFutureMovesEnd; row++) { 
-                let position = boardArray[row][column];
-                if (position in gameBoard) {
-                    if (gameBoard[position].getType() == "Pawn" && gameBoard[position].getPromotion() == false && this.gote_sente == gameBoard[position].getGoteSente()) {
+                let dropPosition = boardArray[row][column];
+                if (dropPosition in gameBoard) {
+                    if (gameBoard[dropPosition].getType() == "Pawn" && gameBoard[dropPosition].getPromotion() == false && this.gote_sente == gameBoard[dropPosition].getGoteSente()) {
                         tempMovesArray = [];
                         break;
                     }
                 } else {
-                    tempMovesArray.push(position);
+                    if (!willPawnDropCheckmateKing(this.position, dropPosition)) {
+                        tempMovesArray.push(dropPosition);
+                    }
                 } 
             }
             movesArray.push(...tempMovesArray);
