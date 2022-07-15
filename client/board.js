@@ -20,8 +20,8 @@ export class board {
         this.playerTwoView = playerTwoView;
         this.lastClicked = lastClicked;
         this.checkingPiece;
-        this.goteChecked = false; 
-        this.senteChecked = false;
+        this.checked = {"gote": false, "sente": false};
+        this.checkmated = {"gote": false, "sente": false};
 
         this.player1 = player1;
         this.player2 = player2;
@@ -95,6 +95,7 @@ export class board {
         removeOldPossibleMovesStyling(this.lastClicked[1]);
 
         this.checkAllPiecesForKingCheck();
+        this.checkAllPiecesForKingCheckMate();
     }
 
     // Unused
@@ -102,6 +103,7 @@ export class board {
         let possibleMoves = this.gameBoard[pieceMovedPosition].getPossibleMoves(false);
         let localSenteCheck = false; 
         let localGoteCheck = false;
+
         console.log(possibleMoves);
         for (let cell of possibleMoves) {
             console.log("bing bong bing bong")
@@ -121,8 +123,11 @@ export class board {
             }
         }
 
-        this.senteChecked = localSenteCheck; 
-        this.goteChecked = localGoteCheck;
+        this.checked["sente"] = localSenteCheck;
+        this.checked["gote"] = localGoteCheck; 
+        console.log("gote: " + this.checked["gote"])
+        console.log("sente: " + this.checked["sente"])
+        return this.checked;
     }
 
     // check if king in check but check all pieces for one player first
@@ -150,16 +155,39 @@ export class board {
             }
         }
         
-        this.senteChecked = localSenteCheck; 
-        this.goteChecked = localGoteCheck;
-        console.log("gote: " + this.goteChecked)
-        console.log("sente: " + this.senteChecked)
-        return {"gote": this.goteChecked, "sente": this.senteChecked};
+        this.checked["sente"] = localSenteCheck;
+        this.checked["gote"] = localGoteCheck; 
+        console.log("gote: " + this.checked["gote"])
+        console.log("sente: " + this.checked["sente"])
+        return {"gote": localGoteCheck, "sente": localSenteCheck};
+    }
+
+    checkAllPiecesForKingCheckMate() { 
+        let localCheckMate = {"gote": true, "sente": true};
+        
+        for (let shogiPiece in this.gameBoard) { 
+            let shogiPieceObj = this.gameBoard[shogiPiece];
+            let possibleMoves = shogiPieceObj.getPossibleMoves(false);
+
+            if (possibleMoves.length > 0) { 
+                localCheckMate[shogiPieceObj.gote_sente] = false; 
+            }
+
+            this.checkmated["sente"] = localCheckMate["sente"];
+            this.checkmated["gote"] = localCheckMate["gote"];
+        }
+
+        console.log("checkmate status: ")
+        console.log(this.checkmated);
     }
 
     pieceMoveCheckResult(oldPosition, newPosition) { 
         let thisPieceGoteSente; 
+        let thisPieceOriginalPromotionStatus;
+        let thisPieceNewPromotionStatus;
+
         let opponentCapturedPiece;
+
         let opponentPieceInCell = false;
         if (newPosition in this.gameBoard) {
             opponentPieceInCell = true; 
@@ -169,7 +197,9 @@ export class board {
 
         this.gameBoard[newPosition] = this.gameBoard[oldPosition];
         console.log(this.gameBoard[newPosition]);
+        thisPieceOriginalPromotionStatus = this.gameBoard[newPosition].getPromotion();
         this.gameBoard[newPosition].setPosition(newPosition);
+
 
         thisPieceGoteSente = this.gameBoard[newPosition].getGoteSente();
         delete this.gameBoard[oldPosition];
@@ -179,6 +209,10 @@ export class board {
         // undoing the temporary movements
         this.gameBoard[oldPosition] = this.gameBoard[newPosition];
         this.gameBoard[oldPosition].setPosition(oldPosition);
+        thisPieceNewPromotionStatus = this.gameBoard[oldPosition].getPromotion();
+        if (thisPieceOriginalPromotionStatus === false && thisPieceNewPromotionStatus === true) { 
+            this.gameBoard[oldPosition].unpromote();
+        }
         delete this.gameBoard[newPosition];
 
         if (opponentPieceInCell) { 
@@ -210,6 +244,8 @@ export class board {
 
         // Getting rid of old possible move styling and events
         removeOldPossibleMovesStyling(this.lastClicked[1]);
+
+        this.checkAllPiecesForKingCheck();
     } 
 
     /*
