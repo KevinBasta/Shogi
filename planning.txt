@@ -83,3 +83,35 @@ be able to play both sides
 
 /* game object created at the start of each game that takes the mode and 
    determiens how to set stuff up. */
+
+
+board js function may use later 
+    // Unused
+    checkIfKingInCheck(pieceMovedPosition) { 
+        let possibleMoves = this.gameBoard[pieceMovedPosition].getPossibleMoves(false);
+        let localSenteCheck = false; 
+        let localGoteCheck = false;
+
+        console.log(possibleMoves);
+        for (let cell of possibleMoves) {
+            console.log("bing bong bing bong")
+            console.log(cell)
+            if (cell in this.gameBoard) {
+                if (this.gameBoard[cell].getType() === "King") {
+                    console.log("sente checked")
+                    this.gameBoard[cell].check();
+                    this.checkingPiece = this.gameBoard[pieceMovedPosition];
+                    localSenteCheck = true;
+                } else if (this.gameBoard[cell].getType() === "ChallengingKing") {
+                    console.log("gote checked")
+                    this.gameBoard[cell].check();
+                    this.checkingPiece = this.gameBoard[pieceMovedPosition];
+                    localGoteCheck = true;
+                }
+            }
+        }
+
+        console.log("gote: " + this.checked["gote"])
+        console.log("sente: " + this.checked["sente"])
+        return {"gote": localGoteCheck, "sente": localSenteCheck};
+    }

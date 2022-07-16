@@ -751,7 +751,7 @@ export class pawn extends piece {
     }
 
     getPossibleDrops(gameBoard) {
-        // ***still need to implement: A pawn may not be dropped to give an immediate checkmate
+        // A pawn may not be dropped to give an immediate checkmate
         // No two pawns in one file (unless one is promoted)
         let movesArray = []; 
         let dropAllowFutureMovesStart; 
@@ -770,11 +770,13 @@ export class pawn extends piece {
             for (let row = dropAllowFutureMovesStart; row < dropAllowFutureMovesEnd; row++) { 
                 let dropPosition = boardArray[row][column];
                 if (dropPosition in gameBoard) {
-                    if (gameBoard[dropPosition].getType() == "Pawn" && gameBoard[dropPosition].getPromotion() == false && this.gote_sente == gameBoard[dropPosition].getGoteSente()) {
+                    // Checks if there is another unpromoted pawn in the same file
+                    if (this.gote_sente == gameBoard[dropPosition].getGoteSente() && gameBoard[dropPosition].getType() == "Pawn" && gameBoard[dropPosition].getPromotion() == false) {
                         tempMovesArray = [];
                         break;
                     }
                 } else {
+                    // Checks if the drop gives immediate checkmate
                     if (!willPawnDropCheckmateKing(this.position, dropPosition)) {
                         tempMovesArray.push(dropPosition);
                     }

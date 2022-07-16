@@ -365,18 +365,24 @@ export function getMovementBorder(xPositionInt, yPositionInt, gote_sente) {
     return "empty";
 }
 
+// Promotion
 export function askIfWantsToPromote(oldPiecePosition, newPiecePosition) { 
     promotionQuestion(oldPiecePosition, newPiecePosition, game.gameBoard);
 }
 
+/*
+ If user pickes to promote piece when they reach promotion area
+ */
 export function promotePiece(piecePosition) {
     game.movePiece(game.lastClicked[2], piecePosition);
     game.promotePieceHandle(piecePosition);
     socket.emit('pieceMove', [game.lastClicked[2], piecePosition]);
     socket.emit('piecePromote', piecePosition);
-    
 }
 
+/*
+ If user pickes to not promote piece when they reach promotion area
+ */
 export function dontPromotePiece(piecePosition) {
     game.movePiece(game.lastClicked[2], piecePosition);
     socket.emit('pieceMove', [game.lastClicked[2], piecePosition]);
@@ -386,6 +392,9 @@ export function promotePieceServerEvent(piecePosition) {
     game.promotePieceHandle(piecePosition);
 }
 
+
+
+// checking and checkmating
 export function kingInCheck(gote_sente) { 
     if (gote_sente === "gote") { 
         return game.goteChecked;

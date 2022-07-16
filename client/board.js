@@ -96,43 +96,140 @@ export class board {
         // Getting rid of old possible move styling and events
         removeOldPossibleMovesStyling(this.lastClicked[1]);
 
-        this.checkAllPiecesForKingCheck();
+        this.checkAllPiecesForKingCheck(true);
         this.checkAllPiecesForKingCheckMate();
     }
 
-    // Unused
-    checkIfKingInCheck(pieceMovedPosition) { 
-        let possibleMoves = this.gameBoard[pieceMovedPosition].getPossibleMoves(false);
-        let localSenteCheck = false; 
-        let localGoteCheck = false;
+    /*
+     Moves a piece from the stand in the data and ui
+     */
+     movePieceFromStand(standPosition, positionInBoard) { 
+        // Removing the piece from the stand data
+        let pieceToDrop = this.removeStandPiece(standPosition);
 
-        console.log(possibleMoves);
-        for (let cell of possibleMoves) {
-            console.log("bing bong bing bong")
-            console.log(cell)
-            if (cell in this.gameBoard) {
-                if (this.gameBoard[cell].getType() === "King") {
-                    console.log("sente checked")
-                    this.gameBoard[cell].check();
-                    this.checkingPiece = this.gameBoard[pieceMovedPosition];
-                    localSenteCheck = true;
-                } else if (this.gameBoard[cell].getType() === "ChallengingKing") {
-                    console.log("gote checked")
-                    this.gameBoard[cell].check();
-                    this.checkingPiece = this.gameBoard[pieceMovedPosition];
-                    localGoteCheck = true;
-                }
-            }
+        // Updating stand ui
+        updateCapturedPieceInStand(standPosition, this.standPieces[standPosition].length);
+
+        // Adding piece to gameboard
+        this.gameBoard[positionInBoard] = pieceToDrop;
+        this.gameBoard[positionInBoard].setPosition(positionInBoard);
+        this.gameBoard[positionInBoard].inStandFalse();
+
+        // Creating new image element for the piece and appending it to new cell
+        renderNewPieceImage(positionInBoard, this.gameBoard);
+
+        // Getting rid of old possible move styling and events
+        removeOldPossibleMovesStyling(this.lastClicked[1]);
+
+        this.checkAllPiecesForKingCheck(true);
+        this.checkAllPiecesForKingCheckMate();
+    } 
+
+
+    /*
+     Checks if the possible piece move would uncheck the king
+     */
+     pieceMoveCheckResult(oldPosition, newPosition) { 
+        let thisPieceGoteSente; 
+        let thisPieceOriginalPromotionStatus;
+        let thisPieceNewPromotionStatus;
+        let opponentCapturedPiece;
+
+        // If there is a piece in the cell moving to then save and delete it
+        let opponentPieceInCell = false;
+        if (newPosition in this.gameBoard) {
+            opponentPieceInCell = true; 
+            opponentCapturedPiece = this.gameBoard[newPosition];
+            delete this.gameBoard[newPosition];
         }
 
-        console.log("gote: " + this.checked["gote"])
-        console.log("sente: " + this.checked["sente"])
-        return {"gote": localGoteCheck, "sente": localSenteCheck};
+        // Putting the piece on the board, setting it's position and getting its promotion
+        this.gameBoard[newPosition] = this.gameBoard[oldPosition];
+        console.log(this.gameBoard[newPosition]);
+        thisPieceOriginalPromotionStatus = this.gameBoard[newPosition].getPromotion();
+        this.gameBoard[newPosition].setPosition(newPosition);
+
+        // Getting gote sente and deleting the piece from old position in board
+        thisPieceGoteSente = this.gameBoard[newPosition].getGoteSente();
+        delete this.gameBoard[oldPosition];
+
+        // Checking if there is a check on the king by moving to this possible move position
+        let result = this.checkAllPiecesForKingCheck(false);
+
+        // undoing the temporary movements parameters and deleting from gameboard
+        this.gameBoard[oldPosition] = this.gameBoard[newPosition];
+        this.gameBoard[oldPosition].setPosition(oldPosition);
+        thisPieceNewPromotionStatus = this.gameBoard[oldPosition].getPromotion();
+        if (thisPieceOriginalPromotionStatus === false && thisPieceNewPromotionStatus === true) { 
+            this.gameBoard[oldPosition].unpromote();
+        }
+        delete this.gameBoard[newPosition];
+
+        // putting back opponent piece if there was one there
+        if (opponentPieceInCell) { 
+            this.gameBoard[newPosition] = opponentCapturedPiece;
+        }
+
+        return result[thisPieceGoteSente];
     }
 
-    // check if king in check but check all pieces for one player first
-    // then the other player
-    checkAllPiecesForKingCheck() { 
+
+    /*
+     Checks if a possible pawn drop would checkmate the king
+     */
+     pawnDropPreventImmediateCheck(oldStandPosition, newPosition) {        
+        let thisPieceGoteSente; 
+        let thisPieceOriginalPromotionStatus;
+        let thisPieceNewPromotionStatus;
+
+        // Getting the piece from the standPieces object, setting its temp position and stand status
+        // Getting the pieces promotion and gote sente status
+        this.gameBoard[newPosition] = this.standPieces[oldStandPosition][this.standPieces[oldStandPosition].length -1];
+        thisPieceOriginalPromotionStatus = this.gameBoard[newPosition].getPromotion();
+        this.gameBoard[newPosition].setPosition(newPosition);
+        this.gameBoard[newPosition].inStandFalse();
+        thisPieceGoteSente = this.gameBoard[newPosition].getGoteSente();
+        
+        // Checking if the piece is checking the king
+        let checkResult = this.pawnCheckIfKingInCheck(newPosition);
+        let shouldCheckCheckMate;
+        if (thisPieceGoteSente === "gote") { 
+            shouldCheckCheckMate = checkResult["sente"];
+        } else if (thisPieceGoteSente === "sente") { 
+            shouldCheckCheckMate = checkResult["gote"];
+        }
+        
+        // If it is then check for a chekmate
+        let checkMateResult = false;
+        if (shouldCheckCheckMate) { 
+            checkMateResult = this.checkAllPiecesForKingCheckMate();
+        }
+
+        // undoing position, promotion if it changed, and stand status
+        this.gameBoard[newPosition].setPosition(oldStandPosition);
+        thisPieceNewPromotionStatus = this.gameBoard[newPosition].getPromotion();
+        if (thisPieceOriginalPromotionStatus === false && thisPieceNewPromotionStatus === true) { 
+            this.gameBoard[newPosition].unpromote();
+        }
+        this.gameBoard[newPosition].inStandTrue();
+
+        // Deleting it from the gameboard
+        delete this.gameBoard[newPosition];
+
+        // Return the appropriate result 
+        if (thisPieceGoteSente === "gote") { 
+            return checkMateResult["sente"];
+        } else if (thisPieceGoteSente === "sente") { 
+            return checkMateResult["gote"];
+        }
+    }
+
+
+    /*
+     Check if king in check by checking if any of the possible moves of any piece
+     on the board have a king
+     */
+     checkAllPiecesForKingCheck(saveCheckResult) { 
         let localSenteCheck = false; 
         let localGoteCheck = false;
 
@@ -155,13 +252,20 @@ export class board {
             }
         }
         
-        this.checked["sente"] = localSenteCheck;
-        this.checked["gote"] = localGoteCheck; 
+        if (saveCheckResult) { 
+            this.checked["sente"] = localSenteCheck;
+            this.checked["gote"] = localGoteCheck; 
+        }
+
         console.log("gote: " + this.checked["gote"])
         console.log("sente: " + this.checked["sente"])
         return {"gote": localGoteCheck, "sente": localSenteCheck};
     }
 
+
+    /*
+     Check if king checkmated by checking if a cetrain player has any possible future moves or not
+     */
     checkAllPiecesForKingCheckMate() { 
         let localCheckMate = {"gote": true, "sente": true};
         
@@ -182,75 +286,16 @@ export class board {
         return {"gote": localCheckMate["gote"], "sente": localCheckMate["sente"]};
     }
 
-    pieceMoveCheckResult(oldPosition, newPosition) { 
-        let thisPieceGoteSente; 
-        let thisPieceOriginalPromotionStatus;
-        let thisPieceNewPromotionStatus;
 
-        let opponentCapturedPiece;
-
-        let opponentPieceInCell = false;
-        if (newPosition in this.gameBoard) {
-            opponentPieceInCell = true; 
-            opponentCapturedPiece = this.gameBoard[newPosition];
-            delete this.gameBoard[newPosition];
-        }
-
-        this.gameBoard[newPosition] = this.gameBoard[oldPosition];
-        console.log(this.gameBoard[newPosition]);
-        thisPieceOriginalPromotionStatus = this.gameBoard[newPosition].getPromotion();
-        this.gameBoard[newPosition].setPosition(newPosition);
-
-
-        thisPieceGoteSente = this.gameBoard[newPosition].getGoteSente();
-        delete this.gameBoard[oldPosition];
-
-        let result = this.checkAllPiecesForKingCheck();
-
-        // undoing the temporary movements
-        this.gameBoard[oldPosition] = this.gameBoard[newPosition];
-        this.gameBoard[oldPosition].setPosition(oldPosition);
-        thisPieceNewPromotionStatus = this.gameBoard[oldPosition].getPromotion();
-        if (thisPieceOriginalPromotionStatus === false && thisPieceNewPromotionStatus === true) { 
-            this.gameBoard[oldPosition].unpromote();
-        }
-        delete this.gameBoard[newPosition];
-
-        if (opponentPieceInCell) { 
-            this.gameBoard[newPosition] = opponentCapturedPiece;
-        }
-
-        this.checkAllPiecesForKingCheck();
-        return result[thisPieceGoteSente];
-    }
-
-    pawnCheckAllPiecesForKingCheckMate() { 
-        this.gotePossibleMovesButter = [];
-        this.sentePossibleMovesButter = [];
-
-        for (let shogiPiece in this.gameBoard) { 
-            let shogiPieceObj = this.gameBoard[shogiPiece];
-            let possibleMoves = shogiPieceObj.getPossibleMoves(false);
-
-            if (this.gameBoard[shogiPiece].getGoteSente() === "gote") { 
-                this.gotePossibleMovesButter.push(...possibleMoves);
-            } else if (this.gameBoard[shogiPiece].getGoteSente() === "sente") { 
-                this.sentePossibleMovesButter.push(...possibleMoves);
-            }
-        }
-    }
-
-    
-    // Unused
-    pawnCheckIfKingInCheck(pieceMovedPosition) { 
+    /* 
+     Checkes if a possible drop of a pawn would check a king
+     */
+     pawnCheckIfKingInCheck(pieceMovedPosition) { 
         let possibleMoves = this.gameBoard[pieceMovedPosition].getPossibleMoves(false);
         let localSenteCheck = false; 
         let localGoteCheck = false;
 
-        console.log(possibleMoves);
         for (let cell of possibleMoves) {
-            console.log("bing bong bing bong")
-            console.log(cell)
             if (cell in this.gameBoard) {
                 if (this.gameBoard[cell].getType() === "King") {
                     localSenteCheck = true;
@@ -265,73 +310,6 @@ export class board {
         return {"gote": localGoteCheck, "sente": localSenteCheck};
     }
 
-    pawnDropPreventImmediateCheck(oldStandPosition, newPosition) {        
-        let thisPieceGoteSente; 
-        let thisPieceOriginalPromotionStatus;
-        let thisPieceNewPromotionStatus;
-
-        this.gameBoard[newPosition] = this.standPieces[oldStandPosition][this.standPieces[oldStandPosition].length -1];
-        console.log(this.gameBoard[newPosition]);
-        thisPieceOriginalPromotionStatus = this.gameBoard[newPosition].getPromotion();
-        this.gameBoard[newPosition].setPosition(newPosition);
-        this.gameBoard[newPosition].inStandFalse();
-        thisPieceGoteSente = this.gameBoard[newPosition].getGoteSente();
-        
-        let checkResult = this.pawnCheckIfKingInCheck(newPosition);
-        let shouldCheckCheckMate;
-        let checkMateResult = false;
-        if (thisPieceGoteSente === "gote") { 
-            shouldCheckCheckMate = checkResult["sente"];
-        } else if (thisPieceGoteSente === "sente") { 
-            shouldCheckCheckMate = checkResult["gote"];
-        }
-
-        if (shouldCheckCheckMate) { 
-            checkMateResult = this.checkAllPiecesForKingCheckMate();
-        }
-
-        // undoing
-        this.gameBoard[newPosition].setPosition(oldStandPosition);
-        thisPieceNewPromotionStatus = this.gameBoard[newPosition].getPromotion();
-        if (thisPieceOriginalPromotionStatus === false && thisPieceNewPromotionStatus === true) { 
-            this.gameBoard[newPosition].unpromote();
-        }
-        this.gameBoard[newPosition].inStandTrue();
-
-        delete this.gameBoard[newPosition];
-
-        if (thisPieceGoteSente === "gote") { 
-            return checkMateResult["sente"];
-        } else if (thisPieceGoteSente === "sente") { 
-            return checkMateResult["gote"];
-        }
-    }
-
-
-    /*
-     Moves a piece from the stand in the data and ui
-     */
-    movePieceFromStand(standPosition, positionInBoard) { 
-        // Removing the piece from the stand data
-        let pieceToDrop = this.removeStandPiece(standPosition);
-
-        // Updating stand ui
-        updateCapturedPieceInStand(standPosition, this.standPieces[standPosition].length);
-
-        // Adding piece to gameboard
-        this.gameBoard[positionInBoard] = pieceToDrop;
-        this.gameBoard[positionInBoard].setPosition(positionInBoard);
-        this.gameBoard[positionInBoard].inStandFalse();
-
-        // Creating new image element for the piece and appending it to new cell
-        renderNewPieceImage(positionInBoard, this.gameBoard);
-
-        // Getting rid of old possible move styling and events
-        removeOldPossibleMovesStyling(this.lastClicked[1]);
-
-        this.checkAllPiecesForKingCheck();
-        this.checkAllPiecesForKingCheckMate();
-    } 
 
     /*
      Changes the properties of a captured piece 
@@ -369,6 +347,7 @@ export class board {
         }
     }
 
+    // promotes and updates image of a piece
     promotePieceHandle(piecePosition) {
         //console.log(piecePosition);
         this.gameBoard[piecePosition].promote();
