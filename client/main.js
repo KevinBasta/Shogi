@@ -21,7 +21,7 @@ function startGame() {
     newGame();
 }
 
-export let playerTwoView = true;
+export let playerTwoView = false;
 function hendleInit(number) {
     if (number === 2) {
         playerTwoView = true;
@@ -106,8 +106,8 @@ function labelBoard() {
 
     // Reversing the board numbering and piece stands if player 2
     if (playerTwoView) {
-        let pieceStands = document.getElementById('standsId');
-        pieceStands.setAttribute('class', "piece-stands-reverse")
+/*         let pieceStands = document.getElementById('standsId');
+        pieceStands.setAttribute('class', "piece-stands-reverse") */
         columnCounter = 1;
         rowCounter = 8;
 
@@ -117,12 +117,11 @@ function labelBoard() {
 
     }
 
-
+    // top and right cell labels based on player view
     let columnsLabelDiv = document.getElementById("columns");
     let rowsLabelDiv = document.getElementById("rows");
-
     if (playerTwoView) { 
-        // Putting the correct top and right labeling on board based on player view
+        // gote player labeling
         for (let i = 1; i <= 9; i++) { 
             let newLabelSpan = document.createElement("span");
             newLabelSpan.textContent=i;
@@ -135,7 +134,7 @@ function labelBoard() {
             rowsLabelDiv.appendChild(newLabelSpan);
         }
     } else { 
-        // Putting the correct top and right labeling on board based on player view
+        // sente player labeling
         for (let i = 9; i >= 1; i--) { 
             let newLabelSpan = document.createElement("span");
             newLabelSpan.textContent=i;
@@ -184,18 +183,29 @@ function labelBoard() {
 
     // Labeling the player stands divs
     let standNumbCounter = 0;
-    let standElementOne = document.getElementById('player-piece-stand');
-    let standOneChildren = standElementOne.children;
-    for (let child of standOneChildren) {
-        formatCell(child, standNumbCounter, "p");
-        standNumbCounter += 1;
-    }
+    let closePieceStand = document.getElementById('close-piece-stand');
+    let farPieceStand = document.getElementById('far-piece-stand');
 
-    let standElementTwo = document.getElementById('opponent-piece-stand');
-    let standTwoChildren = standElementTwo.children;
-    for (let child of standTwoChildren) {
-        formatCell(child, standNumbCounter, "o");
-        standNumbCounter += 1;
+    if (playerTwoView) { 
+        standLabelHandeler("far", "p"); 
+        standLabelHandeler("close", "o");
+    } else { 
+        standLabelHandeler("close", "p");
+        standLabelHandeler("far", "o");
+    }
+    
+    // For labeling the stand piece cells
+    function standLabelHandeler(closeOrFar, prefix) {
+        for (let i = 0; i < 7; i++) {
+            let newShogiStandCell = document.createElement("div");
+            formatCell(newShogiStandCell, standNumbCounter, prefix);
+            standNumbCounter += 1;
+            if (closeOrFar === "close") { 
+                closePieceStand.appendChild(newShogiStandCell);
+            } else if (closeOrFar === "far") { 
+                farPieceStand.appendChild(newShogiStandCell);
+            }
+        }
     }
 
 
@@ -454,4 +464,4 @@ export function willPawnDropCheckmateKing(oldStandPosition, newPosition) {
 }
 
 // For local testing
-startGame();
+//startGame();

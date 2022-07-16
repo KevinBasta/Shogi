@@ -68,7 +68,8 @@ body {
 }
 
 shogi { 
-    display: flex;    
+    display: flex;  
+    flex-direction: column;  
     align-items: center;
     height: 100vh;
     overflow: none;
@@ -102,11 +103,8 @@ shogi {
 }
 
 shogi-board-wrapper {
-    
     display: grid;
-    
     aspect-ratio:initial;
-    
 }
 
 shogi-board { 
@@ -116,7 +114,6 @@ shogi-board {
     background-color: rgb(102, 52, 6);
     
     display: grid;
-    /* how to change board size here, play with the width using the vh */
     grid-template-columns: repeat(9, var(--cell-size));
     gap: 0;
 }
@@ -130,9 +127,6 @@ shogi-board div {
     display: flex;
     justify-content: center;
 }
-
-
-
 
 .cell-label-stands {
     position: absolute; 
@@ -159,26 +153,25 @@ piece-stands {
     flex-direction: column-reverse;
 }
 
-opponent-piece-stand,
-player-piece-stand 
+far-piece-stand, close-piece-stand 
 { 
     background-color: rgb(102, 52, 6);
-    
+    margin: 10px;
     display: grid;
-    grid-template-columns: repeat(7, minmax(10px, 1fr));
-    gap: 0.1rem;
-}
-
-opponent-piece-stand { 
+    grid-template-columns: repeat(7, var(--cell-size));
 
 }
 
-player-piece-stand { 
+far-piece-stand { 
 
 }
 
-opponent-piece-stand div,
-player-piece-stand div 
+close-piece-stand { 
+
+}
+
+far-piece-stand div,
+close-piece-stand div 
 { 
     position: relative;
     aspect-ratio: 1;
@@ -190,8 +183,8 @@ player-piece-stand div
 }
 
 
-opponent-piece-stand div span,
-player-piece-stand div span { 
+far-piece-stand div span,
+close-piece-stand div span { 
     /* place-self: center;
     border: 2px solid;
     border-color: black;  */
