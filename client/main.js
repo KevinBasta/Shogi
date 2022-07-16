@@ -21,7 +21,7 @@ function startGame() {
     newGame();
 }
 
-export let playerTwoView = false;
+export let playerTwoView = true;
 function hendleInit(number) {
     if (number === 2) {
         playerTwoView = true;
@@ -104,27 +104,58 @@ function labelBoard() {
     let columnCounter;
     let rowCounter;
 
-
     // Reversing the board numbering and piece stands if player 2
     if (playerTwoView) {
         let pieceStands = document.getElementById('standsId');
         pieceStands.setAttribute('class', "piece-stands-reverse")
         columnCounter = 1;
         rowCounter = 8;
+
     } else { 
         columnCounter = 9;
         rowCounter = 0;
+
     }
 
 
+    let columnsLabelDiv = document.getElementById("columns");
+    let rowsLabelDiv = document.getElementById("rows");
+
+    if (playerTwoView) { 
+        // Putting the correct top and right labeling on board based on player view
+        for (let i = 1; i <= 9; i++) { 
+            let newLabelSpan = document.createElement("span");
+            newLabelSpan.textContent=i;
+            columnsLabelDiv.appendChild(newLabelSpan);
+        }
+        
+        for (let i = 8; i >= 0; i--) { 
+            let newLabelSpan = document.createElement("span");
+            newLabelSpan.textContent=rowsKanji[i];
+            rowsLabelDiv.appendChild(newLabelSpan);
+        }
+    } else { 
+        // Putting the correct top and right labeling on board based on player view
+        for (let i = 9; i >= 1; i--) { 
+            let newLabelSpan = document.createElement("span");
+            newLabelSpan.textContent=i;
+            columnsLabelDiv.appendChild(newLabelSpan);
+        }
+        for (let i = 0; i < 9; i++) { 
+            let newLabelSpan = document.createElement("span");
+            newLabelSpan.textContent=rowsKanji[i];
+            rowsLabelDiv.appendChild(newLabelSpan);
+        }
+    }
+
     // Getting the shogi board and its div children 
     let shogiBoard = document.getElementById('shogiBoard');
-    let shogiBoardDivs = shogiBoard.children;
 
     // Labeling the shogi board divs
-    for (let div of shogiBoardDivs) {
+    for (let i = 0; i < 81; i++) {
         // Passing each div to a function that labels it
-        formatCell(div, columnCounter + rows[rowCounter], "");
+        let newShogiCell = document.createElement("div");
+        formatCell(newShogiCell, columnCounter + rows[rowCounter], "");
         boardArray[rowCounter][Math.abs(columnCounter-9)] = (columnCounter.toString() + rows[rowCounter].toString());
         
         // Changing the column and row based on which players view
@@ -141,9 +172,14 @@ function labelBoard() {
                 rowCounter += 1;
             }
         }
+        shogiBoard.appendChild(newShogiCell);
     }
 
     console.log(boardArray)
+
+
+
+
 
 
     // Labeling the player stands divs
@@ -418,4 +454,4 @@ export function willPawnDropCheckmateKing(oldStandPosition, newPosition) {
 }
 
 // For local testing
-// startGame();
+startGame();

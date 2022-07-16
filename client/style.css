@@ -1,3 +1,10 @@
+:root { 
+    --cell-size: minmax(10px, 5vh);
+    --website-color: rgb(255, 193, 70);
+    --labels-border: 2px solid;
+    --shogi-table-labels-size: calc(1vw + 1vh);
+}
+
 /* overall game area styling */
 body {
     margin: 0px;
@@ -61,19 +68,11 @@ body {
 }
 
 shogi { 
-    display: grid;    
-    gap: minmax(1rem, 100rem);
-    grid-template-columns: 6fr 4fr;  
-    grid-template-rows: 1fr;
+    display: flex;    
     align-items: center;
     height: 100vh;
     overflow: none;
-    /* background-color: rgb(255, 193, 70); */
-}
-
-
-span { 
-    font-size:  2vw;
+    background-color: var(--website-color);
 }
 
 .overlay {
@@ -96,33 +95,18 @@ span {
 
 
 /* shogi board, rows and columns */
+#board-and-rows { 
+    display: flex;
+    flex-direction: row;
+    gap: 0px;
+}
+
 shogi-board-wrapper {
     
     display: grid;
-    grid-template-columns: 20fr 1fr;
     
     aspect-ratio:initial;
-    padding: 0.5rem;
     
-}
-
-columns {
-    /* will have to chang to flex to make it reversable */
-    grid-column: 1/2;
-    grid-row: 1;
-    gap: 0.1rem;
-    
-    background-color: red;
-    
-    display: grid; 
-    grid-template-columns: repeat(9, minmax(10px, 100%));
-    justify-items: center;
-    /*direction:ltr;*/
-}
-
-columns span { 
-    border: 2px solid;
-    border-color: black; 
 }
 
 shogi-board { 
@@ -133,8 +117,8 @@ shogi-board {
     
     display: grid;
     /* how to change board size here, play with the width using the vh */
-    grid-template-columns: repeat(9, minmax(10px, 10vh));
-    gap: 0.05rem;
+    grid-template-columns: repeat(9, var(--cell-size));
+    gap: 0;
 }
 
 shogi-board div { 
@@ -147,35 +131,21 @@ shogi-board div {
     justify-content: center;
 }
 
-top-right-corner { 
-    grid-column: 2;
-    grid-row: 1;
+
+
+
+.cell-label-stands {
+    position: absolute; 
+    top: 0;
+    left: 0;
     
-    background-color: purple;
-
-    display: grid; 
-    grid-template-columns: repeat(1, minmax(10px, 100%));
+    font-size: var(--shogi-table-labels-size);
+    color: #444;
+    opacity: 0.9;
+    z-index: 1;
+    /* important */
+    pointer-events: none;
 }
-
-rows { 
-    /* will have to chang to flex to make it reversable */
-    grid-column: 2;
-    grid-row: 2/3;
-    
-    background-color: green;
-    
-    display: grid; 
-    grid-template-columns: repeat(1, minmax(10px, 100%));
-    justify-items: center;
-}
-
-rows span { 
-    place-self: center;
-    border: 2px solid;
-    border-color: black; 
-}
-
-
 
 
 /* opponent and play piece stands */
@@ -227,20 +197,6 @@ player-piece-stand div span {
     border-color: black;  */
 }
 
-.cell-label-stands {
-    position: absolute; 
-    top: 0;
-    left: 0;
-    
-    /* font-size: 5vw; */
-    font-size: 2vw;
-    color: #444;
-    opacity: 0.9;
-    z-index: 1;
-    /* important */
-    pointer-events: none;
-}
-
 .stand-piece-count {
     position: absolute; 
     bottom: 0; 
@@ -274,7 +230,7 @@ player-piece-stand div span {
 
 
 #game-log { 
-    background-color: red;
+    background-color: rgb(224, 152, 81);
     height: 5rem;
 }
 
@@ -322,4 +278,50 @@ player-piece-stand div span {
 
 .piece-possible-move-position { 
     background-color: #444;
+}
+
+
+
+/* Shogi board rows and columns containers */
+.hide-corner-cell { 
+    background-color: red;
+    border:none;
+}
+
+rows { 
+    display: grid;
+    grid-template-columns: repeat(1, var(--cell-size));
+    height: 100%;
+}
+
+rows span { 
+    aspect-ratio: 1;
+    border: var(--labels-border);    
+    
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+
+columns {
+    grid-column: 1/2;
+    grid-row: 1;
+    
+    display: grid;
+    grid-template-columns: repeat(9, var(--cell-size));
+    align-items: baseline;
+}
+
+columns span { 
+    aspect-ratio: 1;
+    border: var(--labels-border);    
+    
+    display: flex; 
+    align-items: flex-end;
+    justify-content: center;
+}
+
+span { 
+    font-size: var(--shogi-table-labels-size);
+    overflow: hidden;
 }
