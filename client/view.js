@@ -1,5 +1,5 @@
 import {defultBoardSetup, defultStandSetups, picesImages} from "/config.js"; 
-import {addPossibleMovesEvent, addStandPossibleMovesEvent, removeStandPossibleMovesEvent, removeEmptyCellEvent, promotePiece, dontPromotePiece, playerTwoView} from "/main.js";
+import {addPossibleMovesEvent, removePossibleMovesEvent, addStandPossibleMovesEvent, removeStandPossibleMovesEvent, removeEmptyCellEvent, promotePiece, dontPromotePiece, playerTwoView} from "/main.js";
 
 
 /* 
@@ -160,10 +160,14 @@ export function removeOldPossibleMovesStyling(oldPossibleMoves) {
     }
 }
 
-
-export function promotionQuestion(oldPiecePosition, newPiecePosition, gameBoard) { 
+/* 
+ Displays a div at the top of the screen to ask the user if they want to promote a piece
+ */
+export function promotionQuestion(oldPiecePosition, newPiecePosition, gameBoard, oldPossibleMoves) { 
     let promotionQuestion = document.getElementById("promotionContainer");
+    let overlay = document.getElementById("overlay");
     promotionQuestion.setAttribute("class", "promotionFlex");
+    overlay.setAttribute("class", "overlay");
     let unpromotedButton = promotionQuestion.querySelector('div[id="unpromotedButton"');
     let promotedButton = promotionQuestion.querySelector('div[id="promotedButton"');
     unpromotedButton.removeChild(unpromotedButton.firstChild);
@@ -177,6 +181,7 @@ export function promotionQuestion(oldPiecePosition, newPiecePosition, gameBoard)
     unpromotedPieceImage.addEventListener("click", () => { 
         dontPromotePiece(newPiecePosition);
         promotionQuestion.setAttribute("class", "promotionFlex hide");;
+        overlay.setAttribute("class", "overlay hide");
     });
 
     let promotedPieceImage = document.createElement("img");
@@ -188,5 +193,41 @@ export function promotionQuestion(oldPiecePosition, newPiecePosition, gameBoard)
         //gameBoard.promotepiece(piecePosition)
         promotePiece(newPiecePosition);
         promotionQuestion.setAttribute("class", "promotionFlex hide");
+        overlay.setAttribute("class", "overlay hide");
     });
+
+    overlay.addEventListener("click", () => { 
+        promotionQuestionHide();
+        removeOldPossibleMovesStyling(oldPossibleMoves);
+    });
+}
+
+export function promotionQuestionHide() { 
+    let promotionQuestion = document.getElementById("promotionContainer");
+    let overlay = document.getElementById("overlay");
+    promotionQuestion.setAttribute("class", "promotionFlex hide");
+    overlay.setAttribute("class", "overlay hide");
+}
+
+export function winOrLoseDisplay(won) { 
+    if (won === true) { 
+        console.log("You Won");
+    } else { 
+        console.log("You Lost");
+    }
+}
+
+
+export function removePieceEventListener(cellCoordinate) { 
+    let position = document.getElementById(cellCoordinate);
+    let pieceImage = position.querySelector(`img`);
+
+    removePossibleMovesEvent(pieceImage);
+}
+
+export function removeStandPieceEventListener(cellCoordinate) { 
+    let position = document.getElementById(cellCoordinate);
+    let standPieceImage = position.querySelector(`img`);
+    
+    removeStandPossibleMovesEvent(standPieceImage);
 }

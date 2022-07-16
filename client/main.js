@@ -1,7 +1,7 @@
 import { player } from "/player.js";
 import { board } from "/board.js";
 import { piece } from "/pieces.js";
-import { promotionQuestion } from "/view.js";
+import { promotionQuestion, promotionQuestionHide } from "/view.js";
 
 const socket = io();
 
@@ -189,11 +189,15 @@ export function addPossibleMovesEvent(pieceClicked) {
     pieceClicked.addEventListener("click", pieceClickEvent);
 }
 
+export function removePossibleMovesEvent(pieceClicked) {
+    pieceClicked.removeEventListener("click", pieceClickEvent);
+}
+
 function pieceClickEvent(e) {
     // Other way to do thing using attribute, maybe just use the div order to make more secure?
     //let pieceObject = game.gameBoard[e.target.getAttribute("pieceName")];
     //console.log(e.target.parentElement.getAttribute('id'));
-    
+    promotionQuestionHide();
     // Getting the cell in ui, the piece in gameboard, then possible moves
     let currentPieceCell = e.target.parentElement.getAttribute('id');
     let pieceObject;
@@ -367,7 +371,7 @@ export function getMovementBorder(xPositionInt, yPositionInt, gote_sente) {
 
 // Promotion
 export function askIfWantsToPromote(oldPiecePosition, newPiecePosition) { 
-    promotionQuestion(oldPiecePosition, newPiecePosition, game.gameBoard);
+    promotionQuestion(oldPiecePosition, newPiecePosition, game.gameBoard, lastClicked[1]);
 }
 
 /*

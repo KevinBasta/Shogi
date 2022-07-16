@@ -2,7 +2,7 @@ import {player} from "/player.js";
 import {addPossibleMovesEvent, removeEmptyCellEvent, playerTwoView} from "/main.js";
 import {defultBoardSetup, defultStandSetups, picesImages} from "/config.js"; 
 import {piece, king, goldGeneral, silverGeneral, rook, bishop, knight, lance, pawn} from "/pieces.js";
-import {renderNewPieceImage, renderPlaceholderStandPiece, renderCapturedPieceInStand, updateCapturedPieceInStand, removeChildElement, removeOldPossibleMovesStyling, promotionQuestion, updatePieceImage} from "/view.js";
+import {renderNewPieceImage, renderPlaceholderStandPiece, renderCapturedPieceInStand, updateCapturedPieceInStand, removeChildElement, removeOldPossibleMovesStyling, promotionQuestion, winOrLoseDisplay, updatePieceImage, removePieceEventListener, removeStandPieceEventListener } from "/view.js";
 
 
 /*
@@ -202,7 +202,7 @@ export class board {
         // If it is then check for a chekmate
         let checkMateResult = false;
         if (shouldCheckCheckMate) { 
-            checkMateResult = this.checkAllPiecesForKingCheckMate();
+            checkMateResult = this.pawnCheckAllPiecesForKingCheckMate();
         }
 
         // undoing position, promotion if it changed, and stand status
@@ -281,9 +281,35 @@ export class board {
             this.checkmated["gote"] = localCheckMate["gote"];
         }
 
+        if (this.checkmated["sente"] === true) { 
+            if (this.playerTwoView === true) { 
+                winOrLoseDisplay(true);
+            } else if (this.playerTwoView === false) { 
+                winOrLoseDisplay(false);
+            }
+            this.removeAllEventListeners();
+        } else if (this.checkmated["gote"] === true) { 
+            if (this.playerTwoView === true) { 
+                winOrLoseDisplay(false);
+            } else if (this.playerTwoView === false) { 
+                winOrLoseDisplay(true);
+            }
+            this.removeAllEventListeners();
+        }
+
         console.log("checkmate status: ")
         console.log(this.checkmated);
         return {"gote": localCheckMate["gote"], "sente": localCheckMate["sente"]};
+    }
+
+    removeAllEventListeners() {
+        for (let piecePosition in this.gameBoard) { 
+            removePieceEventListener(piecePosition);
+        }
+
+        for (let standPiecePosition in this.standPieces) { 
+            removeStandPieceEventListener(standPiecePosition);
+        }
     }
 
 
@@ -310,6 +336,25 @@ export class board {
         return {"gote": localGoteCheck, "sente": localSenteCheck};
     }
 
+    pawnCheckAllPiecesForKingCheckMate() { 
+        let localCheckMate = {"gote": true, "sente": true};
+        
+        for (let shogiPiece in this.gameBoard) { 
+            let shogiPieceObj = this.gameBoard[shogiPiece];
+            let possibleMoves = shogiPieceObj.getPossibleMoves(false);
+
+            if (possibleMoves.length > 0) { 
+                localCheckMate[shogiPieceObj.gote_sente] = false; 
+                if (localCheckMate["gote"] === false && localCheckMate["sente"] === false) { 
+                    break;
+                }
+            }
+        }
+
+        console.log("checkmate status: ");
+        console.log(localCheckMate);
+        return {"gote": localCheckMate["gote"], "sente": localCheckMate["sente"]};
+    }
 
     /*
      Changes the properties of a captured piece 
