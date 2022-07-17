@@ -176,7 +176,7 @@ export function promotionQuestion(oldPiecePosition, newPiecePosition, gameBoard,
     let unpromotedPieceImage = document.createElement("img");
     unpromotedPieceImage.setAttribute("src", picesImages[gameBoard[oldPiecePosition].getType()]);
     //console.log(gameBoard[oldPiecePosition].getType());
-    unpromotedPieceImage.setAttribute("class", "piece");
+    unpromotedPieceImage.setAttribute("class", "piece-promote-question");
     unpromotedButton.appendChild(unpromotedPieceImage);
     unpromotedPieceImage.addEventListener("click", () => { 
         dontPromotePiece(newPiecePosition);
@@ -186,7 +186,7 @@ export function promotionQuestion(oldPiecePosition, newPiecePosition, gameBoard,
 
     let promotedPieceImage = document.createElement("img");
     promotedPieceImage.setAttribute("src", picesImages["promoted" + gameBoard[oldPiecePosition].getType()]);
-    promotedPieceImage.setAttribute("class", "piece");
+    promotedPieceImage.setAttribute("class", "piece-promote-question");
     promotedButton.appendChild(promotedPieceImage);
     promotedPieceImage.addEventListener("click", () => { 
         //gameBoard[piecePosition].promote();

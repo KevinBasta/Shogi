@@ -215,7 +215,7 @@ function labelBoard() {
             let label = labelPrefix + cellNumber;
             let spanText = document.createElement("span");
             spanText.innerHTML = label;
-            spanText.setAttribute("class", "cell-label-stands");
+            spanText.setAttribute("class", "cell-label");
         
             // Giving the div/cell an id with cell number and appending the span element to it
             child.setAttribute("id", label);
@@ -464,4 +464,4 @@ export function willPawnDropCheckmateKing(oldStandPosition, newPosition) {
 }
 
 // For local testing
-//startGame();
+startGame();

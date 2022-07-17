@@ -2,7 +2,12 @@
     --cell-size: minmax(10px, 5vh);
     --website-color: rgb(255, 193, 70);
     --labels-border: 2px solid;
+
     --shogi-table-labels-size: calc(1vw + 1vh);
+    --captured-piece-count-font-size: 10px;
+
+    --shogi-board-color: rgb(102, 52, 6);
+    --shogi-cell-color: rgb(47, 33, 6);
 }
 
 /* overall game area styling */
@@ -34,7 +39,7 @@ body {
 
 #promotionQuestion {
     background-color: rgb(72, 72, 72);
-    width: 55%;
+    width: 30%;
     height: 100%;
     border-radius: 7px;
     display: flex;
@@ -43,6 +48,7 @@ body {
 
 #promotionQuestion p {
     padding: 2% 0 0 7%;
+    overflow-wrap: break-word;
     color: rgb(201, 201, 201);
 }
 
@@ -61,6 +67,22 @@ body {
     border: 2px solid;
     border-color: black;
 }
+
+.piece-promote-question { 
+    width: 4.5vh;
+    aspect-ratio: 1;
+
+    /* opacity: 0.1; */
+    z-index: 1;
+
+    user-drag: none; 
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
 
 
 .hide { 
@@ -95,40 +117,9 @@ shogi {
 
 
 
-/* shogi board, rows and columns */
-#board-and-rows { 
-    display: flex;
-    flex-direction: row;
-    gap: 0px;
-}
 
-shogi-board-wrapper {
-    display: grid;
-    aspect-ratio:initial;
-}
 
-shogi-board { 
-    grid-column: 1/2; 
-    grid-row: 2;
-    
-    background-color: rgb(102, 52, 6);
-    
-    display: grid;
-    grid-template-columns: repeat(9, var(--cell-size));
-    gap: 0;
-}
-
-shogi-board div { 
-    position: relative;
-    aspect-ratio: 1;
-    border: 2px solid;
-    border-color: black; 
-    background-color: rgb(47, 33, 6);
-    display: flex;
-    justify-content: center;
-}
-
-.cell-label-stands {
+.cell-label {
     position: absolute; 
     top: 0;
     left: 0;
@@ -139,8 +130,24 @@ shogi-board div {
     z-index: 1;
     /* important */
     pointer-events: none;
+    user-select:none;
 }
 
+/* delete */
+.cell-label-standsorsmthing {
+    position:absolute;
+    bottom: 0px;
+    right: 0px;
+    
+    /* font-size: 5vw; */
+    font-size: 2vw;
+    color: #444;
+    opacity: 0.9;
+    z-index: 0;
+    /* important */
+    pointer-events: none;
+    user-select:none;
+}
 
 /* opponent and play piece stands */
 piece-stands {
@@ -156,7 +163,7 @@ piece-stands {
 far-piece-stand, close-piece-stand 
 { 
     background-color: rgb(102, 52, 6);
-    margin: 10px;
+    margin: 1vh;
     display: grid;
     grid-template-columns: repeat(7, var(--cell-size));
 
@@ -190,18 +197,19 @@ close-piece-stand div span {
     border-color: black;  */
 }
 
+/* too big on small screens */
 .stand-piece-count {
     position: absolute; 
     bottom: 0; 
     right: 0;
     z-index: 10;
 
-    font-size: 1.5vw;
+    font-size: var(--captured-piece-count-font-size);
     opacity: 0.9;
     color: rgb(255, 255, 255);
 
     border: 3px solid black;
-    padding: 0vw 0.4vw;
+    padding: 0.1vw 0.3vw;
     border-radius: 50%;
     background-color: black;
     
@@ -214,7 +222,6 @@ close-piece-stand div span {
 }
 
 .stand-piece-placeholder { 
-    width: 5vw;
     aspect-ratio: 1;
     z-index: 1;
     opacity: 0.2;
@@ -223,8 +230,9 @@ close-piece-stand div span {
 
 
 #game-log { 
-    background-color: rgb(224, 152, 81);
-    height: 5rem;
+    background-color: rgb(114, 64, 14);
+    width: 10vw;
+    height: 10vh;
 }
 
 
@@ -233,26 +241,14 @@ close-piece-stand div span {
 
 
 /* general board properties */
-.cell-label {
-    position:absolute;
-    bottom: 0px;
-    right: 0px;
-    /* font-size: 5vw; */
-    font-size: 2vw;
-    color: #444;
-    opacity: 0.9;
-    z-index: 0;
-    /* important */
-    pointer-events: none;
-    user-select:none;
-}
+
 
 .opponent-piece-unclickable { 
     pointer-events: none;
 }
 
+
 .piece { 
-    width: 5vw;
     aspect-ratio: 1;
     /* opacity: 0.1; */
     z-index: 1;
@@ -265,6 +261,7 @@ close-piece-stand div span {
     -ms-user-select: none;
 }
 
+
 .piece-rotate { 
     transform: rotate(180deg);
 }
@@ -275,9 +272,52 @@ close-piece-stand div span {
 
 
 
-/* Shogi board rows and columns containers */
+/* 
+ Shogi board with it's columns and outer rows labels 
+ */
+ #board-and-rows { 
+    /* row labels beside the board & columns */
+    display: flex;
+    flex-direction: row;
+    gap: 0px;
+}
+
+shogi-board-wrapper {
+    /* column labels above the board */
+    display: grid;
+    aspect-ratio:initial;
+}
+
+shogi-board { 
+    /* columns are row 1 */
+    grid-row: 2;
+    
+    /* 9 shogi piece cells in a row */
+    display: grid;
+    grid-template-columns: repeat(9, var(--cell-size));
+    background-color: var(--shogi-board-color);
+    gap: 0;
+}
+
+shogi-board div { 
+    /* for text */
+    position: relative;
+
+    aspect-ratio: 1;
+    border: 1px solid black;
+    background-color: var(--shogi-cell-color);
+    
+    display: flex;
+    justify-content: center;
+}
+
+
+
+/*  
+ Shogi board rows and columns containers 
+ */
 .hide-corner-cell { 
-    background-color: red;
+    background-color: rgb(79, 79, 79);
     border:none;
 }
 
@@ -291,24 +331,25 @@ rows span {
     aspect-ratio: 1;
     border: var(--labels-border);    
     
+    /* aligning the text */
     display: flex;
     justify-content: left;
     align-items: center;
 }
 
 columns {
-    grid-column: 1/2;
+    /* the board is on row 1 */
     grid-row: 1;
     
     display: grid;
     grid-template-columns: repeat(9, var(--cell-size));
-    align-items: baseline;
 }
 
 columns span { 
     aspect-ratio: 1;
     border: var(--labels-border);    
     
+    /* aligning the text */
     display: flex; 
     align-items: flex-end;
     justify-content: center;
@@ -318,3 +359,4 @@ span {
     font-size: var(--shogi-table-labels-size);
     overflow: hidden;
 }
+
