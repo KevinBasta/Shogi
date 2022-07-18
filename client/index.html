@@ -26,30 +26,31 @@
     <div id="overlay" class="overlay hide"></div>
     
     <shogi>
-        <!-- opponent piece stand -->
-        <far-piece-stand id="far-piece-stand"></far-piece-stand>
-        
-        <shogi-board-and-rows id="board-and-rows">
-            <!-- the shogiboard and the column labels ontop -->
-            <shogi-board-wrapper>
-                <columns id="columns"></columns>
-                <shogi-board id="shogiBoard"></shogi-board>
-            </shogi-board-wrapper>
-            
-            <!-- the row labels on the right -->
-            <rows id="rows"> 
-                <span class="hide-corner-cell"></span>
-            </rows> 
-        </shogi-board-and-rows>
-        
-        <!-- player piece stand -->
-        <close-piece-stand id="close-piece-stand"></close-piece-stand>
+        <shogi-board-and-stands>
+            <!-- opponent piece stand -->
+            <far-piece-stand id="far-piece-stand"></far-piece-stand>
+                    
+            <shogi-board-and-rows id="board-and-rows">
+                <!-- the shogiboard and the column labels ontop -->
+                <shogi-board-wrapper>
+                    <columns id="columns"></columns>
+                    <shogi-board id="shogiBoard"></shogi-board>
+                </shogi-board-wrapper>
+                
+                <!-- the row labels on the right -->
+                <rows id="rows"> 
+                    <span class="hide-corner-cell"></span>
+                </rows> 
+            </shogi-board-and-rows>
 
-
+            <!-- player piece stand -->
+            <close-piece-stand id="close-piece-stand"></close-piece-stand>
+        </shogi-board-and-stands>
+        
         <!-- make beside the shogiboard on bigger screens but under on smaller screens using flex wrap -->
-        <shogi-chat id="game-log">
+        <shogi-log id="game-log">
             <p> example text </p>
-        </shogi-chat>
+        </shogi-log>
 
 <button style="background-color: purple" id="newgame"> new game </button>
 <button style="background-color: coral" id="joingame"> join game </button>

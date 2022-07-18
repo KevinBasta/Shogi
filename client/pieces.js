@@ -1,6 +1,6 @@
 import {defultBoardSetup, picesImages} from "/config.js";
 import {board} from "/board.js";
-import { getMovementBorder, askIfWantsToPromote, willMoveUncheckKing, willPawnDropCheckmateKing, kingInCheck, playerTwoView, boardArray } from "/main.js";
+import { getMovementBorder, askIfWantsToPromote, willMoveUncheckKing, willDropUncheckKing, willPawnDropCheckmateKing, kingInCheck, playerTwoView, boardArray } from "/main.js";
 //import {game} from "/main.js"; 
 
 // Super class
@@ -195,7 +195,30 @@ export class piece {
 
     }
 
-    getPossibleDrops(gameBoard) { 
+    kingCheckedRestrictDrops(movesArray) { 
+        let kingCheckRestrictedDrops = []; 
+        for (let possibleDrop of movesArray) { 
+            let unCheckingMove = willDropUncheckKing(this.position, possibleDrop);
+            if (unCheckingMove) { 
+                kingCheckRestrictedDrops.push(possibleDrop);
+            }
+        }
+
+        return kingCheckRestrictedDrops; 
+    }
+    
+    getPossibleDrops(gameBoard, checkingForFutureCheck) { 
+        let movesArray = this.standardDrops(gameBoard);
+
+        if (checkingForFutureCheck) {
+            return movesArray;
+        }
+
+        let kingCheckRestrictedDrops = this.kingCheckedRestrictDrops(movesArray);
+        return kingCheckRestrictedDrops;
+    }
+
+    standardDrops(gameBoard) { 
         // Changed in pawn, lance, and knight
         // Used for bishop, rook, gold general, and silver general
         let movesArray = []; 
@@ -593,7 +616,7 @@ export class knight extends piece {
         return movesArray;
     }
 
-    getPossibleDrops(gameBoard) {
+    standardDrops(gameBoard) {
         let movesArray = []; 
         let dropAllowFutureMovesStart; 
         let dropAllowFutureMovesEnd;
@@ -670,7 +693,7 @@ export class lance extends piece {
         return movesArray;
     }
 
-    getPossibleDrops(gameBoard) {
+    standardDrops(gameBoard) {
         let movesArray = []; 
         let dropAllowFutureMovesStart; 
         let dropAllowFutureMovesEnd;
@@ -750,7 +773,7 @@ export class pawn extends piece {
         return movesArray;
     }
 
-    getPossibleDrops(gameBoard) {
+    standardDrops(gameBoard) {
         // A pawn may not be dropped to give an immediate checkmate
         // No two pawns in one file (unless one is promoted)
         let movesArray = []; 

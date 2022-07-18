@@ -173,6 +173,35 @@ export class board {
         return result[thisPieceGoteSente];
     }
 
+    pieceDropCheckResult(oldPosition, newPosition) { 
+        let thisPieceGoteSente; 
+        let thisPieceOriginalPromotionStatus;
+        let thisPieceNewPromotionStatus;
+
+        // Putting the piece on the board, setting it's position and getting its promotion
+        this.gameBoard[newPosition] = this.standPieces[oldPosition][this.standPieces[oldPosition].length - 1];
+        console.log(this.gameBoard[newPosition]);
+        thisPieceOriginalPromotionStatus = this.gameBoard[newPosition].getPromotion();
+        this.gameBoard[newPosition].setPosition(newPosition);
+
+        // Getting gote sente and deleting the piece from old position in board
+        thisPieceGoteSente = this.gameBoard[newPosition].getGoteSente();
+
+        // Checking if there is a check on the king by moving to this possible move position
+        let result = this.checkAllPiecesForKingCheck(false);
+
+        // undoing the temporary movements parameters and deleting from gameboard
+        this.gameBoard[newPosition].setPosition(oldPosition);
+        thisPieceNewPromotionStatus = this.gameBoard[newPosition].getPromotion();
+        if (thisPieceOriginalPromotionStatus === false && thisPieceNewPromotionStatus === true) { 
+            this.gameBoard[newPosition].unpromote();
+        }
+        delete this.gameBoard[newPosition];
+
+        return result[thisPieceGoteSente];
+    }
+
+
 
     /*
      Checks if a possible pawn drop would checkmate the king
@@ -274,12 +303,26 @@ export class board {
             let possibleMoves = shogiPieceObj.getPossibleMoves(false);
 
             if (possibleMoves.length > 0) { 
-                localCheckMate[shogiPieceObj.gote_sente] = false; 
+                localCheckMate[shogiPieceObj.getGoteSente()] = false; 
             }
-
-            this.checkmated["sente"] = localCheckMate["sente"];
-            this.checkmated["gote"] = localCheckMate["gote"];
         }
+
+        
+        /* checking if a piece drop can uncheckmate */
+        for (let standCell in this.standPieces) {
+            if (this.standPieces[standCell].length > 0) { 
+                let standPiece = this.standPieces[standCell][this.standPieces[standCell].length - 1];
+                let standPieceGoteSente = standPiece.getGoteSente();
+                let possibleMoves = standPiece.getPossibleDrops(this.gameBoard, false);
+                
+                if (possibleMoves.length > 0) { 
+                    localCheckMate[standPieceGoteSente] = false;
+                }
+            }
+        }
+
+        this.checkmated["sente"] = localCheckMate["sente"];
+        this.checkmated["gote"] = localCheckMate["gote"];
 
         if (this.checkmated["sente"] === true) { 
             if (this.playerTwoView === true) { 

@@ -305,7 +305,7 @@ function standPieceClickEvent(e) {
     //loc_array.at(-1) instead of the line below to get last element
     pieceObject = capturedPieceTypeArray[capturedPieceTypeArray.length - 1];
     console.log(pieceObject)
-    possibleMoveCellsArray = pieceObject.getPossibleDrops(game.gameBoard);
+    possibleMoveCellsArray = pieceObject.getPossibleDrops(game.gameBoard, false);
     
     console.log(game);
     console.log(pieceObject);
@@ -458,10 +458,15 @@ export function willMoveUncheckKing(oldPosition, newPosition) {
     return !result;
 }
 
+export function willDropUncheckKing(oldStandPosition, newPosition) { 
+    let result = game.pieceDropCheckResult(oldStandPosition, newPosition);
+    return !result;
+}
+
 export function willPawnDropCheckmateKing(oldStandPosition, newPosition) { 
     let result = game.pawnDropPreventImmediateCheck(oldStandPosition, newPosition);
     return result;
 }
 
 // For local testing
-startGame();
+// startGame();

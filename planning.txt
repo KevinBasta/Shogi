@@ -8,6 +8,9 @@ define illigal movements (no two pawns in a file (drop), can't move king into da
 
 make mechanism for keeping track of movements (current state of board vs previous)
 
+********* account for piece drop clearing a checkmate
+
+
 
 Next steps: 
 Make all client pieces unclickable when picking to promote or not

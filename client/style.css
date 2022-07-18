@@ -1,10 +1,11 @@
 :root { 
     --cell-size: minmax(10px, 5vh);
-    --website-color: rgb(255, 193, 70);
+    /* rgb(255, 193, 70) */
+    --website-color: rgb(255, 214, 131);
     --labels-border: 2px solid;
 
-    --shogi-table-labels-size: calc(1vw + 1vh);
-    --captured-piece-count-font-size: 10px;
+    --shogi-table-labels-size: clamp(15px, calc(1vw + 1vh), 20px);
+    --captured-piece-count-font-size: clamp(2px, 3vw, 15px);
 
     --shogi-board-color: rgb(102, 52, 6);
     --shogi-cell-color: rgb(47, 33, 6);
@@ -39,7 +40,7 @@ body {
 
 #promotionQuestion {
     background-color: rgb(72, 72, 72);
-    width: 30%;
+    width: 45vw;
     height: 100%;
     border-radius: 7px;
     display: flex;
@@ -91,11 +92,20 @@ body {
 
 shogi { 
     display: flex;  
-    flex-direction: column;  
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 100vh; /* controles how spaced things are too in flex wrap */
     overflow: none;
     background-color: var(--website-color);
+}
+
+shogi-board-and-stands { 
+    display: flex;  
+    flex-direction: column; 
+    align-items: center;
+    margin: 2vw;
 }
 
 .overlay {
@@ -231,8 +241,8 @@ close-piece-stand div span {
 
 #game-log { 
     background-color: rgb(114, 64, 14);
-    width: 10vw;
-    height: 10vh;
+    width: clamp(20%, 40%, 400px);
+    height: 15vh;
 }
 
 
