@@ -119,37 +119,49 @@ function labelBoard() {
 
     // top and right cell labels based on player view
     let columnsLabelDiv = document.getElementById("columns");
+    let columnsChildrenArray = [];
+    
+    let rowTopCornerSpan = document.createElement("span");
+    rowTopCornerSpan.setAttribute("class", "hide-corner-cell")
+    
     let rowsLabelDiv = document.getElementById("rows");
+    let rowsChildrenArray = [rowTopCornerSpan];
+
+
+
     if (playerTwoView) { 
         // gote player labeling
         for (let i = 1; i <= 9; i++) { 
             let newLabelSpan = document.createElement("span");
             newLabelSpan.textContent=i;
-            columnsLabelDiv.appendChild(newLabelSpan);
+            columnsChildrenArray.push(newLabelSpan);
         }
         
         for (let i = 8; i >= 0; i--) { 
             let newLabelSpan = document.createElement("span");
             newLabelSpan.textContent=rowsKanji[i];
-            rowsLabelDiv.appendChild(newLabelSpan);
+            rowsChildrenArray.push(newLabelSpan);
         }
     } else { 
         // sente player labeling
         for (let i = 9; i >= 1; i--) { 
             let newLabelSpan = document.createElement("span");
             newLabelSpan.textContent=i;
-            columnsLabelDiv.appendChild(newLabelSpan);
+            columnsChildrenArray.push(newLabelSpan);
         }
         for (let i = 0; i < 9; i++) { 
             let newLabelSpan = document.createElement("span");
             newLabelSpan.textContent=rowsKanji[i];
-            rowsLabelDiv.appendChild(newLabelSpan);
+            rowsChildrenArray.push(newLabelSpan);
         }
     }
+    columnsLabelDiv.replaceChildren(...columnsChildrenArray);
+    rowsLabelDiv.replaceChildren(...rowsChildrenArray);
+
 
     // Getting the shogi board and its div children 
     let shogiBoard = document.getElementById('shogiBoard');
-
+    let shogiBoardCellsArray = [];
     // Labeling the shogi board divs
     for (let i = 0; i < 81; i++) {
         // Passing each div to a function that labels it
@@ -171,8 +183,9 @@ function labelBoard() {
                 rowCounter += 1;
             }
         }
-        shogiBoard.appendChild(newShogiCell);
+        shogiBoardCellsArray.push(newShogiCell);
     }
+    shogiBoard.replaceChildren(...shogiBoardCellsArray);
 
     console.log(boardArray)
 
@@ -184,7 +197,9 @@ function labelBoard() {
     // Labeling the player stands divs
     let standNumbCounter = 0;
     let closePieceStand = document.getElementById('close-piece-stand');
+    let closePieceStandCellsArray = [];
     let farPieceStand = document.getElementById('far-piece-stand');
+    let farPieceStandCellsArray = [];
 
     if (playerTwoView) { 
         standLabelHandeler("far", "p"); 
@@ -193,6 +208,8 @@ function labelBoard() {
         standLabelHandeler("close", "p");
         standLabelHandeler("far", "o");
     }
+    closePieceStand.replaceChildren(...closePieceStandCellsArray);
+    farPieceStand.replaceChildren(...farPieceStandCellsArray);
     
     // For labeling the stand piece cells
     function standLabelHandeler(closeOrFar, prefix) {
@@ -201,9 +218,9 @@ function labelBoard() {
             formatCell(newShogiStandCell, standNumbCounter, prefix);
             standNumbCounter += 1;
             if (closeOrFar === "close") { 
-                closePieceStand.appendChild(newShogiStandCell);
+                closePieceStandCellsArray.push(newShogiStandCell);
             } else if (closeOrFar === "far") { 
-                farPieceStand.appendChild(newShogiStandCell);
+                farPieceStandCellsArray.push(newShogiStandCell);
             }
         }
     }
@@ -469,4 +486,4 @@ export function willPawnDropCheckmateKing(oldStandPosition, newPosition) {
 }
 
 // For local testing
-// startGame();
+startGame();
