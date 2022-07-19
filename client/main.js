@@ -441,14 +441,12 @@ function emptyCellEvent(e) {
             askIfWantsToPromote(game.lastClicked[2], currentEmptyCell);
         } else { 
             game.movePiece(game.lastClicked[2], currentEmptyCell);
-            turnSwitch();
-            restrictOrUnrestrictedPlayerPieces();
+            switchTrunAndRestrictMoves();
             socket.emit('pieceMove', [game.lastClicked[2], currentEmptyCell]);
         }
     } else { 
         game.movePieceFromStand(game.lastClicked[2], currentEmptyCell);
-        turnSwitch();
-        restrictOrUnrestrictedPlayerPieces();
+        switchTrunAndRestrictMoves();
         socket.emit('pieceDrop', [game.lastClicked[2], currentEmptyCell]);
     }
 }
@@ -461,15 +459,13 @@ function emptyCellEvent(e) {
 function pieceMoveServerEvent(lastposition, currentEmptyCellEmit)  {
     let currentEmptyCell = currentEmptyCellEmit;
     game.movePiece(lastposition, currentEmptyCell);
-    turnSwitch();
-    restrictOrUnrestrictedPlayerPieces();
+    switchTrunAndRestrictMoves();
 }
 
 function pieceDropServerEvent(lastposition, currentEmptyCellEmit) { 
     let currentEmptyCell = currentEmptyCellEmit;
     game.movePieceFromStand(lastposition, currentEmptyCell);    
-    turnSwitch();
-    restrictOrUnrestrictedPlayerPieces();
+    switchTrunAndRestrictMoves();
 }
 
 
@@ -526,8 +522,7 @@ export function askIfWantsToPromote(oldPiecePosition, newPiecePosition) {
 export function promotePiece(piecePosition) {
     game.movePiece(game.lastClicked[2], piecePosition);
     game.promotePieceHandle(piecePosition);
-    turnSwitch();
-    restrictOrUnrestrictedPlayerPieces();
+    switchTrunAndRestrictMoves();
     socket.emit('pieceMove', [game.lastClicked[2], piecePosition]);
     socket.emit('piecePromote', piecePosition);
 }
@@ -537,8 +532,7 @@ export function promotePiece(piecePosition) {
  */
 export function dontPromotePiece(piecePosition) {
     game.movePiece(game.lastClicked[2], piecePosition);
-    turnSwitch();
-    restrictOrUnrestrictedPlayerPieces();
+    switchTrunAndRestrictMoves();
     socket.emit('pieceMove', [game.lastClicked[2], piecePosition]);
 }
 
@@ -546,7 +540,12 @@ export function promotePieceServerEvent(piecePosition) {
     game.promotePieceHandle(piecePosition);
 }
 
-
+function switchTrunAndRestrictMoves() { 
+    if (!game.checkmated["gote"] && !game.checkmated["sente"]) { 
+        turnSwitch();
+        restrictOrUnrestrictedPlayerPieces();
+    }
+}
 
 // checking and checkmating
 export function kingInCheck(gote_sente) { 

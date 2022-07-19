@@ -253,17 +253,20 @@ export function thisPlayerTurn() {
     let playerTurnStatus = document.getElementById("closePlayerTurnStatus");
     let opponentTurnStatus = document.getElementById("farPlayerTurnStatus");
 
-    playerTurnStatus.textContent = "Your Turn";
-    opponentTurnStatus.textContent = "";
-
+    if (playerTurnStatus.textContent != "You Won" || playerTurnStatus.textContent != "You Lost") {
+        playerTurnStatus.textContent = "Your Turn";
+        opponentTurnStatus.textContent = "";
+    }
 }
 
 export function otherPlayerTurn() { 
     let playerTurnStatus = document.getElementById("closePlayerTurnStatus");
     let opponentTurnStatus = document.getElementById("farPlayerTurnStatus");
 
-    opponentTurnStatus.textContent = "Opponent's Turn";
-    playerTurnStatus.textContent = "";
+    if (playerTurnStatus.textContent != "You Won" || playerTurnStatus.textContent != "You Lost") {
+        opponentTurnStatus.textContent = "Opponent's Turn";
+        playerTurnStatus.textContent = "";
+    }
 }
 
 export function initPlayerNameAndGoteSente(playerName, goteSente) { 
