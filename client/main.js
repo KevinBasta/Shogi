@@ -1,9 +1,19 @@
 import { player } from "/player.js";
 import { board } from "/board.js";
 import { piece } from "/pieces.js";
-import { promotionQuestion, promotionQuestionHide } from "/view.js";
+import { promotionQuestion, promotionQuestionHide, thisPlayerTurn, otherPlayerTurn, initPlayerNameAndGoteSente, initOpponentNameAndGoteSente, waitingForSecondPlayer } from "/view.js";
 
 const socket = io();
+export let playerTwoView = false;
+export let currentTurn = 'sente';
+
+export function turnSwitch() { 
+    if (currentTurn === "sente") {
+        currentTurn = "gote";
+    } else if (currentTurn === "gote") { 
+        currentTurn = "sente";
+    }
+}
 
 // Logging on the client from the server
 socket.on('log', (n) => {
@@ -17,28 +27,69 @@ socket.on('init', (number) => {
 });
 
 function startGame() { 
+    if (playerTwoView === false) { 
+        initPlayerNameAndGoteSente(playerName, "sente");
+    } else if (playerTwoView === true) { 
+        initPlayerNameAndGoteSente(playerName, "gote");
+    }
+
     labelBoard();
     newGame();
 }
 
-export let playerTwoView = false;
-function hendleInit(number) {
-    if (number === 2) {
-        playerTwoView = true;
-    }
-    console.log(number + " " + playerTwoView);
-}
 
+socket.on('requestFirstPlayerInfo', (name) => {
+    if (playerTwoView === false) { 
+        initOpponentNameAndGoteSente(name, "gote");
+    } else if (playerTwoView === true) { 
+        initOpponentNameAndGoteSente(name, "sente");
+    }
+    
+    socket.emit('recieveFirstPlayerInfo', [playerTwoView, playerName]);
+    startGame();
+});
+
+socket.on('recieveFirstPlayerInfo', ([goteOrSente, name]) => {
+    playerTwoView = !goteOrSente;
+
+    if (playerTwoView === false) { 
+        initOpponentNameAndGoteSente(name, "gote");
+    } else if (playerTwoView === true) { 
+        initOpponentNameAndGoteSente(name, "sente");
+    }
+
+    startGame();
+});
+
+let playerName;
 // Creating new game, joining a game, and joining errors
 let newgametext = document.getElementById("newgame");
 newgametext.addEventListener("click", function (e) {
+    //parceinfo
+    let goteSenteChoice = "sente";
+    if (goteSenteChoice === "gote") { 
+        playerTwoView = true;
+    } else if (goteSenteChoice === "sente") { 
+        playerTwoView = false;
+    }
+    playerName = "name1";
     socket.emit('newGame');
+    labelBoard();
+    if (playerTwoView === false) { 
+        initPlayerNameAndGoteSente(playerName, "sente");
+    } else if (playerTwoView === true) { 
+        initPlayerNameAndGoteSente(playerName, "gote");
+    }
+    waitingForSecondPlayer();
 });
 
 let joingametext = document.getElementById("joingame");
 joingametext.addEventListener("click", function (e) {
+    
+    playerName = "name22";
     socket.emit('joinGame', "234");
-    console.log('clcik')
+    socket.emit('requestFirstPlayerInfo', playerName);
+    labelBoard();
 });
 
 socket.on('unknownGame', () => alert('unknowngame'));
@@ -80,6 +131,14 @@ function newGame() {
     
     game = new board(player1, player2, playerTwoView, lastClicked);
     game.render();
+
+    if (playerTwoView && currentTurn === "sente") { 
+        game.turnRestrictPieceClick();
+        otherPlayerTurn();
+    } else if (!playerTwoView && currentTurn === "sente") { 
+        game.turnAllowPieceClick();
+        thisPlayerTurn();
+    }
 }
 
 function joinGame() { 
@@ -382,10 +441,14 @@ function emptyCellEvent(e) {
             askIfWantsToPromote(game.lastClicked[2], currentEmptyCell);
         } else { 
             game.movePiece(game.lastClicked[2], currentEmptyCell);
+            turnSwitch();
+            restrictOrUnrestrictedPlayerPieces();
             socket.emit('pieceMove', [game.lastClicked[2], currentEmptyCell]);
         }
     } else { 
         game.movePieceFromStand(game.lastClicked[2], currentEmptyCell);
+        turnSwitch();
+        restrictOrUnrestrictedPlayerPieces();
         socket.emit('pieceDrop', [game.lastClicked[2], currentEmptyCell]);
     }
 }
@@ -398,13 +461,33 @@ function emptyCellEvent(e) {
 function pieceMoveServerEvent(lastposition, currentEmptyCellEmit)  {
     let currentEmptyCell = currentEmptyCellEmit;
     game.movePiece(lastposition, currentEmptyCell);
+    turnSwitch();
+    restrictOrUnrestrictedPlayerPieces();
 }
 
 function pieceDropServerEvent(lastposition, currentEmptyCellEmit) { 
     let currentEmptyCell = currentEmptyCellEmit;
     game.movePieceFromStand(lastposition, currentEmptyCell);    
+    turnSwitch();
+    restrictOrUnrestrictedPlayerPieces();
 }
 
+
+function restrictOrUnrestrictedPlayerPieces() { 
+    if (!playerTwoView && currentTurn === "sente") { 
+        game.turnAllowPieceClick();
+        thisPlayerTurn();
+    } else if (playerTwoView && currentTurn === "gote") { 
+        game.turnAllowPieceClick();
+        thisPlayerTurn();
+    } else if (playerTwoView && currentTurn === "sente") { 
+        game.turnRestrictPieceClick();
+        otherPlayerTurn();
+    } else if (!playerTwoView && currentTurn === "gote") { 
+        game.turnRestrictPieceClick();
+        otherPlayerTurn();
+    }
+}
 
 /* 
  Takes x, y, and gote sente. Checks if the cell is an edge, if it has
@@ -443,6 +526,8 @@ export function askIfWantsToPromote(oldPiecePosition, newPiecePosition) {
 export function promotePiece(piecePosition) {
     game.movePiece(game.lastClicked[2], piecePosition);
     game.promotePieceHandle(piecePosition);
+    turnSwitch();
+    restrictOrUnrestrictedPlayerPieces();
     socket.emit('pieceMove', [game.lastClicked[2], piecePosition]);
     socket.emit('piecePromote', piecePosition);
 }
@@ -452,6 +537,8 @@ export function promotePiece(piecePosition) {
  */
 export function dontPromotePiece(piecePosition) {
     game.movePiece(game.lastClicked[2], piecePosition);
+    turnSwitch();
+    restrictOrUnrestrictedPlayerPieces();
     socket.emit('pieceMove', [game.lastClicked[2], piecePosition]);
 }
 
@@ -486,4 +573,4 @@ export function willPawnDropCheckmateKing(oldStandPosition, newPosition) {
 }
 
 // For local testing
-startGame();
+// startGame();

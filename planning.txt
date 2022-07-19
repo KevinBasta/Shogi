@@ -118,3 +118,12 @@ board js function may use later
         console.log("sente: " + this.checked["sente"])
         return {"gote": localGoteCheck, "sente": localSenteCheck};
     }
+
+
+
+
+
+left to do: 
+- game log display
+- player name, your turn, you won, you lost
+- finish socket io

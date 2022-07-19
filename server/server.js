@@ -25,6 +25,10 @@ io.on('connection', client => {
     client.on('pieceDrop', ([lastposition, currentEmptyCellEmit]) => client.broadcast.emit('pieceDrop', [lastposition, currentEmptyCellEmit]));
     client.on('piecePromote', (piecePosition) => client.broadcast.emit('piecePromote', piecePosition));
     
+    client.on('requestFirstPlayerInfo', (name) => client.broadcast.emit('requestFirstPlayerInfo', name));
+    client.on('recieveFirstPlayerInfo', ([goteOrSente, name]) => client.broadcast.emit('recieveFirstPlayerInfo', [goteOrSente, name]));
+
+
     client.on('newGame', handleNewGame);
 
     function handleNewGame() {
@@ -37,7 +41,7 @@ io.on('connection', client => {
 
         client.join(roomName);
         client.number = 1;
-        client.emit('init', 1);
+        //client.emit('init', 1);
     }
 
     client.on('joinGame', handleJoinGame);
@@ -57,7 +61,7 @@ io.on('connection', client => {
 
             client.join(gameCode);
             client.number = 2;
-            client.emit('init', 2);
+            //client.emit('init', 2);
         } else { 
             client.emit('unknownGame');
             return;

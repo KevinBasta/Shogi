@@ -1,9 +1,8 @@
 import {player} from "/player.js";
-import {addPossibleMovesEvent, removeEmptyCellEvent, playerTwoView} from "/main.js";
+import {currentTurn, addPossibleMovesEvent, removeEmptyCellEvent, playerTwoView} from "/main.js";
 import {defultBoardSetup, defultStandSetups, picesImages} from "/config.js"; 
 import {piece, king, goldGeneral, silverGeneral, rook, bishop, knight, lance, pawn} from "/pieces.js";
-import {renderNewPieceImage, renderPlaceholderStandPiece, renderCapturedPieceInStand, updateCapturedPieceInStand, removeChildElement, removeOldPossibleMovesStyling, promotionQuestion, winOrLoseDisplay, updatePieceImage, removePieceEventListener, removeStandPieceEventListener } from "/view.js";
-
+import {renderNewPieceImage, renderPlaceholderStandPiece, renderCapturedPieceInStand, updateCapturedPieceInStand, removeChildElement, removeOldPossibleMovesStyling, promotionQuestion, winOrLoseDisplay, updatePieceImage, removePieceEventListener, removeStandPieceEventListener, addPieceEventListener, addStandPieceEventListener } from "/view.js";
 
 /*
  Class for controlling most of the game mechanics and logic.
@@ -48,6 +47,46 @@ export class board {
             renderPlaceholderStandPiece(pieceIndexInObj[0], pieceIndexInObj[1], pieceName);
         }
         console.log(this.standPieces);
+    }
+
+    turnRestrictPieceClick() { 
+        for (let piecePosition in this.gameBoard) { 
+            if (this.playerTwoView === false && currentTurn === "gote" && this.gameBoard[piecePosition].getGoteSente() === "sente") { 
+                removePieceEventListener(piecePosition);
+            } else if (this.playerTwoView === true && currentTurn === "sente" && this.gameBoard[piecePosition].getGoteSente() === "gote") { 
+                removePieceEventListener(piecePosition);
+            }
+        }
+
+        for (let standPiecePosition in this.standPieces) { 
+            if (this.standPieces[standPiecePosition].length > 0) {
+                if (standPiecePosition.substring(0, 1) === "p" && currentTurn === "gote"){ 
+                    removeStandPieceEventListener(standPiecePosition);
+                } else if (standPiecePosition.substring(0, 1) === "o" && currentTurn === "sente") { 
+                    removeStandPieceEventListener(standPiecePosition);
+                }
+            }
+        }
+    }
+
+    turnAllowPieceClick() { 
+        for (let piecePosition in this.gameBoard) { 
+            if (this.playerTwoView === false && currentTurn === "sente" && this.gameBoard[piecePosition].getGoteSente() === "sente") { 
+                addPieceEventListener(piecePosition);
+            } else if (this.playerTwoView === true && currentTurn === "gote" && this.gameBoard[piecePosition].getGoteSente() === "gote") { 
+                addPieceEventListener(piecePosition);
+            }
+        }
+
+        for (let standPiecePosition in this.standPieces) { 
+            if (this.standPieces[standPiecePosition].length > 0) {
+                if (standPiecePosition.substring(0, 1) === "p" && currentTurn === "sente"){ 
+                    addStandPieceEventListener(standPiecePosition);
+                } else if (standPiecePosition.substring(0, 1) === "o" && currentTurn === "gote") { 
+                    addStandPieceEventListener(standPiecePosition);
+                }
+            }
+        }
     }
 
     /*

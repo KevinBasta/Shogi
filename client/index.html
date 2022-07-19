@@ -46,8 +46,18 @@
         </shogi-board-and-stands>
         
         <!-- make beside the shogiboard on bigger screens but under on smaller screens using flex wrap -->
-        <shogi-log id="game-log">
-            <p> example text </p>
+        <shogi-log id="game-log" class="game-log">
+            <div id="farPlayerInfo">
+                <p id="farPlayerText"></p>
+                <p id="farPlayerTurnStatus"></p>
+            </div>
+            <ul id="movesLog">
+                <li>example move</li>
+            </ul>
+            <div id="closePlayerInfo">
+                <p id="closePlayerText"></p>
+                <p id="closePlayerTurnStatus"></p>
+            </div>
         </shogi-log>
 
 <button style="background-color: purple" id="newgame"> new game </button>

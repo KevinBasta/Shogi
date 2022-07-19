@@ -238,14 +238,65 @@ close-piece-stand div span {
 }
 
 
-
+/* game log properties */
 #game-log { 
-    background-color: rgb(114, 64, 14);
-    width: clamp(20%, 40%, 400px);
-    height: 15vh;
+    display: flex;
+    flex-direction: column;
+    width: 400px;
 }
 
+#farPlayerInfo, #closePlayerInfo { 
+    background-color: rgb(55, 39, 0);
+    height: 40px;
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
 
+#closePlayerText, #farPlayerText { 
+    font-size: 20px;
+    color: white;
+    padding: 0px 20px;
+}
+
+#closePlayerTurnStatus, #farPlayerTurnStatus {
+    font-size: 25px;
+    color: white;
+    padding: 0px 20px;
+}
+
+#farPlayerInfo { 
+    flex-direction: row-reverse;
+}
+
+#farPlayerText, #farPlayerTurnStatus { 
+    transform: scale(-1, -1);
+    -moz-transform: scale(-1, -1);
+    -webkit-transform: scale(-1, -1);
+    -o-transform: scale(-1, -1);
+    -ms-transform: scale(-1, -1);
+}
+
+#movesLog { 
+    background-color: rgb(114, 64, 14);
+    height: 200px;
+    scrollbar-width: none;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid lightgrey;
+    border-bottom: 1px solid lightgrey;
+    overflow-y: scroll;
+}
+
+#movesLog::-webkit-scrollbar { 
+    display: none;
+}
+
+li {
+    padding: 10px 10px 10px 10px;
+}
 
 
 

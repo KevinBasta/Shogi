@@ -33,6 +33,7 @@ export function renderNewPieceImage(cellCoordinate, gameBoard) {
     }
 }
 
+
 export function updatePieceImage(cellCoordinate, gameBoard) {
     // Getting the div spesified and creating the image
     let position = document.getElementById(cellCoordinate);
@@ -209,14 +210,19 @@ export function promotionQuestionHide() {
     overlay.setAttribute("class", "overlay hide");
 }
 
-export function winOrLoseDisplay(won) { 
-    if (won === true) { 
-        console.log("You Won");
-    } else { 
-        console.log("You Lost");
-    }
+export function addPieceEventListener(cellCoordinate) { 
+    let position = document.getElementById(cellCoordinate);
+    let pieceImage = position.querySelector(`img`);
+
+    addPossibleMovesEvent(pieceImage);
 }
 
+export function addStandPieceEventListener(cellCoordinate) { 
+    let position = document.getElementById(cellCoordinate);
+    let standPieceImage = position.querySelector(`img`);
+    
+    addStandPossibleMovesEvent(standPieceImage);
+}
 
 export function removePieceEventListener(cellCoordinate) { 
     let position = document.getElementById(cellCoordinate);
@@ -230,4 +236,47 @@ export function removeStandPieceEventListener(cellCoordinate) {
     let standPieceImage = position.querySelector(`img`);
     
     removeStandPossibleMovesEvent(standPieceImage);
+}
+
+export function winOrLoseDisplay(won) { 
+    let playerTurnStatus = document.getElementById("closePlayerTurnStatus");
+    let opponentTurnStatus = document.getElementById("farPlayerTurnStatus");
+    if (won === true) { 
+        playerTurnStatus.textContent = "You Won";
+    } else { 
+        playerTurnStatus.textContent = "You Lost";
+    }
+    opponentTurnStatus.textContent = "";
+}
+
+export function thisPlayerTurn() { 
+    let playerTurnStatus = document.getElementById("closePlayerTurnStatus");
+    let opponentTurnStatus = document.getElementById("farPlayerTurnStatus");
+
+    playerTurnStatus.textContent = "Your Turn";
+    opponentTurnStatus.textContent = "";
+
+}
+
+export function otherPlayerTurn() { 
+    let playerTurnStatus = document.getElementById("closePlayerTurnStatus");
+    let opponentTurnStatus = document.getElementById("farPlayerTurnStatus");
+
+    opponentTurnStatus.textContent = "Opponent's Turn";
+    playerTurnStatus.textContent = "";
+}
+
+export function initPlayerNameAndGoteSente(playerName, goteSente) { 
+    let playerNameDisplay = document.getElementById("closePlayerText");
+    playerNameDisplay.textContent = goteSente + " | " + playerName;
+}
+
+export function initOpponentNameAndGoteSente(opponentName, goteSente) { 
+    let playerNameDisplay = document.getElementById("farPlayerText");
+    playerNameDisplay.textContent = goteSente + " | " + opponentName;
+}
+
+export function waitingForSecondPlayer() { 
+    let playerNameDisplay = document.getElementById("farPlayerText");
+    playerNameDisplay.textContent = "waiting...";
 }
