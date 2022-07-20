@@ -10,6 +10,49 @@
     <title>Shogi 愛</title>
 </head>
 <body>
+
+    <footer>
+        <p>Copyright © 2022 Kevin Basta. <a href="https://github.com/KevinBasta/Shogi" target="_blank">Github Repository</a></p>
+    </footer>
+
+    <!-- Main Screen -->
+    <div id="homeScreen" class="homeScreen">
+        <header-text>
+            <p id="header" class="header"> Shogi 愛 </p>
+            <p id="description" class="description"> An Online Multiplayer Shogi Game </p>
+        </header-text>
+
+        <button class="collapsible active">New Game</button>
+        <new-game id="newGameUncollapse" class="collapse-section">
+            <div class="form-group">
+                <label>Username:</label>
+                <input type="text" placeholder="Name" id="newGameName"/>
+                <br>
+                <label>Game Options:</label>
+                <select id="goteSenteChoice" name="Sente or Gote">
+                    <option value="sente">-- Sente or Gote</option>
+                    <option value="sente">Sente</option>
+                    <option value="gote">Gote</option>
+                </select>
+            </div>
+            <button id="newgame" class="submit-button"> New Game </button>
+        </new-game>
+        
+        <button class="collapsible">Join Game</button>
+        <join-game class="collapse-section">
+            <div class="form-group">
+                <label>Username:</label>
+                <input type="text" placeholder="Name" id="joinGameName"/>
+                <br>
+                <label>Game Code:</label>
+                <input type="text" placeholder="Enter Game Code" id="gameCodeInput"/>
+            </div>
+            <button id="joingame" class="submit-button"> Join Game </button>
+        </join-game>        
+    </div>
+
+
+    <!-- Promotion Prompt -->
     <div id="promotionContainer" class="promotionFlex hide">
         <div id="promotionQuestion">
             <p>Would you like to promote this piece?</p>
@@ -58,9 +101,36 @@
                 <p id="closePlayerTurnStatus"></p>
             </div>
         </shogi-log>
-
-<button style="background-color: purple" id="newgame"> new game </button>
-<button style="background-color: coral" id="joingame"> join game </button>
     </shogi>
+
+<script>
+    let newGameSection = document.getElementById("newGameUncollapse");
+    newGameSection.style.maxHeight = newGameSection.scrollHeight + "px";
+
+    let coll = document.getElementsByClassName("collapsible");
+    for (let i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function(e) {
+
+            for (let i = 0; i < coll.length; i++) { 
+                if (coll[i] != event.srcElement){ 
+                    if (coll[i].getAttribute("class") === "collapsible active") {
+                        coll[i].classList.toggle("active"); 
+                        var content = coll[i].nextElementSibling;
+                        content.style.maxHeight = null;
+                    }
+                }
+            }
+
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.maxHeight){
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+        });
+    }
+</script>
+
 </body>
 </html>

@@ -294,3 +294,24 @@ export function waitingForSecondPlayer() {
     let playerNameDisplay = document.getElementById("farPlayerText");
     playerNameDisplay.textContent = "waiting...";
 }
+
+export function hideHomePage() { 
+    let homePage = document.getElementById("homeScreen");
+    homePage.setAttribute("class", "hide");
+}
+
+export function displayGameCode(gameCode) { 
+    let gameLog = document.getElementById("movesLog");
+    let gameCodeLi = document.createElement("li");
+    gameCodeLi.setAttribute("class", "game-code-text");
+    gameCodeLi.setAttribute("id", "game-code-text")
+    gameCodeLi.textContent = "Your Game Code is: " + gameCode;
+    
+    gameLog.appendChild(gameCodeLi);
+    gameLog.scrollTop = gameLog.scrollHeight;
+}
+
+export function removeGameCode() {
+    let gameCodeLi = document.getElementById("game-code-text");
+    gameCodeLi.setAttribute("class", "hide");
+}

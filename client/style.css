@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&display=swap');
+
 :root { 
     --cell-size: minmax(10px, 5vh);
     /* rgb(255, 193, 70) */
@@ -9,6 +11,9 @@
 
     --shogi-board-color: rgb(102, 52, 6);
     --shogi-cell-color: rgb(47, 33, 6);
+
+    --button-color: rgb(102, 52, 6);
+    --button-submit: rgb(69, 36, 5);
 }
 
 /* overall game area styling */
@@ -245,6 +250,11 @@ close-piece-stand div span {
     width: 400px;
 }
 
+.game-log-smallscreen-reverse { 
+    flex-direction: column-reverse;
+}
+
+
 #farPlayerInfo, #closePlayerInfo { 
     background-color: rgb(55, 39, 0);
     height: 40px;
@@ -280,7 +290,7 @@ close-piece-stand div span {
 
 #movesLog { 
     background-color: rgb(114, 64, 14);
-    height: 200px;
+    height: 20vh;   
     /* scrollbar-width: none; */
     list-style: none;
     margin: 0;
@@ -437,3 +447,163 @@ span {
     overflow: hidden;
 }
 
+
+/* home screen */
+.homeScreen { 
+    background-color: var(--website-color);
+    position: absolute;
+    z-index: 101;
+
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+header-text { 
+    margin-top: 5vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.header, .description { 
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 500;
+}
+
+.header {
+    font-size: 40px;
+    margin: 0px;
+}
+
+.description { 
+    font-size: 20px;
+}
+
+.collapse-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2vh;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+}
+
+.form-group label{ 
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 300;
+    font-size: 15px;
+}
+
+.form-group input, .form-group select, .form-group option, .submit-button { 
+    font-family: 'Noto Serif JP', serif;
+}
+
+input[type=text], select, .submit-button{ 
+    padding: 5px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+}
+
+select { 
+    border-radius: 0%;
+}
+
+input[type=text]:focus, select:focus {
+    border: 2px solid black;
+    outline:0;
+}
+
+.submit-button { 
+    background-color: var(--button-color);
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    margin-bottom: 25px;
+}
+
+.submit-button:hover {
+    background-color: var(--button-submit);
+    outline:0;
+}
+
+.game-code-text { 
+    font-family: 'Noto Serif JP', serif;
+    font-size: 25px;
+    color: white;
+    padding: 10px;
+}
+
+
+
+
+.collapsible {
+  background-color: var(--button-color);
+  color: white;
+  cursor: pointer;
+  padding: 18px;
+  width: 50%;
+  border: none;
+  text-align: center;
+  outline: none;
+  font-family: 'Noto Serif JP', serif;
+  font-size: 20px;
+}
+
+.active, .collapsible:hover {
+  background-color: var(--button-submit);
+}
+
+.collapse-section {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+
+.collapsible:after {
+  content: '+';
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  float: right;
+  margin-left: 5px;
+}
+
+.active:after {
+  content: "−"; 
+}
+
+footer { 
+    position: absolute;
+    bottom: 0;
+    
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    
+    z-index: 105;
+    width: 100vw;
+    background-color: var(--shogi-cell-color);
+    height: 40px;
+
+}
+
+footer p { 
+    width: auto;
+    color: white;
+}
+
+footer a { 
+    color: rgb(174, 174, 174);
+}

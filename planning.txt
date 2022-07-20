@@ -127,3 +127,11 @@ left to do:
 - game log display
 - player name, your turn, you won, you lost
 - finish socket io
+
+
+
+
+
+realistic future additions: 
+- different handycaps [as easy as adding new objects in the config files]
+- single player mode [gotta get rid of a bunch of stuff and make a copy of the js files]

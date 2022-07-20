@@ -1,7 +1,7 @@
 import { player } from "/player.js";
 import { board } from "/board.js";
 import { piece } from "/pieces.js";
-import { promotionQuestion, promotionQuestionHide, thisPlayerTurn, otherPlayerTurn, initPlayerNameAndGoteSente, initOpponentNameAndGoteSente, waitingForSecondPlayer, pieceMoveGameLog } from "/view.js";
+import { promotionQuestion, promotionQuestionHide, thisPlayerTurn, otherPlayerTurn, initPlayerNameAndGoteSente, initOpponentNameAndGoteSente, waitingForSecondPlayer, pieceMoveGameLog, hideHomePage, displayGameCode, removeGameCode } from "/view.js";
 
 const socket = io();
 export let playerTwoView = false;
@@ -46,6 +46,7 @@ socket.on('requestFirstPlayerInfo', (name) => {
     }
     
     socket.emit('recieveFirstPlayerInfo', [playerTwoView, playerName]);
+    removeGameCode();
     startGame();
 });
 
@@ -65,15 +66,18 @@ let playerName;
 // Creating new game, joining a game, and joining errors
 let newgametext = document.getElementById("newgame");
 newgametext.addEventListener("click", function (e) {
-    //parceinfo
-    let goteSenteChoice = "sente";
-    if (goteSenteChoice === "gote") { 
-        playerTwoView = true;
-    } else if (goteSenteChoice === "sente") { 
+    playerName = document.getElementById("newGameName").value;
+    let goteSenteChoice = document.getElementById("goteSenteChoice").value;
+    if (goteSenteChoice === "-- Sente or Gote") {
         playerTwoView = false;
-    }
-    playerName = "name1";
+    } else if (goteSenteChoice == "Sente") { 
+        playerTwoView = false;
+    } else if (goteSenteChoice == "Gote") { 
+        playerTwoView = true;
+    } 
+
     socket.emit('newGame');
+
     labelBoard();
     if (playerTwoView === false) { 
         initPlayerNameAndGoteSente(playerName, "sente");
@@ -81,19 +85,26 @@ newgametext.addEventListener("click", function (e) {
         initPlayerNameAndGoteSente(playerName, "gote");
     }
     waitingForSecondPlayer();
+    hideHomePage();
 });
 
 let joingametext = document.getElementById("joingame");
 joingametext.addEventListener("click", function (e) {
-    
-    playerName = "name22";
-    socket.emit('joinGame', "234");
+    playerName = document.getElementById("joinGameName").value;
+    let gameCode = document.getElementById("gameCodeInput").value;
+
+    socket.emit('joinGame', gameCode);
     socket.emit('requestFirstPlayerInfo', playerName);
     labelBoard();
+    hideHomePage();
 });
 
 socket.on('unknownGame', () => alert('unknowngame'));
 socket.on('tooManyPlayers', () => alert('tooManyPlayers'));
+
+socket.on('gamecode', (roomName) => { 
+    displayGameCode(roomName);
+});
 
 // Sending information to other client
 socket.on('pieceMove', ([lastposition, currentEmptyCellEmit]) => {

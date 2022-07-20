@@ -42,6 +42,7 @@ io.on('connection', client => {
 
         client.join(roomName);
         client.number = 1;
+        io.to(client.id).emit("gamecode", roomName);
         //client.emit('init', 1);
     }
 
