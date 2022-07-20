@@ -1,7 +1,7 @@
 import { player } from "/player.js";
 import { board } from "/board.js";
 import { piece } from "/pieces.js";
-import { promotionQuestion, promotionQuestionHide, thisPlayerTurn, otherPlayerTurn, initPlayerNameAndGoteSente, initOpponentNameAndGoteSente, waitingForSecondPlayer } from "/view.js";
+import { promotionQuestion, promotionQuestionHide, thisPlayerTurn, otherPlayerTurn, initPlayerNameAndGoteSente, initOpponentNameAndGoteSente, waitingForSecondPlayer, pieceMoveGameLog } from "/view.js";
 
 const socket = io();
 export let playerTwoView = false;
@@ -108,6 +108,9 @@ socket.on('piecePromote', (piecePosition) => {
     promotePieceServerEvent(piecePosition);
 });
 
+socket.on('gameNotationLine', (moveLogText) => {
+    pieceMoveGameLog(moveLogText);
+});
 
 
 /* 
@@ -471,17 +474,21 @@ function pieceDropServerEvent(lastposition, currentEmptyCellEmit) {
 
 function restrictOrUnrestrictedPlayerPieces() { 
     if (!playerTwoView && currentTurn === "sente") { 
+        game.notationArray = {"player": "sente", "piece": "none", "location": "0", "destination": "0", "capturedOpponent": false, "promoted": false, "dropped": false, "choseToPromote": "na"};
         game.turnAllowPieceClick();
         thisPlayerTurn();
     } else if (playerTwoView && currentTurn === "gote") { 
+        game.notationArray = {"player": "sente", "piece": "none", "location": "0", "destination": "0", "capturedOpponent": false, "promoted": false, "dropped": false, "choseToPromote": "na"};
         game.turnAllowPieceClick();
         thisPlayerTurn();
     } else if (playerTwoView && currentTurn === "sente") { 
         game.turnRestrictPieceClick();
         otherPlayerTurn();
+        gameLogConcat();
     } else if (!playerTwoView && currentTurn === "gote") { 
         game.turnRestrictPieceClick();
         otherPlayerTurn();
+        gameLogConcat();
     }
 }
 
@@ -522,6 +529,7 @@ export function askIfWantsToPromote(oldPiecePosition, newPiecePosition) {
 export function promotePiece(piecePosition) {
     game.movePiece(game.lastClicked[2], piecePosition);
     game.promotePieceHandle(piecePosition);
+    game.notationArray["choseToPromote"] = "yes";
     switchTrunAndRestrictMoves();
     socket.emit('pieceMove', [game.lastClicked[2], piecePosition]);
     socket.emit('piecePromote', piecePosition);
@@ -532,6 +540,7 @@ export function promotePiece(piecePosition) {
  */
 export function dontPromotePiece(piecePosition) {
     game.movePiece(game.lastClicked[2], piecePosition);
+    game.notationArray["choseToPromote"] = "no";
     switchTrunAndRestrictMoves();
     socket.emit('pieceMove', [game.lastClicked[2], piecePosition]);
 }
@@ -569,6 +578,54 @@ export function willDropUncheckKing(oldStandPosition, newPosition) {
 export function willPawnDropCheckmateKing(oldStandPosition, newPosition) { 
     let result = game.pawnDropPreventImmediateCheck(oldStandPosition, newPosition);
     return result;
+}
+
+
+export function gameLogConcat() { 
+    let localNotation = game.notationArray;
+    let notationLine = "";
+    if (localNotation["player"] === "sente") { 
+        notationLine += "☖";
+    } else if (localNotation["player"] === "gote") { 
+        notationLine += "☗";
+    }
+    
+    if (localNotation["promoted"] === true) { 
+        notationLine += "+";
+    }
+
+    if (localNotation["piece"] == "Knight") {
+        notationLine += "N";
+    } else if (localNotation["piece"] == "ChallengingKing") {
+        notationLine += "K";
+    } else { 
+        notationLine += localNotation["piece"].substring(0,1);
+    }
+
+    if (localNotation["dropped"] === false) { 
+        notationLine += localNotation["location"];
+    }
+
+     
+    if (localNotation["dropped"] === true) { 
+        notationLine += "*";
+    } else if (localNotation["capturedOpponent"] === true) { 
+        notationLine += "x";
+    } else {
+        notationLine += "-";
+    }
+
+    notationLine += localNotation["destination"];
+
+    if (localNotation["choseToPromote"] === "yes") {
+        notationLine += "+";
+    } else if (localNotation["choseToPromote"] === "no") { 
+        notationLine += "=";
+    }
+
+    pieceMoveGameLog(notationLine);
+    game.notationArray = {"player": "sente", "piece": "none", "location": "0", "destination": "0", "capturedOpponent": false, "promoted": false, "dropped": false, "choseToPromote": "na"};
+    socket.emit("gameNotationLine", notationLine);
 }
 
 // For local testing

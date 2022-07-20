@@ -27,6 +27,7 @@ io.on('connection', client => {
     
     client.on('requestFirstPlayerInfo', (name) => client.broadcast.emit('requestFirstPlayerInfo', name));
     client.on('recieveFirstPlayerInfo', ([goteOrSente, name]) => client.broadcast.emit('recieveFirstPlayerInfo', [goteOrSente, name]));
+    client.on('gameNotationLine', (notationLine) => client.broadcast.emit('gameNotationLine', notationLine));
 
 
     client.on('newGame', handleNewGame);

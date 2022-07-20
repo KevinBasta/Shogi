@@ -269,6 +269,17 @@ export function otherPlayerTurn() {
     }
 }
 
+
+export function pieceMoveGameLog(moveLogText) { 
+    let gameLog = document.getElementById("movesLog");
+    let newMoveLi = document.createElement("li");
+    newMoveLi.textContent = moveLogText;
+    
+    gameLog.appendChild(newMoveLi);
+    gameLog.scrollTop = gameLog.scrollHeight;
+}
+
+
 export function initPlayerNameAndGoteSente(playerName, goteSente) { 
     let playerNameDisplay = document.getElementById("closePlayerText");
     playerNameDisplay.textContent = goteSente + " | " + playerName;

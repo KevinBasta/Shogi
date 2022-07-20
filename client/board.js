@@ -2,7 +2,7 @@ import {player} from "/player.js";
 import {currentTurn, addPossibleMovesEvent, removeEmptyCellEvent, playerTwoView} from "/main.js";
 import {defultBoardSetup, defultStandSetups, picesImages} from "/config.js"; 
 import {piece, king, goldGeneral, silverGeneral, rook, bishop, knight, lance, pawn} from "/pieces.js";
-import {renderNewPieceImage, renderPlaceholderStandPiece, renderCapturedPieceInStand, updateCapturedPieceInStand, removeChildElement, removeOldPossibleMovesStyling, promotionQuestion, winOrLoseDisplay, updatePieceImage, removePieceEventListener, removeStandPieceEventListener, addPieceEventListener, addStandPieceEventListener } from "/view.js";
+import {renderNewPieceImage, renderPlaceholderStandPiece, renderCapturedPieceInStand, updateCapturedPieceInStand, removeChildElement, removeOldPossibleMovesStyling, promotionQuestion, winOrLoseDisplay, updatePieceImage, removePieceEventListener, removeStandPieceEventListener, addPieceEventListener, addStandPieceEventListener, pieceMoveGameLog } from "/view.js";
 
 /*
  Class for controlling most of the game mechanics and logic.
@@ -23,6 +23,8 @@ export class board {
         this.checkmated = {"gote": false, "sente": false};
         this.gotePossibleMovesButter = [];
         this.sentePossibleMovesButter = [];
+
+        this.notationArray = {"player": "sente", "piece": "none", "location": "0", "destination": "0", "capturedOpponent": false, "promoted": false, "dropped": false, "choseToPromote": false};
 
         this.player1 = player1;
         this.player2 = player2;
@@ -112,6 +114,8 @@ export class board {
     movePiece(oldPosition, newPosition) { 
         // If the target position has an opponent piece [can add extra check of gote sente]
         if (newPosition in this.gameBoard) {    
+            this.notationArray["capturedOpponent"] = true;
+
             // Getting rid of opponent piece from ui
             removeChildElement(newPosition, `[pieceName=${this.gameBoard[newPosition].pieceObjectName}]`);
 
@@ -128,6 +132,12 @@ export class board {
         this.gameBoard[newPosition] = this.gameBoard[oldPosition];
         this.gameBoard[newPosition].setPosition(newPosition);
         delete this.gameBoard[oldPosition];
+
+        this.notationArray["player"] = this.gameBoard[newPosition].getGoteSente();
+        this.notationArray["piece"] = this.gameBoard[newPosition].getType();
+        this.notationArray["promoted"] = this.gameBoard[newPosition].getPromotion();
+        this.notationArray["location"] = oldPosition;
+        this.notationArray["destination"] = newPosition;
 
         // Creating new image element for the piece and appending it to new cell
         renderNewPieceImage(newPosition, this.gameBoard);
@@ -153,6 +163,11 @@ export class board {
         this.gameBoard[positionInBoard] = pieceToDrop;
         this.gameBoard[positionInBoard].setPosition(positionInBoard);
         this.gameBoard[positionInBoard].inStandFalse();
+
+        this.notationArray["player"] = this.gameBoard[positionInBoard].getGoteSente();
+        this.notationArray["piece"] = this.gameBoard[positionInBoard].getType();
+        this.notationArray["destination"] = positionInBoard;
+        this.notationArray["dropped"] = true;
 
         // Creating new image element for the piece and appending it to new cell
         renderNewPieceImage(positionInBoard, this.gameBoard);
