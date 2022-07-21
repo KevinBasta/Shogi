@@ -7,6 +7,15 @@ const socket = io();
 export let playerTwoView = false;
 export let currentTurn = 'sente';
 
+
+/* turn switiching */
+function switchTrunAndRestrictMoves() { 
+    if (!game.checkmated["gote"] && !game.checkmated["sente"]) { 
+        turnSwitch();
+        restrictOrUnrestrictedPlayerPieces();
+    }
+}
+
 export function turnSwitch() { 
     if (currentTurn === "sente") {
         currentTurn = "gote";
@@ -15,17 +24,35 @@ export function turnSwitch() {
     }
 }
 
+function restrictOrUnrestrictedPlayerPieces() { 
+    if (!playerTwoView && currentTurn === "sente") { 
+        game.notationArray = {"player": "sente", "piece": "none", "location": "0", "destination": "0", "capturedOpponent": false, "promoted": false, "dropped": false, "choseToPromote": "na"};
+        game.turnAllowPieceClick();
+        thisPlayerTurn();
+    } else if (playerTwoView && currentTurn === "gote") { 
+        game.notationArray = {"player": "sente", "piece": "none", "location": "0", "destination": "0", "capturedOpponent": false, "promoted": false, "dropped": false, "choseToPromote": "na"};
+        game.turnAllowPieceClick();
+        thisPlayerTurn();
+    } else if (playerTwoView && currentTurn === "sente") { 
+        game.turnRestrictPieceClick();
+        otherPlayerTurn();
+        gameLogConcat();
+    } else if (!playerTwoView && currentTurn === "gote") { 
+        game.turnRestrictPieceClick();
+        otherPlayerTurn();
+        gameLogConcat();
+    }
+}
+
+
 // Logging on the client from the server
 socket.on('log', (n) => {
     console.log(n);
 });
 
-// Starting game and checking if client is second player
-socket.on('init', (number) => {
-    hendleInit(number);
-    startGame();
-});
 
+
+// Starting game 
 function startGame() { 
     if (playerTwoView === false) { 
         initPlayerNameAndGoteSente(playerName, "sente");
@@ -38,32 +65,11 @@ function startGame() {
 }
 
 
-socket.on('requestFirstPlayerInfo', (name) => {
-    if (playerTwoView === false) { 
-        initOpponentNameAndGoteSente(name, "gote");
-    } else if (playerTwoView === true) { 
-        initOpponentNameAndGoteSente(name, "sente");
-    }
-    
-    socket.emit('recieveFirstPlayerInfo', [playerTwoView, playerName]);
-    removeGameCode();
-    startGame();
-});
 
-socket.on('recieveFirstPlayerInfo', ([goteOrSente, name]) => {
-    playerTwoView = !goteOrSente;
-
-    if (playerTwoView === false) { 
-        initOpponentNameAndGoteSente(name, "gote");
-    } else if (playerTwoView === true) { 
-        initOpponentNameAndGoteSente(name, "sente");
-    }
-
-    startGame();
-});
-
+/* 
+ Creating new game, joining a game, and joining errors
+ */
 let playerName;
-// Creating new game, joining a game, and joining errors
 let newgametext = document.getElementById("newgame");
 newgametext.addEventListener("click", function (e) {
     playerName = document.getElementById("newGameName").value;
@@ -91,21 +97,52 @@ newgametext.addEventListener("click", function (e) {
 
 let joingametext = document.getElementById("joingame");
 joingametext.addEventListener("click", function (e) {
-    playerName = document.getElementById("joinGameName").value;
     let gameCode = document.getElementById("gameCodeInput").value;
-
     socket.emit('joinGame', gameCode);
+});
+
+socket.on('joinInit', () => {
+    playerName = document.getElementById("joinGameName").value;
     socket.emit('requestFirstPlayerInfo', playerName);
     labelBoard();
     hideHomePage();
 });
 
+
+
 socket.on('unknownGame', () => alert('unknowngame'));
 socket.on('tooManyPlayers', () => alert('tooManyPlayers'));
 
+
+// Before game starts
 socket.on('gamecode', (roomName) => { 
     displayGameCode(roomName);
 });
+
+socket.on('requestFirstPlayerInfo', (name) => {
+    if (playerTwoView === false) { 
+        initOpponentNameAndGoteSente(name, "gote");
+    } else if (playerTwoView === true) { 
+        initOpponentNameAndGoteSente(name, "sente");
+    }
+    
+    socket.emit('recieveFirstPlayerInfo', [playerTwoView, playerName]);
+    removeGameCode();
+    startGame();
+});
+
+socket.on('recieveFirstPlayerInfo', ([goteOrSente, name]) => {
+    playerTwoView = !goteOrSente;
+
+    if (playerTwoView === false) { 
+        initOpponentNameAndGoteSente(name, "gote");
+    } else if (playerTwoView === true) { 
+        initOpponentNameAndGoteSente(name, "sente");
+    }
+
+    startGame();
+});
+
 
 // Sending information to other client
 socket.on('pieceMove', ([lastposition, currentEmptyCellEmit]) => {
@@ -123,6 +160,9 @@ socket.on('piecePromote', (piecePosition) => {
 socket.on('gameNotationLine', (moveLogText) => {
     pieceMoveGameLog(moveLogText);
 });
+
+
+
 
 
 /* 
@@ -156,21 +196,13 @@ function newGame() {
     }
 }
 
-function joinGame() { 
-    //socket.emit('joinGame', code);
-}
+
 
 
 /* 
  Labeling each cell on ui shogi board with ids and text.
  Also labeling and giving ids to cells in piece stands.
  */
-// start of game
-// Make a funciton to append the divs to html
-
-// right before each client or server move
-// make a funciton to erase and reappend divs to html incase elements are edited by user
-// make a function to earase and reappend all the pieces on the board and stands
 function labelBoard() { 
     boardArray = [[],[],[],[],[],[],[],[],[]];
     const rows = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
@@ -262,9 +294,6 @@ function labelBoard() {
     shogiBoard.replaceChildren(...shogiBoardCellsArray);
 
     //console.log(boardArray)
-
-
-
 
 
 
@@ -378,6 +407,9 @@ function pieceClickEvent(e) {
     }
 }
 
+
+
+/* events for dropping piece on board */
 export function addStandPossibleMovesEvent(pieceClicked) {
     pieceClicked.addEventListener("click", standPieceClickEvent);
 }
@@ -435,6 +467,7 @@ function standPieceClickEvent(e) {
 }
 
 
+
 /* 
  Events for possible move cells adding, removing, and the callback
  to move a piece when they are clicked 
@@ -484,25 +517,6 @@ function pieceDropServerEvent(lastposition, currentEmptyCellEmit) {
 }
 
 
-function restrictOrUnrestrictedPlayerPieces() { 
-    if (!playerTwoView && currentTurn === "sente") { 
-        game.notationArray = {"player": "sente", "piece": "none", "location": "0", "destination": "0", "capturedOpponent": false, "promoted": false, "dropped": false, "choseToPromote": "na"};
-        game.turnAllowPieceClick();
-        thisPlayerTurn();
-    } else if (playerTwoView && currentTurn === "gote") { 
-        game.notationArray = {"player": "sente", "piece": "none", "location": "0", "destination": "0", "capturedOpponent": false, "promoted": false, "dropped": false, "choseToPromote": "na"};
-        game.turnAllowPieceClick();
-        thisPlayerTurn();
-    } else if (playerTwoView && currentTurn === "sente") { 
-        game.turnRestrictPieceClick();
-        otherPlayerTurn();
-        gameLogConcat();
-    } else if (!playerTwoView && currentTurn === "gote") { 
-        game.turnRestrictPieceClick();
-        otherPlayerTurn();
-        gameLogConcat();
-    }
-}
 
 /* 
  Takes x, y, and gote sente. Checks if the cell is an edge, if it has
@@ -530,6 +544,8 @@ export function getMovementBorder(xPositionInt, yPositionInt, gote_sente) {
     return "empty";
 }
 
+
+
 // Promotion
 export function askIfWantsToPromote(oldPiecePosition, newPiecePosition) { 
     promotionQuestion(oldPiecePosition, newPiecePosition, game.gameBoard, lastClicked[1]);
@@ -547,6 +563,10 @@ export function promotePiece(piecePosition) {
     socket.emit('piecePromote', piecePosition);
 }
 
+export function promotePieceServerEvent(piecePosition) {
+    game.promotePieceHandle(piecePosition);
+}
+
 /*
  If user pickes to not promote piece when they reach promotion area
  */
@@ -557,18 +577,9 @@ export function dontPromotePiece(piecePosition) {
     socket.emit('pieceMove', [game.lastClicked[2], piecePosition]);
 }
 
-export function promotePieceServerEvent(piecePosition) {
-    game.promotePieceHandle(piecePosition);
-}
 
-function switchTrunAndRestrictMoves() { 
-    if (!game.checkmated["gote"] && !game.checkmated["sente"]) { 
-        turnSwitch();
-        restrictOrUnrestrictedPlayerPieces();
-    }
-}
 
-// checking and checkmating
+/* checking and checkmating */
 export function kingInCheck(gote_sente) { 
     if (gote_sente === "gote") { 
         return game.goteChecked;
@@ -593,6 +604,8 @@ export function willPawnDropCheckmateKing(oldStandPosition, newPosition) {
 }
 
 
+
+/* making the movement notation */
 export function gameLogConcat() { 
     let localNotation = game.notationArray;
     let notationLine = "";

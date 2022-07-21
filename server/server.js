@@ -9,8 +9,7 @@ app.use(express.static(`${__dirname}/../client`));
 
 const server = http.createServer(app);
 const io = socketio(server);
-// using state as a previous board states array
-const state = {};
+
 const clientRooms = {};
 const roomsWithClients = {};
 
@@ -63,34 +62,11 @@ io.on('connection', client => {
 
             client.join(gameCode);
             client.number = 2;
-            //client.emit('init', 2);
+            client.emit('joinInit');
         } else { 
             client.emit('unknownGame');
             return;
-        }
-        /* const room = io.sockets.adapter.rooms[gameCode];
-
-        let allUsers;
-        if (room) {
-            allUsers = room.sockets;
-        }
-
-        let numbClients = 0;
-        if (allUsers) {
-            numbClients = Object.keys(allUsers).length;
-        }
-
-        if (numbClients === 0) {
-            client.emit('unknownGame');
-            return;
-        } else if (numbClients > 1) {
-            client.emit('tooManyPlayers');
-            return;
-        }  */
-
-
-
-        
+        }        
     }
 
 });

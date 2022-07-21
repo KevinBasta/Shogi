@@ -297,11 +297,21 @@ export function initPlayerNameAndGoteSente(playerName, goteSente) {
 export function initOpponentNameAndGoteSente(opponentName, goteSente) { 
     let playerNameDisplay = document.getElementById("farPlayerText");
     playerNameDisplay.textContent = goteSente + " | " + opponentName;
+    playerNameDisplay.classList.remove("waitingText");
 }
 
 export function waitingForSecondPlayer() { 
     let playerNameDisplay = document.getElementById("farPlayerText");
-    playerNameDisplay.textContent = "waiting...";
+    let lettersArray = ["w", "a", "i", "t", "i", "n", "g", ".", ".", "."];
+
+    for (let i = 0; i < lettersArray.length; i++) { 
+        let spanElement = document.createElement("span");
+        spanElement.setAttribute("style", "--i:" + (i+1));
+        spanElement.textContent = lettersArray[i];
+        playerNameDisplay.appendChild(spanElement);
+    }
+
+    playerNameDisplay.classList.add("waitingText");
 }
 
 export function hideHomePage() { 

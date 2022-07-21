@@ -121,6 +121,12 @@ board js function may use later
 
 
 
+// start of game
+// Make a funciton to append the divs to html
+
+// right before each client or server move
+// make a funciton to erase and reappend divs to html incase elements are edited by user
+// make a function to earase and reappend all the pieces on the board and stands
 
 
 left to do: 
