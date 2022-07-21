@@ -1,5 +1,5 @@
 import { getMovementBorder, willMoveUncheckKing, willDropUncheckKing, willPawnDropCheckmateKing, playerTwoView, boardArray } from "./localMain.js";
-//import {game} from "/main.js"; 
+import {currentTurn} from "./localMain.js"; 
 
 // Super class
 export class piece { 
@@ -89,8 +89,8 @@ export class piece {
         let canPromote = false; 
         this.checkFutureMoves(newPosition);
         if (this.isPromoted === false && this.inStand === false && 
-            ((playerTwoView && this.gote_sente === "gote") || 
-            (!playerTwoView && this.gote_sente === "sente")) && 
+            ((this.gote_sente === "gote" && currentTurn === "gote") || 
+            ( this.gote_sente === "sente" && currentTurn === "sente")) && 
             this.pieceType != "King" && this.pieceType != "ChallengingKing" 
             && this.pieceType != "GoldGeneral") {
             let oldrow = oldPosition.substring(1,2);

@@ -96,9 +96,9 @@ export class board {
      Moves a piece in the data and ui
      */
     movePiece(oldPosition, newPosition) { 
-        //removeBoardMovedEffect(this.oldMovedForUi);
-        //this.oldMovedForUi = [oldPosition, newPosition];
-        //addBoardMovedEffect(this.oldMovedForUi);
+        removeBoardMovedEffect(this.oldMovedForUi);
+        this.oldMovedForUi = [oldPosition, newPosition];
+        addBoardMovedEffect(this.oldMovedForUi);
 
         // If the target position has an opponent piece [can add extra check of gote sente]
         console.log(newPosition)
