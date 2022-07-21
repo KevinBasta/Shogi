@@ -156,7 +156,7 @@ export function removeOldPossibleMovesStyling(oldPossibleMoves) {
     for (let i of oldPossibleMoves) { 
         let position = document.getElementById(i);
         removeEmptyCellEvent(position);
-        position.setAttribute("class", "");
+        position.classList.remove("piece-possible-move-position");
         position.setAttribute("click", "false");
     }
 }
@@ -243,8 +243,12 @@ export function winOrLoseDisplay(won) {
     let opponentTurnStatus = document.getElementById("farPlayerTurnStatus");
     if (won === true) { 
         playerTurnStatus.textContent = "You Won";
+        playerTurnStatus.parentElement.classList.add("winBorder");
+        opponentTurnStatus.parentElement.classList.add("loseBorderOpponent");
     } else { 
         playerTurnStatus.textContent = "You Lost";
+        playerTurnStatus.parentElement.classList.add("loseBorder");
+        opponentTurnStatus.parentElement.classList.add("winBorderOpponent");
     }
     opponentTurnStatus.textContent = "";
 }
@@ -255,7 +259,9 @@ export function thisPlayerTurn() {
 
     if (playerTurnStatus.textContent != "You Won" || playerTurnStatus.textContent != "You Lost") {
         playerTurnStatus.textContent = "Your Turn";
+        playerTurnStatus.parentElement.classList.add("turnBorder");
         opponentTurnStatus.textContent = "";
+        opponentTurnStatus.parentElement.classList.remove("turnBorderOpponent");
     }
 }
 
@@ -265,16 +271,19 @@ export function otherPlayerTurn() {
 
     if (playerTurnStatus.textContent != "You Won" || playerTurnStatus.textContent != "You Lost") {
         opponentTurnStatus.textContent = "Opponent's Turn";
+        opponentTurnStatus.parentElement.classList.add("turnBorderOpponent");
         playerTurnStatus.textContent = "";
+        playerTurnStatus.parentElement.classList.remove("turnBorder");
     }
 }
 
-
+let moveNumber = 1;
 export function pieceMoveGameLog(moveLogText) { 
     let gameLog = document.getElementById("movesLog");
     let newMoveLi = document.createElement("li");
-    newMoveLi.textContent = moveLogText;
-    
+    newMoveLi.textContent = moveNumber + ". " + moveLogText;
+    moveNumber += 1;
+
     gameLog.appendChild(newMoveLi);
     gameLog.scrollTop = gameLog.scrollHeight;
 }
@@ -314,4 +323,34 @@ export function displayGameCode(gameCode) {
 export function removeGameCode() {
     let gameCodeLi = document.getElementById("game-code-text");
     gameCodeLi.setAttribute("class", "hide");
+}
+
+export function addBoardMovedEffect(newMovedForUi) { 
+    if (newMovedForUi.length > 0) { 
+        let positionOne = document.getElementById(newMovedForUi[0]);
+        let positionTwo = document.getElementById(newMovedForUi[1]);
+
+        positionOne.getAnimations().forEach((animation) => {
+            animation.cancel();
+            animation.play();
+        });
+
+        positionTwo.getAnimations().forEach((animation) => {
+            animation.cancel();
+            animation.play();
+        });
+
+        positionOne.classList.add("piece-moved");
+        positionTwo.classList.add("piece-moved");
+    }
+}
+
+export function removeBoardMovedEffect(oldMovedForUi) { 
+    if (oldMovedForUi.length > 0) { 
+        let positionOne = document.getElementById(oldMovedForUi[0]);
+        let positionTwo = document.getElementById(oldMovedForUi[1]);
+
+        positionOne.classList.remove("piece-moved");
+        positionTwo.classList.remove("piece-moved");
+    }
 }

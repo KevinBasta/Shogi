@@ -68,11 +68,12 @@ let newgametext = document.getElementById("newgame");
 newgametext.addEventListener("click", function (e) {
     playerName = document.getElementById("newGameName").value;
     let goteSenteChoice = document.getElementById("goteSenteChoice").value;
+    //console.log(goteSenteChoice)
     if (goteSenteChoice === "-- Sente or Gote") {
         playerTwoView = false;
-    } else if (goteSenteChoice == "Sente") { 
+    } else if (goteSenteChoice === "sente") { 
         playerTwoView = false;
-    } else if (goteSenteChoice == "Gote") { 
+    } else if (goteSenteChoice === "gote") { 
         playerTwoView = true;
     } 
 
@@ -260,7 +261,7 @@ function labelBoard() {
     }
     shogiBoard.replaceChildren(...shogiBoardCellsArray);
 
-    console.log(boardArray)
+    //console.log(boardArray)
 
 
 
@@ -350,7 +351,7 @@ function pieceClickEvent(e) {
         for (let i of game.lastClicked[1]) { 
             let position = document.getElementById(i);
             removeEmptyCellEvent(position);
-            position.setAttribute("class", "");
+            position.classList.remove("piece-possible-move-position");
             position.setAttribute("click", "false");
         }
     }
@@ -367,11 +368,11 @@ function pieceClickEvent(e) {
         //console.log(position);
         if (position.getAttribute("click") == "true") { 
             removeEmptyCellEvent(position);
-            position.setAttribute("class", "");
+            position.classList.remove("piece-possible-move-position");
             position.setAttribute("click", "false");
         } else { 
             addEmptyCellEvent(position);
-            position.setAttribute("class", "piece-possible-move-position");
+            position.classList.add("piece-possible-move-position");
             position.setAttribute("click", "true");
         }            
     }
@@ -394,11 +395,11 @@ function standPieceClickEvent(e) {
     let capturedPieceTypeArray = game.standPieces[currentPieceCell];
     //loc_array.at(-1) instead of the line below to get last element
     pieceObject = capturedPieceTypeArray[capturedPieceTypeArray.length - 1];
-    console.log(pieceObject)
+    //console.log(pieceObject)
     possibleMoveCellsArray = pieceObject.getPossibleDrops(game.gameBoard, false);
     
-    console.log(game);
-    console.log(pieceObject);
+    //console.log(game);
+    //console.log(pieceObject);
     
     // If the last piece clicked is not the same as the current piece clicked
     // then get rid of old possible moves cell identifiers and event
@@ -406,7 +407,7 @@ function standPieceClickEvent(e) {
         for (let i of game.lastClicked[1]) { 
             let position = document.getElementById(i);
             removeEmptyCellEvent(position);
-            position.setAttribute("class", "");
+            position.classList.remove("piece-possible-move-position");
             position.setAttribute("click", "false");
         }
     }
@@ -420,14 +421,14 @@ function standPieceClickEvent(e) {
     // deactivate if active and activate if deactivated
     for (let i of possibleMoveCellsArray) { 
         let position = document.getElementById(i);
-        console.log(position);
+        //console.log(position);
         if (position.getAttribute("click") == "true") { 
             removeEmptyCellEvent(position);
-            position.setAttribute("class", "");
+            position.classList.remove("piece-possible-move-position");
             position.setAttribute("click", "false");
         } else { 
             addEmptyCellEvent(position);
-            position.setAttribute("class", "piece-possible-move-position");
+            position.classList.add("piece-possible-move-position");
             position.setAttribute("click", "true");
         }            
     }

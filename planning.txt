@@ -129,7 +129,9 @@ left to do:
 - finish socket io
 
 
-
+polishing: 
+- green previous cell and cell moved to background for both players
+- background or drop shadow change for your turn
 
 
 realistic future additions: 

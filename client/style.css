@@ -27,6 +27,7 @@ body {
     -webkit-user-drag: none;
     -webkit-user-select: none;
     -ms-user-select: none;
+    background-color: var(--website-color);
 }
 
 .promotionFlex {
@@ -293,6 +294,7 @@ close-piece-stand div
 
 li {
     padding: 2px 10px 2px 10px;
+    color: rgb(255, 255, 255);
 }
 
 
@@ -320,10 +322,20 @@ li {
     transform: rotate(180deg);
 }
 
-.piece-possible-move-position { 
-    background-color: #444;
+.piece-possible-move-position {
+    background-color: #444 !important;
 }
 
+.piece-moved { 
+    background-color: var(--shogi-cell-color);
+    animation: lastPieceMoved 1.5s ease-in-out 0s infinite alternate;
+    animation-play-state: running !important;
+}
+
+@keyframes lastPieceMoved {
+    from {background-color: var(--shogi-cell-color);}
+    to {background-color: rgba(117, 185, 81, 0.986);}
+}
 
 
 /* 
@@ -578,6 +590,35 @@ footer a {
 
 
 
+/* player turn and win box shadow styling */
+.turnBorder { 
+    box-shadow: 5px 5px 2px 2px rgb(43, 177, 45);
+}
+
+.turnBorderOpponent { 
+    box-shadow: -5px -5px 2px 2px rgb(43, 177, 45);
+}
+
+.winBorder { 
+    box-shadow: 11px 11px 2px 2px rgb(53, 147, 56);
+}
+
+.winBorderOpponent { 
+    box-shadow: -11px -11px 2px 2px rgb(53, 147, 56);
+}
+
+.loseBorder { 
+    box-shadow: 11px 11px 2px 2px rgb(184, 20, 20);
+}
+
+.loseBorderOpponent { 
+    box-shadow: -11px -11px 2px 2px rgb(184, 20, 20);
+}
+
+
+
+
+
 /* for smaller devices */
 @media only screen and (max-width: 770px) {
     shogi { 
@@ -614,5 +655,27 @@ footer a {
         display: flex;
         flex-direction: column-reverse;
         width: 300px;
+    }
+
+    footer { 
+        position: absolute;
+        bottom: 0;
+        
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        
+        z-index: 105;
+        width: 100%;
+        background-color: var(--shogi-cell-color);
+        font-family: 'Noto Serif JP', serif;
+    }
+    
+    footer p { 
+        font-size: 7px;
+        padding: 2px;
+        width: auto;
+        color: white;
     }
   }

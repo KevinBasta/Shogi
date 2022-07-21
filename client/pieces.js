@@ -570,7 +570,7 @@ export class knight extends piece {
                 pieceInLastRank.push(...boardArray[0].filter(cell => newPosition == cell));
                 pieceInLastRank.push(...boardArray[1].filter(cell => newPosition == cell));
             }
-            console.log(pieceInLastRank);
+            //console.log(pieceInLastRank);
             if (pieceInLastRank.length === 1) {
                 this.isPromoted = true;
             } 

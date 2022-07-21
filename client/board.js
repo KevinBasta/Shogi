@@ -2,7 +2,7 @@ import {player} from "/player.js";
 import {currentTurn, addPossibleMovesEvent, removeEmptyCellEvent, playerTwoView} from "/main.js";
 import {defultBoardSetup, defultStandSetups, picesImages} from "/config.js"; 
 import {piece, king, goldGeneral, silverGeneral, rook, bishop, knight, lance, pawn} from "/pieces.js";
-import {renderNewPieceImage, renderPlaceholderStandPiece, renderCapturedPieceInStand, updateCapturedPieceInStand, removeChildElement, removeOldPossibleMovesStyling, promotionQuestion, winOrLoseDisplay, updatePieceImage, removePieceEventListener, removeStandPieceEventListener, addPieceEventListener, addStandPieceEventListener, pieceMoveGameLog } from "/view.js";
+import {renderNewPieceImage, renderPlaceholderStandPiece, renderCapturedPieceInStand, updateCapturedPieceInStand, removeChildElement, removeOldPossibleMovesStyling, promotionQuestion, winOrLoseDisplay, updatePieceImage, removePieceEventListener, removeStandPieceEventListener, addPieceEventListener, addStandPieceEventListener, pieceMoveGameLog, addBoardMovedEffect, removeBoardMovedEffect } from "/view.js";
 
 /*
  Class for controlling most of the game mechanics and logic.
@@ -23,6 +23,7 @@ export class board {
         this.checkmated = {"gote": false, "sente": false};
         this.gotePossibleMovesButter = [];
         this.sentePossibleMovesButter = [];
+        this.oldMovedForUi = [];
 
         this.notationArray = {"player": "sente", "piece": "none", "location": "0", "destination": "0", "capturedOpponent": false, "promoted": false, "dropped": false, "choseToPromote": false};
 
@@ -31,7 +32,7 @@ export class board {
         
         this.initpieces();
 
-        console.log(this.gameBoard);
+        //console.log(this.gameBoard);
     }
 
 
@@ -48,7 +49,7 @@ export class board {
             let pieceIndexInObj = defultStandSetups[pieceName];
             renderPlaceholderStandPiece(pieceIndexInObj[0], pieceIndexInObj[1], pieceName);
         }
-        console.log(this.standPieces);
+        //console.log(this.standPieces);
     }
 
     turnRestrictPieceClick() { 
@@ -112,6 +113,10 @@ export class board {
      Moves a piece in the data and ui
      */
     movePiece(oldPosition, newPosition) { 
+        removeBoardMovedEffect(this.oldMovedForUi);
+        this.oldMovedForUi = [oldPosition, newPosition];
+        addBoardMovedEffect(this.oldMovedForUi);
+
         // If the target position has an opponent piece [can add extra check of gote sente]
         if (newPosition in this.gameBoard) {    
             this.notationArray["capturedOpponent"] = true;
@@ -156,6 +161,10 @@ export class board {
         // Removing the piece from the stand data
         let pieceToDrop = this.removeStandPiece(standPosition);
 
+        removeBoardMovedEffect(this.oldMovedForUi);
+        this.oldMovedForUi = [standPosition, positionInBoard];
+        addBoardMovedEffect(this.oldMovedForUi);
+
         // Updating stand ui
         updateCapturedPieceInStand(standPosition, this.standPieces[standPosition].length);
 
@@ -199,7 +208,7 @@ export class board {
 
         // Putting the piece on the board, setting it's position and getting its promotion
         this.gameBoard[newPosition] = this.gameBoard[oldPosition];
-        console.log(this.gameBoard[newPosition]);
+        //console.log(this.gameBoard[newPosition]);
         thisPieceOriginalPromotionStatus = this.gameBoard[newPosition].getPromotion();
         this.gameBoard[newPosition].setPosition(newPosition);
 
@@ -234,7 +243,7 @@ export class board {
 
         // Putting the piece on the board, setting it's position and getting its promotion
         this.gameBoard[newPosition] = this.standPieces[oldPosition][this.standPieces[oldPosition].length - 1];
-        console.log(this.gameBoard[newPosition]);
+        //console.log(this.gameBoard[newPosition]);
         thisPieceOriginalPromotionStatus = this.gameBoard[newPosition].getPromotion();
         this.gameBoard[newPosition].setPosition(newPosition);
 
@@ -321,12 +330,12 @@ export class board {
             for (let cell of possibleMoves) { 
                 if (cell in this.gameBoard) { 
                     if (this.gameBoard[cell].getType() === "King") { 
-                        console.log("sente checked")
+                        //console.log("sente checked")
                         this.gameBoard[cell].check();
                         this.checkingPiece = this.gameBoard[shogiPiece];
                         localSenteCheck = true;
                     } else if (this.gameBoard[cell].getType() === "ChallengingKing") { 
-                        console.log("gote checked")
+                        //console.log("gote checked")
                         this.gameBoard[cell].check();
                         this.checkingPiece = this.gameBoard[shogiPiece];
                         localGoteCheck = true;
@@ -340,8 +349,8 @@ export class board {
             this.checked["gote"] = localGoteCheck; 
         }
 
-        console.log("gote: " + this.checked["gote"])
-        console.log("sente: " + this.checked["sente"])
+        //console.log("gote: " + this.checked["gote"])
+        //console.log("sente: " + this.checked["sente"])
         return {"gote": localGoteCheck, "sente": localSenteCheck};
     }
 
@@ -394,8 +403,8 @@ export class board {
             this.removeAllEventListeners();
         }
 
-        console.log("checkmate status: ")
-        console.log(this.checkmated);
+        //console.log("checkmate status: ")
+        //console.log(this.checkmated);
         return {"gote": localCheckMate["gote"], "sente": localCheckMate["sente"]};
     }
 
@@ -428,8 +437,8 @@ export class board {
             }
         }
 
-        console.log("gote: " + this.checked["gote"])
-        console.log("sente: " + this.checked["sente"])
+        //console.log("gote: " + this.checked["gote"])
+        //console.log("sente: " + this.checked["sente"])
         return {"gote": localGoteCheck, "sente": localSenteCheck};
     }
 
@@ -448,8 +457,8 @@ export class board {
             }
         }
 
-        console.log("checkmate status: ");
-        console.log(localCheckMate);
+        //console.log("checkmate status: ");
+        //console.log(localCheckMate);
         return {"gote": localCheckMate["gote"], "sente": localCheckMate["sente"]};
     }
 
@@ -546,7 +555,7 @@ export class board {
 
     // Removes a piece from the standPieces obj data
     removeStandPiece(piecePosition) {
-        console.log(this.standPieces[piecePosition]);
+        //console.log(this.standPieces[piecePosition]);
         let pieceToDrop = this.standPieces[piecePosition].pop();
 
         return pieceToDrop;
