@@ -21,13 +21,13 @@ io.on('connection', client => {
         io.emit('message', text)
     })
 
-    client.on('pieceMove', ([lastposition, currentEmptyCellEmit]) => client.broadcast.emit('pieceMove', [lastposition, currentEmptyCellEmit]));
-    client.on('pieceDrop', ([lastposition, currentEmptyCellEmit]) => client.broadcast.emit('pieceDrop', [lastposition, currentEmptyCellEmit]));
-    client.on('piecePromote', (piecePosition) => client.broadcast.emit('piecePromote', piecePosition));
+    client.on('pieceMove', ([lastposition, currentEmptyCellEmit]) => client.broadcast.to(clientRooms[client.id]).emit('pieceMove', [lastposition, currentEmptyCellEmit]));
+    client.on('pieceDrop', ([lastposition, currentEmptyCellEmit]) => client.broadcast.to(clientRooms[client.id]).emit('pieceDrop', [lastposition, currentEmptyCellEmit]));
+    client.on('piecePromote', (piecePosition) => client.broadcast.to(clientRooms[client.id]).emit('piecePromote', piecePosition));
     
-    client.on('requestFirstPlayerInfo', (name) => client.broadcast.emit('requestFirstPlayerInfo', name));
-    client.on('recieveFirstPlayerInfo', ([goteOrSente, name]) => client.broadcast.emit('recieveFirstPlayerInfo', [goteOrSente, name]));
-    client.on('gameNotationLine', (notationLine) => client.broadcast.emit('gameNotationLine', notationLine));
+    client.on('requestFirstPlayerInfo', (name) => client.broadcast.to(clientRooms[client.id]).emit('requestFirstPlayerInfo', name));
+    client.on('recieveFirstPlayerInfo', ([goteOrSente, name]) => client.broadcast.to(clientRooms[client.id]).emit('recieveFirstPlayerInfo', [goteOrSente, name]));
+    client.on('gameNotationLine', (notationLine) => client.broadcast.to(clientRooms[client.id]).emit('gameNotationLine', notationLine));
 
 
     client.on('newGame', handleNewGame);
@@ -97,7 +97,14 @@ io.on('connection', client => {
 
 
 function makeid(number) { 
-    return "234";
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < number; i++ ) {
+       result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    
+    return result;
 }
 
 server.on('error', (err) => {
