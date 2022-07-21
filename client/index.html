@@ -48,7 +48,20 @@
                 <input type="text" placeholder="Enter Game Code" id="gameCodeInput"/>
             </div>
             <button id="joingame" class="submit-button"> Join Game </button>
-        </join-game>        
+        </join-game>
+
+        <button class="collapsible">Local Game</button>
+        <join-game class="collapse-section">
+            <div class="form-group">
+                <label>Game Options:</label>
+                <select id="localGoteSenteChoice" name="Sente or Gote">
+                    <option value="sente">-- Sente or Gote</option>
+                    <option value="sente">Sente</option>
+                    <option value="gote">Gote</option>
+                </select>
+            </div>
+            <button id="localgame" class="submit-button"> Play Locally </button>
+        </join-game>    
     </div>
 
 

@@ -2,8 +2,11 @@ import { board } from "./localBoard.js";
 import { promotionQuestion, promotionQuestionHide, thisPlayerTurn, otherPlayerTurn, initPlayerNameAndGoteSente, initOpponentNameAndGoteSente, waitingForSecondPlayer, pieceMoveGameLog, hideHomePage, displayGameCode, removeGameCode } from "./localView.js";
 
 export let playerTwoView = false;
-export let currentTurn = 'sente';
+export let currentTurn = "sente";
 
+export function setCurrentTurn(goteSenteChoice) {
+    currentTurn = goteSenteChoice;
+}
 
 /* turn switiching */
 function switchTrunAndRestrictMoves() { 
@@ -63,8 +66,14 @@ function newGame() {
     game = new board(playerTwoView, lastClicked);
     game.render();
 
+    console.log(currentTurn)
+
     game.turnManagePieceClick(currentTurn);
-    thisPlayerTurn();
+    if (currentTurn === "sente") { 
+        thisPlayerTurn();
+    } else if (currentTurn === "gote") { 
+        otherPlayerTurn();
+    }
 }
 
 
