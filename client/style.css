@@ -9,7 +9,7 @@
     --shogi-table-cell-labels-size: 0px;
     --shogi-table-labels-size: clamp(15px, calc(1vw + 1vh), 20px);
     --captured-piece-count-font-size: clamp(2px, 3vw, 15px);
-
+    /* rgb(47, 33, 6) */
     --shogi-board-color: rgb(102, 52, 6);
     --shogi-cell-color: rgb(47, 33, 6);
 
