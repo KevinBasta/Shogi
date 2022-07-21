@@ -1,7 +1,6 @@
-import {player} from "/player.js";
-import {currentTurn, addPossibleMovesEvent, removeEmptyCellEvent, playerTwoView} from "/main.js";
-import {defultBoardSetup, defultStandSetups, picesImages} from "/config.js"; 
-import {piece, king, goldGeneral, silverGeneral, rook, bishop, knight, lance, pawn} from "/pieces.js";
+import {currentTurn} from "/main.js";
+import {defultBoardSetup, defultStandSetups} from "/config.js"; 
+import {king, goldGeneral, silverGeneral, rook, bishop, knight, lance, pawn} from "/pieces.js";
 import {renderNewPieceImage, renderPlaceholderStandPiece, renderCapturedPieceInStand, updateCapturedPieceInStand, removeChildElement, removeOldPossibleMovesStyling, promotionQuestion, winOrLoseDisplay, updatePieceImage, removePieceEventListener, removeStandPieceEventListener, addPieceEventListener, addStandPieceEventListener, pieceMoveGameLog, addBoardMovedEffect, removeBoardMovedEffect } from "/view.js";
 
 /*
@@ -9,7 +8,7 @@ import {renderNewPieceImage, renderPlaceholderStandPiece, renderCapturedPieceInS
  Changes data representation here and ui with view.js
  */
 export class board { 
-    constructor(player1, player2, playerTwoView, lastClicked) { 
+    constructor(playerTwoView, lastClicked) { 
         this.gameBoard = {};
         this.standPieces = {};
 
@@ -27,11 +26,7 @@ export class board {
 
         this.notationArray = {"player": "sente", "piece": "none", "location": "0", "destination": "0", "capturedOpponent": false, "promoted": false, "dropped": false, "choseToPromote": false};
 
-        this.player1 = player1;
-        this.player2 = player2;
-        
         this.initpieces();
-
         //console.log(this.gameBoard);
     }
 

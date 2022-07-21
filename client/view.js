@@ -1,4 +1,4 @@
-import {defultBoardSetup, defultStandSetups, picesImages} from "/config.js"; 
+import {picesImages} from "/config.js"; 
 import {addPossibleMovesEvent, removePossibleMovesEvent, addStandPossibleMovesEvent, removeStandPossibleMovesEvent, removeEmptyCellEvent, promotePiece, dontPromotePiece, playerTwoView} from "/main.js";
 
 

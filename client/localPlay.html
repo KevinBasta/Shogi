@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="main.js" defer></script> 
+    <title>Shogi 愛</title>
+</head>
+<body>
+
+    <footer>
+        <p>Copyright © 2022 Kevin Basta. <a href="https://github.com/KevinBasta/Shogi" target="_blank">Github Repository</a></p>
+    </footer>
+
+    <!-- Promotion Prompt -->
+    <div id="promotionContainer" class="promotionFlex hide">
+        <div id="promotionQuestion">
+            <p>Would you like to promote this piece?</p>
+            <div id="pieceButtons">
+                <div id="unpromotedButton">
+                    
+                </div>
+                <div id="promotedButton">
+                    
+                </div>
+            </div>
+        </div>
+    </div> 
+    <div id="overlay" class="overlay hide"></div>
+    
+    <shogi>
+        <shogi-board-and-stands>
+            <!-- opponent piece stand -->
+            <far-piece-stand id="far-piece-stand"></far-piece-stand>
+                    
+            <shogi-board-and-rows id="board-and-rows">
+                <!-- the shogiboard and the column labels ontop -->
+                <shogi-board-wrapper>
+                    <columns id="columns"></columns>
+                    <shogi-board id="shogiBoard"></shogi-board>
+                </shogi-board-wrapper>
+                
+                <!-- the row labels on the right -->
+                <rows id="rows"></rows> 
+            </shogi-board-and-rows>
+
+            <!-- player piece stand -->
+            <close-piece-stand id="close-piece-stand"></close-piece-stand>
+        </shogi-board-and-stands>
+        
+        <!-- make beside the shogiboard on bigger screens but under on smaller screens using flex wrap -->
+        <shogi-log id="game-log" class="game-log">
+            <div id="farPlayerInfo">
+                <p id="farPlayerText"></p>
+                <p id="farPlayerTurnStatus"></p>
+            </div>
+            <ul id="movesLog">
+            </ul>
+            <div id="closePlayerInfo">
+                <p id="closePlayerText"></p>
+                <p id="closePlayerTurnStatus"></p>
+            </div>
+        </shogi-log>
+    </shogi>
+</body>
+</html>

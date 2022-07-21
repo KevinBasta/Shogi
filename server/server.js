@@ -49,12 +49,12 @@ io.on('connection', client => {
 
     function handleJoinGame(gameCode) { 
         if (gameCode in roomsWithClients) { 
-            console.log(roomsWithClients);
+            //console.log(roomsWithClients);
             if (roomsWithClients[gameCode].length > 1) {
                 client.emit('tooManyPlayers');
                 return;
             }
-            console.log(roomsWithClients[gameCode]);
+            //console.log(roomsWithClients[gameCode]);
 
             
             clientRooms[client.id] = gameCode;
@@ -88,5 +88,5 @@ server.on('error', (err) => {
 })
 
 server.listen(8080, () => { 
-    console.log('server is ready');
+    //console.log('server is ready');
 })

@@ -1,6 +1,4 @@
-import {defultBoardSetup, picesImages} from "/config.js";
-import {board} from "/board.js";
-import { getMovementBorder, askIfWantsToPromote, willMoveUncheckKing, willDropUncheckKing, willPawnDropCheckmateKing, kingInCheck, playerTwoView, boardArray } from "/main.js";
+import { getMovementBorder, willMoveUncheckKing, willDropUncheckKing, willPawnDropCheckmateKing, playerTwoView, boardArray } from "/main.js";
 //import {game} from "/main.js"; 
 
 // Super class

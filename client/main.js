@@ -1,6 +1,4 @@
-import { player } from "/player.js";
 import { board } from "/board.js";
-import { piece } from "/pieces.js";
 import { promotionQuestion, promotionQuestionHide, thisPlayerTurn, otherPlayerTurn, initPlayerNameAndGoteSente, initOpponentNameAndGoteSente, waitingForSecondPlayer, pieceMoveGameLog, hideHomePage, displayGameCode, removeGameCode } from "/view.js";
 
 const socket = io();
@@ -169,8 +167,6 @@ socket.on('gameNotationLine', (moveLogText) => {
  Variables for game initialization
  */
 export let boardArray;
-let player1;
-let player2;
 let lastClicked;
 let game;
 
@@ -178,13 +174,10 @@ let game;
  Clientside game initialization
  */
 function newGame() { 
-    player1 = new player("sente", false);
-    player2 = new player("gote", false);
-
     // Format: piece object, possible moves array, current position
     lastClicked = ["", [], 0];
     
-    game = new board(player1, player2, playerTwoView, lastClicked);
+    game = new board(playerTwoView, lastClicked);
     game.render();
 
     if (playerTwoView && currentTurn === "sente") { 
