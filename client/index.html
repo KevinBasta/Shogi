@@ -117,6 +117,13 @@
     </shogi>
 
 <script>
+    // gote sente don't work
+    document.getElementById("localgame").onclick = function () {
+        //let goteOrSente = document.getElementById("localGoteSenteChoice").value;
+        location.href = "/localVersion/localPlay.html";
+        //setCurrentTurn(goteOrSente);
+    };
+
     let newGameSection = document.getElementById("newGameUncollapse");
     newGameSection.style.maxHeight = newGameSection.scrollHeight + "px";
 

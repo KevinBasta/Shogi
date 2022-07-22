@@ -129,6 +129,14 @@ board js function may use later
 // make a function to earase and reappend all the pieces on the board and stands
 
 
+last things: 
+- fix or get rid of local play gote sente
+- make go home button for when game ends and for local play too
+- save game state for refresh
+- log last move before checkmate win loss
+- let player know if opponent disconnects
+
+
 left to do: 
 - game log display
 - player name, your turn, you won, you lost

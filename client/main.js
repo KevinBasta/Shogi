@@ -1,5 +1,4 @@
 import { board } from "/board.js";
-import {setCurrentTurn} from "/localVersion/localMain.js";
 import { promotionQuestion, promotionQuestionHide, thisPlayerTurn, otherPlayerTurn, initPlayerNameAndGoteSente, initOpponentNameAndGoteSente, waitingForSecondPlayer, pieceMoveGameLog, hideHomePage, displayGameCode, removeGameCode } from "/view.js";
 
 const socket = io();
@@ -63,12 +62,6 @@ function startGame() {
     newGame();
 }
 
-// doesn't work
-document.getElementById("localgame").onclick = function () {
-    let goteOrSente = document.getElementById("localGoteSenteChoice").value;
-    location.href = "/localVersion/localPlay.html";
-    setCurrentTurn(goteOrSente);
-};
 
 /* 
  Creating new game, joining a game, and joining errors
