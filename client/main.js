@@ -4,6 +4,7 @@ import { promotionQuestion, promotionQuestionHide, thisPlayerTurn, otherPlayerTu
 const socket = io();
 export let playerTwoView = false;
 export let currentTurn = 'sente';
+let gameOver = false;
 let fullGameMovesSoFar = [];
 let fullGameLog = [];
 let playerName;
@@ -50,7 +51,10 @@ function restrictOrUnrestrictedPlayerPieces() {
             gameLogConcat();
         } 
     }
+}
 
+export function gameEnded() { 
+    gameOver = true;
 }
 
 
@@ -143,6 +147,7 @@ socket.on('requestFirstPlayerInfo', (name) => {
     sessionStorage.setItem('otherPlayer', JSON.stringify([name, playerTwoView]));
     opponentName = name; 
     opponentConnected = true;
+    sessionStorage.setItem('opponentConnected', JSON.stringify(opponentConnected));
     clientConnectMessage();
 
     socket.emit('recieveFirstPlayerInfo', [playerTwoView, playerName]);
@@ -162,6 +167,7 @@ socket.on('recieveFirstPlayerInfo', ([goteOrSente, name]) => {
     sessionStorage.setItem('otherPlayer', JSON.stringify([name, playerTwoView]));
     opponentName = name;
     opponentConnected = true;
+    sessionStorage.setItem('opponentConnected', JSON.stringify(opponentConnected));
 
     startGame();
 });
@@ -189,19 +195,23 @@ socket.on('gameNotationLine', (moveLogText) => {
 socket.on('OpponentDisconnected', () => { 
     clientDisconnectMessage(opponentName);
     opponentConnected = false;
+    sessionStorage.setItem('opponentConnected', JSON.stringify(opponentConnected));
     setTimeout(checkIfOpponentReconnected, 7000);
 });
 
 socket.on('OpponentReconnect', () => { 
     clientReconnectMessage(opponentName);
     opponentConnected = true;
+    sessionStorage.setItem('opponentConnected', JSON.stringify(opponentConnected));
 });
 
 function checkIfOpponentReconnected() { 
     console.log("checking")
     if (opponentConnected === false) { 
-        gameLogMessage("opponent didn't reconnect, return to home page with button");
-        showReturnHomeButton();
+        if (!gameOver) { 
+            gameLogMessage("opponent didn't reconnect, return to home page with button");
+            showReturnHomeButton();
+        }
         console.log("not connected")
     } else { 
         console.log("is connected")
@@ -598,9 +608,9 @@ export function askIfWantsToPromote(oldPiecePosition, newPiecePosition) {
  If user pickes to promote piece when they reach promotion area
  */
 export function promotePiece(piecePosition) {
+    game.notationArray["choseToPromote"] = "yes";
     game.movePiece(game.lastClicked[2], piecePosition);
     game.promotePieceHandle(piecePosition);
-    game.notationArray["choseToPromote"] = "yes";
     switchTrunAndRestrictMoves();
     addGameMove('move', game.lastClicked[2], piecePosition, "yes");
     addGameMove('promote', piecePosition, "n/a");
@@ -617,8 +627,8 @@ export function promotePieceServerEvent(piecePosition) {
  If user pickes to not promote piece when they reach promotion area
  */
 export function dontPromotePiece(piecePosition) {
-    game.movePiece(game.lastClicked[2], piecePosition);
     game.notationArray["choseToPromote"] = "no";
+    game.movePiece(game.lastClicked[2], piecePosition);
     switchTrunAndRestrictMoves();
     addGameMove('move', game.lastClicked[2], piecePosition, "no");
     socket.emit('pieceMove', [game.lastClicked[2], piecePosition]);
@@ -757,6 +767,12 @@ function loadGameMoves() {
         gameCodeSave = gameCode;
         socket.emit("refreshJoinGame", gameCode);
         reloadingGame = false;
+        
+        opponentConnected = JSON.parse(sessionStorage.getItem('opponentConnected'));
+        if (opponentConnected === false) { 
+            showReturnHomeButton();
+        }
+
     }
 }
 

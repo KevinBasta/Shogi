@@ -35,6 +35,7 @@ io.on('connection', client => {
         client.broadcast.to(roomsWithClients[gameCode]).emit('OpponentReconnect');
         client.broadcast.to(clientRooms[client.id]).emit('log', roomsWithClients);
     });
+    
     client.on('newGame', handleNewGame);
 
     function handleNewGame() {

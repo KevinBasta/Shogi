@@ -377,3 +377,13 @@ export function opponentPieceUnclickable(cellCoordinate) {
 
     pieceImage.classList.add("opponent-piece-unclickable");
 }
+
+export function showReturnHomeButton() {
+    let returnHomeDiv = document.getElementById("returnToHomePage");
+    returnHomeDiv.classList.remove("homeHeaderHide");
+}
+
+export function hideReturnHomeButton() {
+    let returnHomeDiv = document.getElementById("returnToHomePage");
+    returnHomeDiv.classList.add("homeHeaderHide");
+}

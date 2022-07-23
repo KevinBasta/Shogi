@@ -1,5 +1,5 @@
 import { board } from "./localBoard.js";
-import { promotionQuestion, promotionQuestionHide, thisPlayerTurn, otherPlayerTurn, initPlayerNameAndGoteSente, initOpponentNameAndGoteSente, waitingForSecondPlayer, pieceMoveGameLog, hideHomePage, displayGameCode, removeGameCode } from "./localView.js";
+import { promotionQuestion, promotionQuestionHide, thisPlayerTurn, otherPlayerTurn, initPlayerNameAndGoteSente, initOpponentNameAndGoteSente, waitingForSecondPlayer, pieceMoveGameLog, hideHomePage, displayGameCode, removeGameCode, hideReturnHomeButton } from "./localView.js";
 
 export let playerTwoView = false;
 export let currentTurn = "sente";
@@ -414,9 +414,9 @@ export function askIfWantsToPromote(oldPiecePosition, newPiecePosition) {
  If user pickes to promote piece when they reach promotion area
  */
 export function promotePiece(piecePosition) {
+    game.notationArray["choseToPromote"] = "yes";
     game.movePiece(game.lastClicked[2], piecePosition);
     game.promotePieceHandle(piecePosition);
-    game.notationArray["choseToPromote"] = "yes";
     switchTrunAndRestrictMoves();
 }
 
@@ -425,8 +425,8 @@ export function promotePiece(piecePosition) {
  If user pickes to not promote piece when they reach promotion area
  */
 export function dontPromotePiece(piecePosition) {
-    game.movePiece(game.lastClicked[2], piecePosition);
     game.notationArray["choseToPromote"] = "no";
+    game.movePiece(game.lastClicked[2], piecePosition);
     switchTrunAndRestrictMoves();
 }
 
@@ -507,3 +507,8 @@ export function gameLogConcat() {
 
 // For local testing
 startGame();
+
+document.getElementById("returnToHomePage").onclick = function () { 
+    hideReturnHomeButton();
+    location.href = "../index.html";
+}

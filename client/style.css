@@ -470,12 +470,21 @@ header-text {
     font-size: 25px;
     position: fixed;
     z-index: 200;
+    margin-top: -5px;
     margin-left: 20px;
+    background-color: var(--button-color);
+    padding: 10px;
+    color: white;
+    cursor: pointer;
 
     display:flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+.homeHeader:hover { 
+    background-color: var(--button-submit);
 }
 
 .homeHeaderHide {
@@ -761,5 +770,42 @@ footer a {
     
     .piece-possible-move-position {
         background-color: #444 !important;
+    }
+
+    .homeHeader {
+        font-family: 'Noto Serif JP', serif;
+        font-weight: 500;
+        font-size: 20px;
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        z-index: 200;
+        height: 35px;
+        margin-right: 20px;
+        background-color: var(--button-color);
+        padding: 10px;
+        color: white;
+        cursor: pointer;
+    
+        display:flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .homeHeader:hover { 
+        background-color: var(--button-submit);
+    }
+    
+    .homeHeaderHide {
+        display: none;
+    }
+    
+    .homeHeader .title { 
+        margin-top: 0px;
+        margin-bottom: -10px; 
+    }
+    
+    .homeHeader .subtitle { 
+        font-size: 10px;
     }
   }

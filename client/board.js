@@ -1,4 +1,4 @@
-import {currentTurn} from "/main.js";
+import {currentTurn, gameEnded, gameLogConcat} from "/main.js";
 import {defultBoardSetup, defultStandSetups} from "/config.js"; 
 import {king, goldGeneral, silverGeneral, rook, bishop, knight, lance, pawn} from "/pieces.js";
 import {renderNewPieceImage, renderPlaceholderStandPiece, renderCapturedPieceInStand, updateCapturedPieceInStand, removeChildElement, removeOldPossibleMovesStyling, promotionQuestion, winOrLoseDisplay, updatePieceImage, removePieceEventListener, removeStandPieceEventListener, addPieceEventListener, addStandPieceEventListener, pieceMoveGameLog, addBoardMovedEffect, removeBoardMovedEffect, showReturnHomeButton } from "/view.js";
@@ -389,6 +389,7 @@ export class board {
                 winOrLoseDisplay(false);
             }
             this.removeAllEventListeners();
+            gameEnded(); 
             showReturnHomeButton();
         } else if (this.checkmated["gote"] === true) { 
             if (this.playerTwoView === true) { 
@@ -397,6 +398,7 @@ export class board {
                 winOrLoseDisplay(true);
             }
             this.removeAllEventListeners();
+            gameEnded();
             showReturnHomeButton();
         }
 

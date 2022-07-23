@@ -1,4 +1,4 @@
-import {currentTurn} from "./localMain.js";
+import {currentTurn, gameLogConcat} from "./localMain.js";
 import {defultBoardSetup, defultStandSetups} from "../config.js"; 
 import {king, goldGeneral, silverGeneral, rook, bishop, knight, lance, pawn} from "./localPieces.js";
 import {renderNewPieceImage, renderPlaceholderStandPiece, renderCapturedPieceInStand, updateCapturedPieceInStand, removeChildElement, removeOldPossibleMovesStyling, promotionQuestion, winOrLoseDisplay, updatePieceImage, removePieceEventListener, removeStandPieceEventListener, addPieceEventListener, addStandPieceEventListener, pieceMoveGameLog, addBoardMovedEffect, removeBoardMovedEffect, pieceClickable, opponentPieceUnclickable } from "./localView.js";
@@ -380,6 +380,7 @@ export class board {
                 winOrLoseDisplay(false);
             }
             this.removeAllEventListeners();
+            gameLogConcat();
         } else if (this.checkmated["gote"] === true) { 
             if (this.playerTwoView === true) { 
                 winOrLoseDisplay(false);
@@ -387,6 +388,7 @@ export class board {
                 winOrLoseDisplay(true);
             }
             this.removeAllEventListeners();
+            gameLogConcat();
         }
 
         //console.log("checkmate status: ")
