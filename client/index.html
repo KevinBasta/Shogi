@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <script type="module" src="main.js" defer></script> 
     <script src="/socket.io/socket.io.js"></script>
-    <title>Shogi 愛</title>
+    <title>Shogi 将棋</title>
 </head>
 <body>
 
@@ -18,7 +18,7 @@
     <!-- Main Screen -->
     <div id="homeScreen" class="homeScreen">
         <header-text>
-            <p id="header" class="header"> Shogi 愛 </p>
+            <p id="header" class="header"> Shogi 将棋 </p>
             <p id="description" class="description"> An Online Multiplayer Shogi Game </p>
         </header-text>
 
@@ -50,17 +50,9 @@
             <button id="joingame" class="submit-button"> Join Game </button>
         </join-game>
 
-        <button class="collapsible">Local Game</button>
+        <button class="collapsible">Offline Multiplayer</button>
         <join-game class="collapse-section">
-            <div class="form-group">
-                <label>Game Options:</label>
-                <select id="localGoteSenteChoice" name="Sente or Gote">
-                    <option value="sente">-- Sente or Gote</option>
-                    <option value="sente">Sente</option>
-                    <option value="gote">Gote</option>
-                </select>
-            </div>
-            <button id="localgame" class="submit-button"> Play Locally </button>
+            <button id="localgame" class="submit-button"> Start Game</button>
         </join-game>    
     </div>
 
@@ -120,7 +112,7 @@
     // gote sente don't work
     document.getElementById("localgame").onclick = function () {
         //let goteOrSente = document.getElementById("localGoteSenteChoice").value;
-        location.href = "/localVersion/localPlay.html";
+        location.href = "/local/shogi.html";
         //setCurrentTurn(goteOrSente);
     };
 

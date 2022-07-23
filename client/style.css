@@ -332,7 +332,7 @@ li {
 .piece-moved { 
     background-color: var(--shogi-cell-color);
     animation: lastPieceMoved 1.5s ease-in-out 0s infinite alternate;
-    animation-play-state: running !important;
+    animation-play-state: running;
 }
 
 @keyframes lastPieceMoved {
