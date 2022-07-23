@@ -5,6 +5,8 @@ const socket = io();
 export let playerTwoView = false;
 export let currentTurn = 'sente';
 let fullGameMovesSoFar = [];
+let fullGameLog = [];
+let reloadingGame = false;
 
 /* turn switiching */
 function switchTrunAndRestrictMoves() { 
@@ -34,12 +36,17 @@ function restrictOrUnrestrictedPlayerPieces() {
     } else if (playerTwoView && currentTurn === "sente") { 
         game.turnRestrictPieceClick();
         otherPlayerTurn();
-        gameLogConcat();
+        if (!reloadingGame) { 
+            gameLogConcat();
+        }
     } else if (!playerTwoView && currentTurn === "gote") { 
         game.turnRestrictPieceClick();
         otherPlayerTurn();
-        gameLogConcat();
+        if (!reloadingGame) { 
+            gameLogConcat();
+        } 
     }
+
 }
 
 
@@ -52,12 +59,13 @@ socket.on('log', (n) => {
 
 // Starting game 
 function startGame() { 
-    if (playerTwoView === false) { 
-        initPlayerNameAndGoteSente(playerName, "sente");
-    } else if (playerTwoView === true) { 
-        initPlayerNameAndGoteSente(playerName, "gote");
+    if (!reloadingGame) { 
+        if (playerTwoView === false) { 
+            initPlayerNameAndGoteSente(playerName, "sente");
+        } else if (playerTwoView === true) { 
+            initPlayerNameAndGoteSente(playerName, "gote");
+        }
     }
-    sessionStorage.setItem('thisPlayer', JSON.stringify([playerName, playerTwoView]));
 
     labelBoard();
     newGame();
@@ -89,6 +97,7 @@ newgametext.addEventListener("click", function (e) {
     } else if (playerTwoView === true) { 
         initPlayerNameAndGoteSente(playerName, "gote");
     }
+    sessionStorage.setItem('thisPlayer', JSON.stringify([playerName, playerTwoView]));
     waitingForSecondPlayer();
     hideHomePage();
 });
@@ -97,6 +106,7 @@ let joingametext = document.getElementById("joingame");
 joingametext.addEventListener("click", function (e) {
     let gameCode = document.getElementById("gameCodeInput").value;
     socket.emit('joinGame', gameCode);
+    sessionStorage.setItem('gamecode', JSON.stringify(gameCode));
 });
 
 socket.on('joinInit', () => {
@@ -115,6 +125,7 @@ socket.on('tooManyPlayers', () => alert('tooManyPlayers'));
 // Before game starts
 socket.on('gamecode', (roomName) => { 
     displayGameCode(roomName);
+    sessionStorage.setItem('gamecode', JSON.stringify(roomName));
 });
 
 socket.on('requestFirstPlayerInfo', (name) => {
@@ -138,6 +149,7 @@ socket.on('recieveFirstPlayerInfo', ([goteOrSente, name]) => {
     } else if (playerTwoView === true) { 
         initOpponentNameAndGoteSente(name, "sente");
     }
+    sessionStorage.setItem('thisPlayer', JSON.stringify([playerName, playerTwoView]));
     sessionStorage.setItem('otherPlayer', JSON.stringify([name, playerTwoView]));
 
     startGame();
@@ -159,6 +171,8 @@ socket.on('piecePromote', (piecePosition) => {
 
 socket.on('gameNotationLine', (moveLogText) => {
     pieceMoveGameLog(moveLogText);
+    fullGameLog.push(moveLogText);
+    sessionStorage.setItem('gamelog', JSON.stringify(fullGameLog));
 });
 
 
@@ -651,6 +665,8 @@ export function gameLogConcat() {
         notationLine += "=";
     }
 
+    fullGameLog.push(notationLine);
+    sessionStorage.setItem('gamelog', JSON.stringify(fullGameLog));
     pieceMoveGameLog(notationLine);
     game.notationArray = {"player": "sente", "piece": "none", "location": "0", "destination": "0", "capturedOpponent": false, "promoted": false, "dropped": false, "choseToPromote": "na"};
     socket.emit("gameNotationLine", notationLine);
@@ -675,34 +691,39 @@ function loadGameMoves() {
         playerTwoView = thisPlayer[1];
         if (playerTwoView === false) { 
             initPlayerNameAndGoteSente(thisPlayer[0], "sente");
-        } else if (playerTwoView === true) { 
-            initPlayerNameAndGoteSente(thisPlayer[0], "gote");
-        }
-        if (playerTwoView === false) { 
             initOpponentNameAndGoteSente(otherPlayer[0], "gote");
         } else if (playerTwoView === true) { 
+            initPlayerNameAndGoteSente(thisPlayer[0], "gote");
             initOpponentNameAndGoteSente(otherPlayer[0], "sente");
         }
         console.log(JSON.parse(sessionStorage.getItem('game')))
         console.log(thisPlayer)
         console.log(otherPlayer)
+        reloadingGame = true;
+        
         startGame();
         fullGameMovesSoFar = JSON.parse(sessionStorage.getItem('game'));
+
         for (let i = 0; i < fullGameMovesSoFar.length; i++) { 
             let currentMove = fullGameMovesSoFar[i];
             if (currentMove[0] === "move") { 
                 game.movePiece(currentMove[1], currentMove[2]);
-                if (currentMove[3] === "yes") { 
-                    game.notationArray["choseToPromote"] = "yes";
-                } else if (currentMove[3] === "no") { 
-                    game.notationArray["choseToPromote"] = "no";
-                }
+                switchTrunAndRestrictMoves();
             } else if (currentMove[0] === "drop") { 
                 game.movePieceFromStand(currentMove[1], currentMove[2]); 
+                switchTrunAndRestrictMoves();
             } else if (currentMove[0] === "promote") { 
                 game.promotePieceHandle(currentMove[1]);
             }
         }
+        fullGameLog = JSON.parse(sessionStorage.getItem('gamelog'));
+        for (let i = 0; i < fullGameLog.length; i++) { 
+            pieceMoveGameLog(fullGameLog[i]);
+        }
+
+        let gameCode = JSON.parse(sessionStorage.getItem('gamecode'));
+        socket.emit("refreshJoinGame", gameCode);
+        reloadingGame = false;
     }
 }
 
@@ -711,5 +732,5 @@ function loadGameMoves() {
 }
  */
 window.onload = function() { 
-    loadGameMoves(); 
+    loadGameMoves();  
 }

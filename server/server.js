@@ -28,11 +28,16 @@ io.on('connection', client => {
     client.on('recieveFirstPlayerInfo', ([goteOrSente, name]) => client.broadcast.to(clientRooms[client.id]).emit('recieveFirstPlayerInfo', [goteOrSente, name]));
     client.on('gameNotationLine', (notationLine) => client.broadcast.to(clientRooms[client.id]).emit('gameNotationLine', notationLine));
 
-
+    client.on("refreshJoinGame", (gameCode) => {
+        client.join(gameCode);
+        clientRooms[client.id] = gameCode;
+        roomsWithClients[gameCode].push(client.id);
+        client.broadcast.to(clientRooms[client.id]).emit('log', roomsWithClients);
+    });
     client.on('newGame', handleNewGame);
 
     function handleNewGame() {
-        let roomName = makeid(5);
+        let roomName = makeid(5); 
         clientRooms[client.id] = roomName;
         roomsWithClients[roomName] = [client.id];
         //client.emit('gameCode', roomName);
@@ -70,6 +75,8 @@ io.on('connection', client => {
     }
 
 });
+
+
 
 
 function makeid(number) { 
