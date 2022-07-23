@@ -330,6 +330,69 @@ export function displayGameCode(gameCode) {
     gameLog.scrollTop = gameLog.scrollHeight;
 }
 
+export function clientDisconnectMessage(opponentName) { 
+    let gameLog = document.getElementById("movesLog");
+    let messageLi = document.createElement("li");
+    messageLi.setAttribute("class", "opponentConnection");
+    messageLi.textContent = opponentName + " disconnected...";
+    
+    gameLog.appendChild(messageLi);
+    gameLog.scrollTop = gameLog.scrollHeight;
+}
+
+export function clientReconnectMessage(opponentName) { 
+    let gameLog = document.getElementById("movesLog");
+    let messageLi = document.createElement("li");
+    messageLi.setAttribute("class", "opponentConnection");
+    messageLi.textContent = opponentName + " reconnected!";
+    
+    gameLog.appendChild(messageLi);
+    gameLog.scrollTop = gameLog.scrollHeight;
+}
+
+export function clientConnectMessage() { 
+    let gameLog = document.getElementById("movesLog");
+    let messageLi = document.createElement("li");
+    messageLi.setAttribute("class", "opponentConnection");
+    messageLi.textContent = "opponent connected, starting game!";
+    
+    
+    gameLog.appendChild(messageLi);
+    gameLog.scrollTop = gameLog.scrollHeight;
+}
+
+export function joiningClientConnectMessage() { 
+    let gameLog = document.getElementById("movesLog");
+    let messageLi = document.createElement("li");
+    messageLi.setAttribute("class", "opponentConnection");
+    messageLi.textContent = "connected, starting game!";
+    
+    
+    gameLog.appendChild(messageLi);
+    gameLog.scrollTop = gameLog.scrollHeight;
+}
+
+export function gameLogMessage(message) { 
+    let gameLog = document.getElementById("movesLog");
+    let messageLi = document.createElement("li");
+    messageLi.setAttribute("class", "opponentConnection");
+    messageLi.textContent = message;
+    
+    
+    gameLog.appendChild(messageLi);
+    gameLog.scrollTop = gameLog.scrollHeight;
+}
+
+export function showReturnHomeButton() {
+    let returnHomeDiv = document.getElementById("returnToHomePage");
+    returnHomeDiv.classList.remove("homeHeaderHide");
+}
+
+export function hideReturnHomeButton() {
+    let returnHomeDiv = document.getElementById("returnToHomePage");
+    returnHomeDiv.classList.add("homeHeaderHide");
+}
+
 export function removeGameCode() {
     let gameCodeLi = document.getElementById("game-code-text");
     gameCodeLi.setAttribute("class", "hide");

@@ -1,12 +1,16 @@
 import { board } from "/board.js";
-import { promotionQuestion, promotionQuestionHide, thisPlayerTurn, otherPlayerTurn, initPlayerNameAndGoteSente, initOpponentNameAndGoteSente, waitingForSecondPlayer, pieceMoveGameLog, hideHomePage, displayGameCode, removeGameCode } from "/view.js";
+import { promotionQuestion, promotionQuestionHide, thisPlayerTurn, otherPlayerTurn, initPlayerNameAndGoteSente, initOpponentNameAndGoteSente, waitingForSecondPlayer, pieceMoveGameLog, hideHomePage, displayGameCode, removeGameCode, clientDisconnectMessage, clientReconnectMessage, clientConnectMessage, joiningClientConnectMessage, hideReturnHomeButton, showReturnHomeButton, gameLogMessage } from "/view.js";
 
 const socket = io();
 export let playerTwoView = false;
 export let currentTurn = 'sente';
 let fullGameMovesSoFar = [];
 let fullGameLog = [];
+let playerName;
+let opponentName;
+let gameCodeSave;
 let reloadingGame = false;
+let opponentConnected = false; 
 
 /* turn switiching */
 function switchTrunAndRestrictMoves() { 
@@ -75,7 +79,6 @@ function startGame() {
 /* 
  Creating new game, joining a game, and joining errors
  */
-let playerName;
 let newgametext = document.getElementById("newgame");
 newgametext.addEventListener("click", function (e) {
     playerName = document.getElementById("newGameName").value;
@@ -106,6 +109,7 @@ let joingametext = document.getElementById("joingame");
 joingametext.addEventListener("click", function (e) {
     let gameCode = document.getElementById("gameCodeInput").value;
     socket.emit('joinGame', gameCode);
+    gameCodeSave = gameCode;
     sessionStorage.setItem('gamecode', JSON.stringify(gameCode));
 });
 
@@ -114,6 +118,7 @@ socket.on('joinInit', () => {
     socket.emit('requestFirstPlayerInfo', playerName);
     labelBoard();
     hideHomePage();
+    joiningClientConnectMessage();
 });
 
 
@@ -126,6 +131,7 @@ socket.on('tooManyPlayers', () => alert('tooManyPlayers'));
 socket.on('gamecode', (roomName) => { 
     displayGameCode(roomName);
     sessionStorage.setItem('gamecode', JSON.stringify(roomName));
+    gameCodeSave = roomName;
 });
 
 socket.on('requestFirstPlayerInfo', (name) => {
@@ -135,7 +141,10 @@ socket.on('requestFirstPlayerInfo', (name) => {
         initOpponentNameAndGoteSente(name, "sente");
     }
     sessionStorage.setItem('otherPlayer', JSON.stringify([name, playerTwoView]));
-    
+    opponentName = name; 
+    opponentConnected = true;
+    clientConnectMessage();
+
     socket.emit('recieveFirstPlayerInfo', [playerTwoView, playerName]);
     removeGameCode();
     startGame();
@@ -151,6 +160,8 @@ socket.on('recieveFirstPlayerInfo', ([goteOrSente, name]) => {
     }
     sessionStorage.setItem('thisPlayer', JSON.stringify([playerName, playerTwoView]));
     sessionStorage.setItem('otherPlayer', JSON.stringify([name, playerTwoView]));
+    opponentName = name;
+    opponentConnected = true;
 
     startGame();
 });
@@ -175,8 +186,27 @@ socket.on('gameNotationLine', (moveLogText) => {
     sessionStorage.setItem('gamelog', JSON.stringify(fullGameLog));
 });
 
+socket.on('OpponentDisconnected', () => { 
+    clientDisconnectMessage(opponentName);
+    opponentConnected = false;
+    setTimeout(checkIfOpponentReconnected, 7000);
+});
 
+socket.on('OpponentReconnect', () => { 
+    clientReconnectMessage(opponentName);
+    opponentConnected = true;
+});
 
+function checkIfOpponentReconnected() { 
+    console.log("checking")
+    if (opponentConnected === false) { 
+        gameLogMessage("opponent didn't reconnect, return to home page with button");
+        showReturnHomeButton();
+        console.log("not connected")
+    } else { 
+        console.log("is connected")
+    }
+}
 
 
 /* 
@@ -696,6 +726,8 @@ function loadGameMoves() {
             initPlayerNameAndGoteSente(thisPlayer[0], "gote");
             initOpponentNameAndGoteSente(otherPlayer[0], "sente");
         }
+        playerName = thisPlayer[0];
+        opponentName = otherPlayer[0]
         console.log(JSON.parse(sessionStorage.getItem('game')))
         console.log(thisPlayer)
         console.log(otherPlayer)
@@ -722,15 +754,23 @@ function loadGameMoves() {
         }
 
         let gameCode = JSON.parse(sessionStorage.getItem('gamecode'));
+        gameCodeSave = gameCode;
         socket.emit("refreshJoinGame", gameCode);
         reloadingGame = false;
     }
 }
 
-/* window.onbeforeunload = function() {
-    return "Dude, are you sure you want to leave? Think of the kittens!";
-}
- */
 window.onload = function() { 
     loadGameMoves();  
+}
+
+function clearSessionStorage() { 
+    sessionStorage.clear();
+}
+
+document.getElementById("returnToHomePage").onclick = function () { 
+    clearSessionStorage();
+    hideReturnHomeButton();
+    socket.emit("deleteRoom", gameCodeSave);
+    location.href = "/index.html";
 }

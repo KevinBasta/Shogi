@@ -32,6 +32,7 @@ io.on('connection', client => {
         client.join(gameCode);
         clientRooms[client.id] = gameCode;
         roomsWithClients[gameCode].push(client.id);
+        client.broadcast.to(roomsWithClients[gameCode]).emit('OpponentReconnect');
         client.broadcast.to(clientRooms[client.id]).emit('log', roomsWithClients);
     });
     client.on('newGame', handleNewGame);
@@ -71,10 +72,40 @@ io.on('connection', client => {
         } else { 
             client.emit('unknownGame');
             return;
-        }        
+        } 
     }
 
+    client.on('deleteRoom', (gameCode) => { 
+        console.log("before");
+        console.log(roomsWithClients);
+        if (gameCode in roomsWithClients) { 
+            delete roomsWithClients[gameCode];
+        }
+        console.log("after");
+        console.log(roomsWithClients);
+    });
+
+    client.once('disconnect', function() {
+        if (client.id in clientRooms) { 
+            client.broadcast.to(clientRooms[client.id]).emit('OpponentDisconnected');
+    
+            let tempRoomId = clientRooms[client.id];
+            console.log(tempRoomId);
+            if (tempRoomId in roomsWithClients) { 
+                let tempClientIdPosition = roomsWithClients[tempRoomId].indexOf(client.id);
+                if (tempClientIdPosition > -1) { 
+                    roomsWithClients[tempRoomId].splice(tempClientIdPosition, 1);
+                }
+            }
+
+            delete(clientRooms[client.id]);
+
+            console.log(roomsWithClients);
+        }
+    }); 
+
 });
+ 
 
 
 

@@ -325,14 +325,11 @@ li {
     transform: rotate(180deg);
 }
 
-.piece-possible-move-position {
-    background-color: #444 !important;
-}
 
 .piece-moved { 
     background-color: var(--shogi-cell-color);
     animation: lastPieceMoved 1.5s ease-in-out 0s infinite alternate;
-    animation-play-state: running;
+    animation-play-state: running !important;
 }
 
 @keyframes lastPieceMoved {
@@ -340,6 +337,9 @@ li {
     to {background-color: rgba(117, 185, 81, 0.986);}
 }
 
+.piece-possible-move-position {
+    background-color: #444 !important;
+}
 
 /* 
  Shogi board with it's columns and outer rows labels 
@@ -464,6 +464,32 @@ header-text {
     margin: 0px;
 }
 
+.homeHeader {
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 500;
+    font-size: 25px;
+    position: fixed;
+    z-index: 200;
+    margin-left: 20px;
+
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.homeHeaderHide {
+    display: none;
+}
+
+.homeHeader .title { 
+    margin-bottom: -20px; 
+}
+
+.homeHeader .subtitle { 
+    font-size: 15px;
+}
+
 .description { 
     font-size: 20px;
 }
@@ -527,6 +553,14 @@ input[type=text]:focus, select:focus {
     color: white;
     padding: 10px;
     user-select: text;
+}
+
+.opponentConnection { 
+    font-family: 'Noto Serif JP', serif;
+    font-size: 15px;
+    color: white;
+    padding: 3px;
+    padding-left: 10px;
 }
 
 .collapsible {
@@ -725,6 +759,7 @@ footer a {
         padding: 0px 20px;
     }
     
-    
-
+    .piece-possible-move-position {
+        background-color: #444 !important;
+    }
   }
