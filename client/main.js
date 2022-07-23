@@ -4,7 +4,7 @@ import { promotionQuestion, promotionQuestionHide, thisPlayerTurn, otherPlayerTu
 const socket = io();
 export let playerTwoView = false;
 export let currentTurn = 'sente';
-
+let fullGameMovesSoFar = [];
 
 /* turn switiching */
 function switchTrunAndRestrictMoves() { 
@@ -57,6 +57,7 @@ function startGame() {
     } else if (playerTwoView === true) { 
         initPlayerNameAndGoteSente(playerName, "gote");
     }
+    sessionStorage.setItem('thisPlayer', JSON.stringify([playerName, playerTwoView]));
 
     labelBoard();
     newGame();
@@ -122,6 +123,7 @@ socket.on('requestFirstPlayerInfo', (name) => {
     } else if (playerTwoView === true) { 
         initOpponentNameAndGoteSente(name, "sente");
     }
+    sessionStorage.setItem('otherPlayer', JSON.stringify([name, playerTwoView]));
     
     socket.emit('recieveFirstPlayerInfo', [playerTwoView, playerName]);
     removeGameCode();
@@ -130,12 +132,13 @@ socket.on('requestFirstPlayerInfo', (name) => {
 
 socket.on('recieveFirstPlayerInfo', ([goteOrSente, name]) => {
     playerTwoView = !goteOrSente;
-
+    
     if (playerTwoView === false) { 
         initOpponentNameAndGoteSente(name, "gote");
     } else if (playerTwoView === true) { 
         initOpponentNameAndGoteSente(name, "sente");
     }
+    sessionStorage.setItem('otherPlayer', JSON.stringify([name, playerTwoView]));
 
     startGame();
 });
@@ -482,11 +485,13 @@ function emptyCellEvent(e) {
         } else { 
             game.movePiece(game.lastClicked[2], currentEmptyCell);
             switchTrunAndRestrictMoves();
+            addGameMove('move', game.lastClicked[2], currentEmptyCell);
             socket.emit('pieceMove', [game.lastClicked[2], currentEmptyCell]);
         }
     } else { 
         game.movePieceFromStand(game.lastClicked[2], currentEmptyCell);
         switchTrunAndRestrictMoves();
+        addGameMove('drop', game.lastClicked[2], currentEmptyCell);
         socket.emit('pieceDrop', [game.lastClicked[2], currentEmptyCell]);
     }
 }
@@ -500,12 +505,14 @@ function pieceMoveServerEvent(lastposition, currentEmptyCellEmit)  {
     let currentEmptyCell = currentEmptyCellEmit;
     game.movePiece(lastposition, currentEmptyCell);
     switchTrunAndRestrictMoves();
+    addGameMove('move', lastposition, currentEmptyCell);
 }
 
 function pieceDropServerEvent(lastposition, currentEmptyCellEmit) { 
     let currentEmptyCell = currentEmptyCellEmit;
     game.movePieceFromStand(lastposition, currentEmptyCell);    
     switchTrunAndRestrictMoves();
+    addGameMove('drop', lastposition, currentEmptyCell);
 }
 
 
@@ -551,12 +558,15 @@ export function promotePiece(piecePosition) {
     game.promotePieceHandle(piecePosition);
     game.notationArray["choseToPromote"] = "yes";
     switchTrunAndRestrictMoves();
+    addGameMove('move', game.lastClicked[2], piecePosition, "yes");
+    addGameMove('promote', piecePosition, "n/a");
     socket.emit('pieceMove', [game.lastClicked[2], piecePosition]);
     socket.emit('piecePromote', piecePosition);
 }
 
 export function promotePieceServerEvent(piecePosition) {
     game.promotePieceHandle(piecePosition);
+    addGameMove('promote', piecePosition, "n/a");
 }
 
 /*
@@ -566,6 +576,7 @@ export function dontPromotePiece(piecePosition) {
     game.movePiece(game.lastClicked[2], piecePosition);
     game.notationArray["choseToPromote"] = "no";
     switchTrunAndRestrictMoves();
+    addGameMove('move', game.lastClicked[2], piecePosition, "no");
     socket.emit('pieceMove', [game.lastClicked[2], piecePosition]);
 }
 
@@ -647,3 +658,58 @@ export function gameLogConcat() {
 
 // For local testing
 // startGame();
+
+
+
+function addGameMove(moveType, oldPosition, newPosition, notationPromote='n/a') { 
+    fullGameMovesSoFar.push([moveType, oldPosition, newPosition, notationPromote]);
+    sessionStorage.setItem('game', JSON.stringify(fullGameMovesSoFar));
+}
+
+function loadGameMoves() { 
+    if (sessionStorage.getItem('game') != null) { 
+        hideHomePage();
+
+        let thisPlayer = JSON.parse(sessionStorage.getItem('thisPlayer'));
+        let otherPlayer = JSON.parse(sessionStorage.getItem('otherPlayer'));
+        playerTwoView = thisPlayer[1];
+        if (playerTwoView === false) { 
+            initPlayerNameAndGoteSente(thisPlayer[0], "sente");
+        } else if (playerTwoView === true) { 
+            initPlayerNameAndGoteSente(thisPlayer[0], "gote");
+        }
+        if (playerTwoView === false) { 
+            initOpponentNameAndGoteSente(otherPlayer[0], "gote");
+        } else if (playerTwoView === true) { 
+            initOpponentNameAndGoteSente(otherPlayer[0], "sente");
+        }
+        console.log(JSON.parse(sessionStorage.getItem('game')))
+        console.log(thisPlayer)
+        console.log(otherPlayer)
+        startGame();
+        fullGameMovesSoFar = JSON.parse(sessionStorage.getItem('game'));
+        for (let i = 0; i < fullGameMovesSoFar.length; i++) { 
+            let currentMove = fullGameMovesSoFar[i];
+            if (currentMove[0] === "move") { 
+                game.movePiece(currentMove[1], currentMove[2]);
+                if (currentMove[3] === "yes") { 
+                    game.notationArray["choseToPromote"] = "yes";
+                } else if (currentMove[3] === "no") { 
+                    game.notationArray["choseToPromote"] = "no";
+                }
+            } else if (currentMove[0] === "drop") { 
+                game.movePieceFromStand(currentMove[1], currentMove[2]); 
+            } else if (currentMove[0] === "promote") { 
+                game.promotePieceHandle(currentMove[1]);
+            }
+        }
+    }
+}
+
+/* window.onbeforeunload = function() {
+    return "Dude, are you sure you want to leave? Think of the kittens!";
+}
+ */
+window.onload = function() { 
+    loadGameMoves(); 
+}

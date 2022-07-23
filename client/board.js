@@ -563,17 +563,3 @@ export class board {
         return this.gameBoard;
     }
 }
-
-
-// add something to do with an array that gets the objects from both players 
-// put in it so that the event listeners can edit the objects through the  array? 
-let boardLogs = {
-    
-}
-
-function logBoard() {
-    logNumber += 1;
-    lastBoardState = logNumber;
-    boardLogs[("log_" + logNumber)] = ['lol'];
-}
-

@@ -130,11 +130,13 @@ board js function may use later
 
 
 last things: 
-- fix or get rid of local play gote sente
 - make go home button for when game ends and for local play too
-- save game state for refresh
+- ask for user to confirm if they want to reload and say it will bring them to homepage
+- refresh brings both server and local game to homepage
 - log last move before checkmate win loss
 - let player know if opponent disconnects
+- fix or get rid of local play gote sente
+- save game state for refresh
 
 
 left to do: 

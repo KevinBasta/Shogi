@@ -7,7 +7,7 @@
     --labels-border: 0px solid;
 
     --shogi-table-cell-labels-size: 0px;
-    --shogi-table-labels-size: clamp(15px, calc(1vw + 1vh), 20px);
+    --shogi-table-labels-size: 15px;
     --captured-piece-count-font-size: clamp(2px, 3vw, 15px);
     /* rgb(47, 33, 6) */
     --shogi-board-color: rgb(102, 52, 6);
@@ -221,7 +221,7 @@ close-piece-stand div
 #game-log { 
     display: flex;
     flex-direction: column;
-    width: 400px;
+    width: min(40vw, 400px);
 }
 
 .game-log-smallscreen-reverse { 
@@ -350,6 +350,7 @@ li {
     flex-direction: row;
     gap: 0px;
     margin-right: -50px;
+    margin-top: -30px;
 }
 
 shogi-board-wrapper {
@@ -399,6 +400,7 @@ rows {
 rows span { 
     aspect-ratio: 1;
     border: var(--labels-border);    
+    padding: 2px;
     
     /* aligning the text */
     display: flex;
@@ -640,13 +642,13 @@ footer a {
 
 
 /* for smaller devices */
-@media only screen and (max-width: 770px) {
+@media only screen and (max-width: 900px) {
     shogi { 
         display: flex;  
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
-        align-items:flex-start;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        align-items:center;
         height: 100vh; /* controles how spaced things are too in flex wrap */
         overflow: hidden;
         background-color: var(--website-color);
@@ -656,7 +658,7 @@ footer a {
         display: flex;  
         flex-direction: column; 
         align-items: center;
-        margin: 2vw 2vw -20vw 2vw;
+        margin: 2vw 2vw -30px 2vw;
     }
 
     #movesLog { 
@@ -673,7 +675,7 @@ footer a {
 
     #game-log { 
         display: flex;
-        flex-direction: column-reverse;
+        flex-direction: column;
         width: 300px;
     }
 
@@ -698,4 +700,31 @@ footer a {
         width: auto;
         color: white;
     }
+
+    #farPlayerInfo { 
+        flex-direction: row-reverse;
+    }
+    
+    #farPlayerText, #farPlayerTurnStatus { 
+        transform: scale(-1, -1);
+        -moz-transform: scale(-1, -1);
+        -webkit-transform: scale(-1, -1);
+        -o-transform: scale(-1, -1);
+        -ms-transform: scale(-1, -1);
+    }
+    
+    #closePlayerText, #farPlayerText { 
+        font-size: 15px;
+        color: white;
+        padding: 0px 20px;
+    }
+    
+    #closePlayerTurnStatus, #farPlayerTurnStatus {
+        font-size: 15px;
+        color: white;
+        padding: 0px 20px;
+    }
+    
+    
+
   }
