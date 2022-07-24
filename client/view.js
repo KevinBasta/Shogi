@@ -398,6 +398,10 @@ export function removeGameCode() {
     gameCodeLi.setAttribute("class", "hide");
 }
 
+
+/* 
+ green effect to show where the player or opponent moved to 
+ */
 export function addBoardMovedEffect(newMovedForUi) { 
     if (newMovedForUi.length > 0) { 
         let positionOne = document.getElementById(newMovedForUi[0]);

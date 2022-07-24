@@ -28,6 +28,12 @@ io.on('connection', client => {
     client.on('recieveFirstPlayerInfo', ([goteOrSente, name]) => client.broadcast.to(clientRooms[client.id]).emit('recieveFirstPlayerInfo', [goteOrSente, name]));
     client.on('gameNotationLine', (notationLine) => client.broadcast.to(clientRooms[client.id]).emit('gameNotationLine', notationLine));
 
+    client.on("noNewJoiningAllowed", () => {
+        let gameCode = clientRooms[client.id];
+        roomsWithClients[gameCode].push("no new connection allowed");
+        roomsWithClients[gameCode].push("game full");
+    });
+
     client.on("refreshJoinGame", (gameCode) => {
         client.join(gameCode);
         clientRooms[client.id] = gameCode;

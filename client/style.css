@@ -271,6 +271,7 @@ close-piece-stand div
     border-top: 1px solid lightgrey;
     border-bottom: 1px solid lightgrey;
     overflow-y: scroll;
+    user-select: text;
 }
 
 ::-webkit-scrollbar { 
@@ -307,7 +308,8 @@ li {
 
 .piece { 
     aspect-ratio: 1;
-    max-width: 100%;
+    max-width: 95%;
+    max-height: 95%;
     width: var(--cell-size);
     height: var(--cell-size);
     /* opacity: 0.1; */
@@ -611,7 +613,7 @@ input[type=text]:focus, select:focus {
 
 
 footer { 
-    position: absolute;
+    position: fixed;
     bottom: 0;
     
     display: flex;
@@ -714,6 +716,7 @@ footer a {
         border-top: 1px solid lightgrey;
         border-bottom: 1px solid lightgrey;
         overflow-y: scroll;
+        user-select: text;
     }
 
     #game-log { 
@@ -723,7 +726,7 @@ footer a {
     }
 
     footer { 
-        position: absolute;
+        position: fixed;
         bottom: 0;
         
         display: flex;
@@ -775,7 +778,7 @@ footer a {
     .homeHeader {
         font-family: 'Noto Serif JP', serif;
         font-weight: 500;
-        font-size: 20px;
+        font-size: 15px;
         position: fixed;
         bottom: 0;
         right: 0;

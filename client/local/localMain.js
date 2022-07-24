@@ -1,6 +1,7 @@
 import { board } from "./localBoard.js";
-import { promotionQuestion, promotionQuestionHide, thisPlayerTurn, otherPlayerTurn, initPlayerNameAndGoteSente, initOpponentNameAndGoteSente, waitingForSecondPlayer, pieceMoveGameLog, hideHomePage, displayGameCode, removeGameCode, hideReturnHomeButton } from "./localView.js";
+import { promotionQuestion, promotionQuestionHide, thisPlayerTurn, otherPlayerTurn, initPlayerNameAndGoteSente, initOpponentNameAndGoteSente, waitingForSecondPlayer, pieceMoveGameLog, hideHomePage, displayGameCode, removeGameCode, hideReturnHomeButton, removeBoardMovedEffect } from "./localView.js";
 
+const mobileRemoveEffect = window.matchMedia("only screen and (max-width: 760px)").matches;
 export let playerTwoView = false;
 export let currentTurn = "sente";
 
@@ -239,6 +240,9 @@ export function removePossibleMovesEvent(pieceClicked) {
 }
 
 function pieceClickEvent(e) {
+    if (mobileRemoveEffect) {
+        removeBoardMovedEffect(game.oldMovedForUi);  
+    }
     // Other way to do thing using attribute, maybe just use the div order to make more secure?
     //let pieceObject = game.gameBoard[e.target.getAttribute("pieceName")];
     //console.log(e.target.parentElement.getAttribute('id'));
@@ -298,6 +302,9 @@ export function removeStandPossibleMovesEvent(pieceClicked) {
 }
 
 function standPieceClickEvent(e) {    
+    if (mobileRemoveEffect) {
+        removeBoardMovedEffect(game.oldMovedForUi);  
+    }
     // Getting the cell in ui, the piece in gameboard, then possible moves
     let currentPieceCell = e.target.parentElement.getAttribute('id');
     let pieceObject;
