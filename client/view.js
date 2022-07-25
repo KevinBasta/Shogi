@@ -433,6 +433,7 @@ export function removeBoardMovedEffect(oldMovedForUi) {
     }
 }
 
+// put into an object and use for when images are needed above
 let imagesArray = [];
 export function preloadAllPieceImages() { 
     for (let i = 0; i < picesImages.length; i++) {

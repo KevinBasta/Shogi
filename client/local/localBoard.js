@@ -101,12 +101,12 @@ export class board {
         addBoardMovedEffect(this.oldMovedForUi);
 
         // If the target position has an opponent piece [can add extra check of gote sente]
-        console.log(newPosition)
+        //console.log(newPosition)
         if (newPosition in this.gameBoard) {    
             this.notationArray["capturedOpponent"] = true;
 
-            console.log(this.gameBoard[newPosition].pieceObjectName);
-            console.log(this.gameBoard[newPosition])
+            //console.log(this.gameBoard[newPosition].pieceObjectName);
+            //console.log(this.gameBoard[newPosition])
             // Getting rid of opponent piece from ui
             removeChildElement(newPosition, `[pieceName=${this.gameBoard[newPosition].pieceObjectName}]`);
 

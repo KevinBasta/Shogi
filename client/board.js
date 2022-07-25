@@ -186,6 +186,9 @@ export class board {
 
     /*
      Checks if the possible piece move would uncheck the king
+
+     Maybe make it so it works with a clone of the gameboard in 
+     the future. Might improve preformance but would have to be tested.
      */
      pieceMoveCheckResult(oldPosition, newPosition) { 
         let thisPieceGoteSente; 

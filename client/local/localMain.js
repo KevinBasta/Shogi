@@ -67,7 +67,7 @@ function newGame() {
     game = new board(playerTwoView, lastClicked);
     game.render();
 
-    console.log(currentTurn)
+    //console.log(currentTurn)
 
     game.turnManagePieceClick(currentTurn);
     if (currentTurn === "sente") { 

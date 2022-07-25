@@ -208,16 +208,16 @@ socket.on('OpponentReconnect', () => {
 });
 
 function checkIfOpponentReconnected() { 
-    console.log("checking")
+    //console.log("checking")
     if (opponentConnected === false) { 
         if (!gameOver) { 
             game.removeAllEventListeners();
             gameLogMessage("opponent didn't reconnect, return to home page with button");
             showReturnHomeButton();
         }
-        console.log("not connected")
+        //console.log("not connected")
     } else { 
-        console.log("is connected")
+        //console.log("is connected")
     }
 }
 
@@ -747,9 +747,9 @@ function loadGameMoves() {
         }
         playerName = thisPlayer[0];
         opponentName = otherPlayer[0]
-        console.log(JSON.parse(sessionStorage.getItem('game')))
-        console.log(thisPlayer)
-        console.log(otherPlayer)
+        //console.log(JSON.parse(sessionStorage.getItem('game')))
+        //console.log(thisPlayer)
+        //console.log(otherPlayer)
         reloadingGame = true;
         
         startGame();
