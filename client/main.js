@@ -1,5 +1,5 @@
 import { board } from "/board.js";
-import { promotionQuestion, promotionQuestionHide, thisPlayerTurn, otherPlayerTurn, initPlayerNameAndGoteSente, initOpponentNameAndGoteSente, waitingForSecondPlayer, pieceMoveGameLog, hideHomePage, displayGameCode, removeGameCode, clientDisconnectMessage, clientReconnectMessage, clientConnectMessage, joiningClientConnectMessage, hideReturnHomeButton, showReturnHomeButton, gameLogMessage, removeBoardMovedEffect } from "/view.js";
+import { promotionQuestion, promotionQuestionHide, thisPlayerTurn, otherPlayerTurn, initPlayerNameAndGoteSente, initOpponentNameAndGoteSente, waitingForSecondPlayer, pieceMoveGameLog, hideHomePage, displayGameCode, removeGameCode, clientDisconnectMessage, clientReconnectMessage, clientConnectMessage, joiningClientConnectMessage, hideReturnHomeButton, showReturnHomeButton, gameLogMessage, removeBoardMovedEffect, preloadAllPieceImages } from "/view.js";
 
 const socket = io();
 export let playerTwoView = false;
@@ -799,3 +799,5 @@ document.getElementById("returnToHomePage").onclick = function () {
     socket.emit("deleteRoom", gameCodeSave);
     location.href = "/index.html";
 }
+
+preloadAllPieceImages();

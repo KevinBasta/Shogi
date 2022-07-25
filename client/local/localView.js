@@ -243,13 +243,14 @@ export function winOrLoseDisplay(won) {
     if (won === true) { 
         playerTurnStatus.textContent = "You Won";
         playerTurnStatus.parentElement.classList.add("winBorder");
+        opponentTurnStatus.textContent = "You Lost";
         opponentTurnStatus.parentElement.classList.add("loseBorderOpponent");
     } else { 
         playerTurnStatus.textContent = "You Lost";
         playerTurnStatus.parentElement.classList.add("loseBorder");
+        opponentTurnStatus.textContent = "You Won";
         opponentTurnStatus.parentElement.classList.add("winBorderOpponent");
     }
-    opponentTurnStatus.textContent = "";
 }
 
 export function thisPlayerTurn() { 
@@ -386,4 +387,11 @@ export function showReturnHomeButton() {
 export function hideReturnHomeButton() {
     let returnHomeDiv = document.getElementById("returnToHomePage");
     returnHomeDiv.classList.add("homeHeaderHide");
+}
+
+let imagesArray = [];
+export function preloadAllPieceImages() { 
+    for (let i = 0; i < picesImages.length; i++) {
+        imagesArray.push(new Image().src = pieceImages[i]);
+    }
 }

@@ -244,13 +244,14 @@ export function winOrLoseDisplay(won) {
     if (won === true) { 
         playerTurnStatus.textContent = "You Won";
         playerTurnStatus.parentElement.classList.add("winBorder");
+        opponentTurnStatus.textContent = "Opponent Lost";
         opponentTurnStatus.parentElement.classList.add("loseBorderOpponent");
     } else { 
         playerTurnStatus.textContent = "You Lost";
         playerTurnStatus.parentElement.classList.add("loseBorder");
+        opponentTurnStatus.textContent = "Opponent Won";
         opponentTurnStatus.parentElement.classList.add("winBorderOpponent");
     }
-    opponentTurnStatus.textContent = "";
 }
 
 export function thisPlayerTurn() { 
@@ -429,5 +430,12 @@ export function removeBoardMovedEffect(oldMovedForUi) {
 
         positionOne.classList.remove("piece-moved");
         positionTwo.classList.remove("piece-moved");
+    }
+}
+
+let imagesArray = [];
+export function preloadAllPieceImages() { 
+    for (let i = 0; i < picesImages.length; i++) {
+        imagesArray.push(new Image().src = pieceImages[i]);
     }
 }

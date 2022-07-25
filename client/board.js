@@ -385,6 +385,7 @@ export class board {
         if (this.checkmated["sente"] === true) { 
             if (this.playerTwoView === true) { 
                 winOrLoseDisplay(true);
+                gameLogConcat();
             } else if (this.playerTwoView === false) { 
                 winOrLoseDisplay(false);
             }
@@ -396,6 +397,7 @@ export class board {
                 winOrLoseDisplay(false);
             } else if (this.playerTwoView === false) { 
                 winOrLoseDisplay(true);
+                gameLogConcat();
             }
             this.removeAllEventListeners();
             gameEnded();

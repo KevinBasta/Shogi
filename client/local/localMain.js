@@ -1,5 +1,5 @@
 import { board } from "./localBoard.js";
-import { promotionQuestion, promotionQuestionHide, thisPlayerTurn, otherPlayerTurn, initPlayerNameAndGoteSente, initOpponentNameAndGoteSente, waitingForSecondPlayer, pieceMoveGameLog, hideHomePage, displayGameCode, removeGameCode, hideReturnHomeButton, removeBoardMovedEffect } from "./localView.js";
+import { promotionQuestion, promotionQuestionHide, thisPlayerTurn, otherPlayerTurn, initPlayerNameAndGoteSente, initOpponentNameAndGoteSente, waitingForSecondPlayer, pieceMoveGameLog, hideHomePage, displayGameCode, removeGameCode, hideReturnHomeButton, removeBoardMovedEffect, preloadAllPieceImages } from "./localView.js";
 
 const mobileRemoveEffect = window.matchMedia("only screen and (max-width: 760px)").matches;
 export let playerTwoView = false;
@@ -519,3 +519,5 @@ document.getElementById("returnToHomePage").onclick = function () {
     hideReturnHomeButton();
     location.href = "../index.html";
 }
+
+preloadAllPieceImages();
