@@ -684,7 +684,51 @@ footer a {
     20% {
       transform: translateY(-7px)
     }
-  }
+}
+
+
+@media only screen and (max-height: 600px) {
+    .collapsible {
+        background-color: var(--button-color);
+        color: white;
+        cursor: pointer;
+        padding: 10px;
+        width: 50%;
+        border: none;
+        text-align: center;
+        outline: none;
+        font-family: 'Noto Serif JP', serif;
+        font-size: 20px;
+    }
+    
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        padding-top: 10px;
+    }
+
+    footer { 
+        position: fixed;
+        bottom: 0;
+        
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        
+        z-index: 105;
+        width: 100%;
+        background-color: var(--shogi-cell-color);
+        font-family: 'Noto Serif JP', serif;
+    }
+    
+    footer p { 
+        font-size: 7px;
+        padding: 2px;
+        width: auto;
+        color: white;
+    }
+}
 
 
 /* for smaller devices */
