@@ -1,5 +1,5 @@
 # Shogi Boardgame Javascript project
-img here
+![Shogi Boardgame](https://github.com/KevinBasta/Shogi/blob/main/client/pieces/readme.gif)
 
 Shogi is a chess-like game with different piece movements and rules. You can read about the boardgame [here](https://en.wikipedia.org/wiki/Shogi). Upon opening the [homepage](http://shogiboardgame.azurewebsites.net/), you are able to create or join an online multiplayer game as well as start an offline multiplayer version of the game where you can play both sides.
 
