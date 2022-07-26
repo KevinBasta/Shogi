@@ -516,6 +516,5 @@ export function gameLogConcat() {
 startGame();
 
 document.getElementById("returnToHomePage").onclick = function () { 
-    hideReturnHomeButton();
     location.href = "../index.html";
 }

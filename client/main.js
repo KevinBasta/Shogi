@@ -198,7 +198,7 @@ socket.on('OpponentDisconnected', () => {
     clientDisconnectMessage(opponentName);
     opponentConnected = false;
     sessionStorage.setItem('opponentConnected', JSON.stringify(opponentConnected));
-    setTimeout(checkIfOpponentReconnected, 7000);
+    setTimeout(checkIfOpponentReconnected, 5000);
 });
 
 socket.on('OpponentReconnect', () => { 

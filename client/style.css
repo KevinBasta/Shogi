@@ -515,7 +515,7 @@ header-text {
 .form-group {
     display: flex;
     flex-direction: column;
-    padding-top: 20px;
+    padding-top: 30px;
 }
 
 .form-group label{ 
