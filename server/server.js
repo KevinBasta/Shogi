@@ -5,7 +5,16 @@ const socketio = require('socket.io');
 
 const app = express();
 
-app.use("https://" + express.static(`${__dirname}/../client`));
+app.use(express.static(`${__dirname}/../client`));
+
+// to convert to https and require https
+// for making self signed key and cert
+// https://stackoverflow.com/questions/11744975/enabling-https-on-express-js#:~:text=Go%20to%20the%20terminal%20and%20run%20the%20following%20command.&text=After%20creation%20adds%20key%20%26%20cert,..%2Fcerts%2Fselfsigned.
+// https://www.digitalocean.com/community/tutorials/how-to-create-a-self-signed-ssl-certificate-for-apache-in-ubuntu-16-04
+const options = {
+  //key: fs.readFileSync(''),
+  //cert: fs.readFileSync('')
+};
 
 const server = http.createServer(app);
 const io = socketio(server);

@@ -799,5 +799,3 @@ document.getElementById("returnToHomePage").onclick = function () {
     socket.emit("deleteRoom", gameCodeSave);
     location.href = "/index.html";
 }
-
-preloadAllPieceImages();
