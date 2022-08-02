@@ -7,7 +7,7 @@ Shogi is a chess-like game with different piece movements and rules. You can rea
 This project was made with socket.io, express.js, javascript, html, and css
 
 **Serverside Javascript:** 
-* Server.js uses express js to create an http server. That server is utilized by socket io to handle all the client events being sent to the other client in the same gameroom through the server
+* Server.js uses express js to create an http server. That server is utilized by the web sockets handler, socket io, to handle all the client events being sent to the other client in the same gameroom through the server
 
 **Clientside Javascript:**
 

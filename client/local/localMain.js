@@ -470,9 +470,9 @@ export function gameLogConcat() {
     let localNotation = game.notationArray;
     let notationLine = "";
     if (localNotation["player"] === "sente") { 
-        notationLine += "☖";
-    } else if (localNotation["player"] === "gote") { 
         notationLine += "☗";
+    } else if (localNotation["player"] === "gote") { 
+        notationLine += "☖";
     }
     
     if (localNotation["promoted"] === true) { 
