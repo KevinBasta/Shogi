@@ -1,20 +1,9 @@
-//import { startGame } from "../main.js";
 const http = require('http');
 const express = require('express');
 const socketio = require('socket.io');
 
 const app = express();
-
 app.use(express.static(`${__dirname}/../client`));
-
-// to convert to https and require https
-// for making self signed key and cert
-// https://stackoverflow.com/questions/11744975/enabling-https-on-express-js#:~:text=Go%20to%20the%20terminal%20and%20run%20the%20following%20command.&text=After%20creation%20adds%20key%20%26%20cert,..%2Fcerts%2Fselfsigned.
-// https://www.digitalocean.com/community/tutorials/how-to-create-a-self-signed-ssl-certificate-for-apache-in-ubuntu-16-04
-const options = {
-  //key: fs.readFileSync(''),
-  //cert: fs.readFileSync('')
-};
 
 const server = http.createServer(app);
 const io = socketio(server);
@@ -23,61 +12,34 @@ const clientRooms = {};
 const roomsWithClients = {};
 
 io.on('connection', client => {
-    client.emit('message', 'You are connected');
-
-    client.on('message', (text) => {
-        io.emit('message', text)
-    })
+    client.on('requestFirstPlayerInfo', (name) => client.broadcast.to(clientRooms[client.id]).emit('requestFirstPlayerInfo', name));
+    client.on('recieveFirstPlayerInfo', ([goteOrSente, name]) => client.broadcast.to(clientRooms[client.id]).emit('recieveFirstPlayerInfo', [goteOrSente, name]));
+    client.on('gameNotationLine', (notationLine) => client.broadcast.to(clientRooms[client.id]).emit('gameNotationLine', notationLine));
 
     client.on('pieceMove', ([lastposition, currentEmptyCellEmit]) => client.broadcast.to(clientRooms[client.id]).emit('pieceMove', [lastposition, currentEmptyCellEmit]));
     client.on('pieceDrop', ([lastposition, currentEmptyCellEmit]) => client.broadcast.to(clientRooms[client.id]).emit('pieceDrop', [lastposition, currentEmptyCellEmit]));
     client.on('piecePromote', (piecePosition) => client.broadcast.to(clientRooms[client.id]).emit('piecePromote', piecePosition));
     
-    client.on('requestFirstPlayerInfo', (name) => client.broadcast.to(clientRooms[client.id]).emit('requestFirstPlayerInfo', name));
-    client.on('recieveFirstPlayerInfo', ([goteOrSente, name]) => client.broadcast.to(clientRooms[client.id]).emit('recieveFirstPlayerInfo', [goteOrSente, name]));
-    client.on('gameNotationLine', (notationLine) => client.broadcast.to(clientRooms[client.id]).emit('gameNotationLine', notationLine));
 
-    client.on("noNewJoiningAllowed", () => {
-        let gameCode = clientRooms[client.id];
-        roomsWithClients[gameCode].push("no new connection allowed");
-        roomsWithClients[gameCode].push("game full");
-    });
-
-    client.on("refreshJoinGame", (gameCode) => {
-        client.join(gameCode);
-        clientRooms[client.id] = gameCode;
-        roomsWithClients[gameCode].push(client.id);
-        client.broadcast.to(roomsWithClients[gameCode]).emit('OpponentReconnect');
-        client.broadcast.to(clientRooms[client.id]).emit('log', roomsWithClients);
-    });
-    
     client.on('newGame', handleNewGame);
-
     function handleNewGame() {
         let roomName = makeid(5); 
         clientRooms[client.id] = roomName;
         roomsWithClients[roomName] = [client.id];
-        //client.emit('gameCode', roomName);
-    
-        //state[roomName] = [];
 
         client.join(roomName);
         client.number = 1;
         io.to(client.id).emit("gamecode", roomName);
-        //client.emit('init', 1);
     }
 
-    client.on('joinGame', handleJoinGame);
 
+    client.on('joinGame', handleJoinGame);
     function handleJoinGame(gameCode) { 
         if (gameCode in roomsWithClients) { 
-            //console.log(roomsWithClients);
             if (roomsWithClients[gameCode].length > 1) {
                 client.emit('tooManyPlayers');
                 return;
             }
-            //console.log(roomsWithClients[gameCode]);
-
             
             clientRooms[client.id] = gameCode;
             roomsWithClients[gameCode].push(client.id);
@@ -91,22 +53,27 @@ io.on('connection', client => {
         } 
     }
 
-    client.on('deleteRoom', (gameCode) => { 
-        //console.log("before");
-        //console.log(roomsWithClients);
-        if (gameCode in roomsWithClients) { 
-            delete roomsWithClients[gameCode];
-        }
-        //console.log("after");
-        //console.log(roomsWithClients);
+
+    client.on("refreshJoinGame", (gameCode) => {
+        client.join(gameCode);
+        clientRooms[client.id] = gameCode;
+        roomsWithClients[gameCode].push(client.id);
+        client.broadcast.to(roomsWithClients[gameCode]).emit('OpponentReconnect');
+        client.broadcast.to(clientRooms[client.id]).emit('log', roomsWithClients);
     });
+
+    client.on("noNewJoiningAllowed", () => {
+        let gameCode = clientRooms[client.id];
+        roomsWithClients[gameCode].push("no new connection allowed");
+        roomsWithClients[gameCode].push("game full");
+    });
+
 
     client.once('disconnect', function() {
         if (client.id in clientRooms) { 
             client.broadcast.to(clientRooms[client.id]).emit('OpponentDisconnected');
     
             let tempRoomId = clientRooms[client.id];
-            //console.log(tempRoomId);
             if (tempRoomId in roomsWithClients) { 
                 let tempClientIdPosition = roomsWithClients[tempRoomId].indexOf(client.id);
                 if (tempClientIdPosition > -1) { 
@@ -115,16 +82,17 @@ io.on('connection', client => {
             }
 
             delete(clientRooms[client.id]);
-
-            //console.log(roomsWithClients);
         }
     }); 
 
+
+    client.on('deleteRoom', (gameCode) => { 
+        if (gameCode in roomsWithClients) { 
+            delete roomsWithClients[gameCode];
+        }
+    });
 });
  
-
-
-
 
 function makeid(number) { 
     var result           = '';

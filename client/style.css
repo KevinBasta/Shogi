@@ -111,6 +111,7 @@ shogi-board-and-stands {
     flex-direction: column; 
     align-items: center;
     margin: 2vw;
+    touch-action: manipulation;
 }
 
 .overlay {
@@ -273,6 +274,9 @@ close-piece-stand div
     border-bottom: 1px solid lightgrey;
     overflow-y: scroll;
     user-select: text;
+    -moz-user-select: text;
+    -webkit-user-select: text;
+    -ms-user-select: text;
 }
 
 ::-webkit-scrollbar { 
@@ -565,6 +569,9 @@ input[type=text]:focus, select:focus {
     color: white;
     padding: 10px;
     user-select: text;
+    -moz-user-select: text;
+    -webkit-user-select: text;
+    -ms-user-select: text;
 }
 
 .opponentConnection { 
@@ -762,6 +769,9 @@ footer a {
         border-bottom: 1px solid lightgrey;
         overflow-y: scroll;
         user-select: text;
+        -moz-user-select: text;
+        -webkit-user-select: text;
+        -ms-user-select: text;
     }
 
     #game-log { 

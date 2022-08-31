@@ -352,14 +352,6 @@ export class king extends piece {
 }
 
 export class silverGeneral extends piece { 
-        // different moves for promotion and in check?
-    /*  if (isPromoted) { 
-
-        } else if (inCheck) { 
-        
-        } else { 
-
-        } */
     standardMovement() { 
         let movesArray = [];
 
